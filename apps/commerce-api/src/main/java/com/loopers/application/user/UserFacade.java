@@ -8,6 +8,7 @@ import com.loopers.support.error.user.UserAlreadyExistsException;
 import com.loopers.support.error.user.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Component
@@ -15,6 +16,7 @@ public class UserFacade {
 
     private final UserService userService;
 
+    @Transactional
     public UserInfo signUp(UserCommand.Create command) {
         validateDuplicateUserId(command);
         User savedUser = userService.create(command);
