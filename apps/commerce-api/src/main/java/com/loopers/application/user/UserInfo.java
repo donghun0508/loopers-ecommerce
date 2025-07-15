@@ -1,6 +1,7 @@
 package com.loopers.application.user;
 
 import com.loopers.domain.user.User;
+import com.loopers.domain.user.User.Gender;
 import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -10,7 +11,8 @@ public record UserInfo(
     Long id,
     String userId,
     String email,
-    String birth
+    String birth,
+    Gender gender
 ) {
 
     public static UserInfo from(User user) {
@@ -21,6 +23,7 @@ public record UserInfo(
             .userId(user.getUserId())
             .email(user.getEmail())
             .birth(user.getBirth())
+            .gender(user.getGender())
             .build();
     }
 }
