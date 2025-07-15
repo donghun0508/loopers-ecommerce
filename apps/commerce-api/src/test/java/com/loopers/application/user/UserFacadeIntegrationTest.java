@@ -12,6 +12,9 @@ import com.loopers.domain.user.fixture.UserCommandFixture;
 import com.loopers.support.error.user.UserAlreadyExistsException;
 import com.loopers.support.error.user.UserErrorType;
 import com.loopers.testcontainers.MySqlTestContainersConfig;
+import com.loopers.utils.DatabaseCleanUp;
+import org.instancio.Instancio;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -25,15 +28,23 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @Import(MySqlTestContainersConfig.class)
-public class UserFacadeTest {
+public class UserFacadeIntegrationTest {
 
     @Autowired
     private UserFacade userFacade;
 
+    @Autowired
+    private DatabaseCleanUp databaseCleanUp;
+
     @MockitoSpyBean
     private UserService userService;
 
-    @DisplayName("회원 가입 시,")
+    @AfterEach
+    void tearDown() {
+        databaseCleanUp.truncateAllTables();
+    }
+
+    @DisplayName("회원 가입 시, ")
     @Nested
     class SignUp {
 
@@ -57,7 +68,7 @@ public class UserFacadeTest {
 
         @DisplayName("정상적인 회원 데이터인 경우, 회원가입에 성공한다.")
         @Test
-        void  doesNotThrow_whenValidUserData() {
+        void doesNotThrow_whenValidUserData() {
             // arrange
             UserCommand.Create command = UserCommandFixture.Create.complete().create();
 
@@ -65,6 +76,42 @@ public class UserFacadeTest {
             assertDoesNotThrow(() -> userFacade.signUp(command));
             verify(userService).findByUserId(command.userId());
             verify(userService).create(command);
+        }
+    }
+
+    @DisplayName("회원 조회 시, ")
+    @Nested
+    class Get {
+
+        @DisplayName("해당 ID 의 회원이 존재할 경우, 회원 정보가 반환된다.")
+        @Test
+        void returnsUserInfo_whenValidIdIsProvided() {
+            // arrange
+            UserCommand.Create command = UserCommandFixture.Create.complete().create();
+            UserInfo savedUserInfo = userFacade.signUp(command);
+
+            // act
+            UserInfo findUserInfo = userFacade.getUser(savedUserInfo.id());
+
+            // assert
+            assertThat(findUserInfo).isNotNull();
+            assertThat(findUserInfo.id()).isEqualTo(savedUserInfo.id());
+            assertThat(findUserInfo.userId()).isEqualTo(savedUserInfo.userId());
+            assertThat(findUserInfo.birth()).isEqualTo(savedUserInfo.birth());
+            assertThat(findUserInfo.gender()).isEqualTo(savedUserInfo.gender());
+        }
+
+        @DisplayName("해당 ID 의 회원이 존재하지 않을 경우, null 이 반환된다.")
+        @Test
+        void returnsNull_whenUserNotFound() {
+            // arrange
+            Long randomId = Instancio.create(Long.class);
+
+            // act
+            UserInfo findUserInfo = userFacade.getUser(randomId);
+
+            // assert
+            assertThat(findUserInfo).isNull();
         }
     }
 }
