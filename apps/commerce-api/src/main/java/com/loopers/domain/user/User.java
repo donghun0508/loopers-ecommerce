@@ -1,17 +1,26 @@
 package com.loopers.domain.user;
 
+import com.loopers.domain.BaseEntity;
 import com.loopers.domain.user.UserCommand.Create;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.regex.Pattern;
 
-public class User {
+@Entity
+@Table(name = "members")
+public class User extends BaseEntity {
 
     private String userId;
     private String email;
     private String birth;
+
+    protected User() {
+
+    }
 
     private User(String userId, String email, String birth) {
         this.userId = userId;
