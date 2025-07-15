@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.loopers.domain.user.User.Gender;
 import com.loopers.domain.user.fixture.UserCommandFixture;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
@@ -63,6 +64,22 @@ class UserTest {
             // arrange
             UserCommand.Create command = UserCommandFixture.Create.complete()
                 .set(field(UserCommand.Create::birth), invalidBirth)
+                .create();
+
+            // act
+            CoreException exception = assertThrows(CoreException.class, () -> User.of(command));
+
+            // assert
+            assertThat(exception.getErrorCode()).isEqualTo(ErrorType.INVALID_INPUT);
+        }
+
+        @DisplayName("성별이 없는 경우, User 객체 생성에 실패한다.")
+        @ParameterizedTest
+        @NullSource
+        void throwsInvalidException_whenGenderIsNullAndEmpty(Gender invalidGender) {
+            // arrange
+            UserCommand.Create command = UserCommandFixture.Create.complete()
+                .set(field(UserCommand.Create::gender), invalidGender)
                 .create();
 
             // act
