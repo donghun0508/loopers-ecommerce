@@ -6,11 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.loopers.interfaces.api.ApiResponse;
+import com.loopers.interfaces.api.user.fixture.UserV1DtoFixture;
 import com.loopers.testcontainers.MySqlTestContainersConfig;
 import com.loopers.utils.DatabaseCleanUp;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import org.instancio.Instancio;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -27,7 +25,7 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @Import(MySqlTestContainersConfig.class)
-class UserV1ApiE2Test {
+class UserV1ApiE2ETest {
 
     private static final String ENDPOINT = "/api/v1/users";
 
@@ -35,7 +33,7 @@ class UserV1ApiE2Test {
     private final DatabaseCleanUp databaseCleanUp;
 
     @Autowired
-    public UserV1ApiE2Test(
+    public UserV1ApiE2ETest(
         TestRestTemplate testRestTemplate,
         DatabaseCleanUp databaseCleanUp
     ) {
@@ -56,18 +54,7 @@ class UserV1ApiE2Test {
         @Test
         void returnsUserResponse_whenValidUserData() {
             // arrange
-            var requestBody = Instancio.of(UserV1Dto.SignUpRequest.class)
-                .generate(field(UserV1Dto.SignUpRequest::userId), gen -> gen.string()
-                    .length(5, 10)
-                    .alphaNumeric()
-                )
-                .generate(field(UserV1Dto.SignUpRequest::email), gen -> gen.net().email())
-                .generate(field(UserV1Dto.SignUpRequest::birth), gen -> gen.temporal()
-                    .localDate()
-                    .range(LocalDate.of(1950, 1, 1), LocalDate.of(2005, 12, 31))
-                    .as(date -> date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                )
-                .create();
+            var requestBody = UserV1DtoFixture.SignUpRequest.CACHE_FIXTURE;
 
             // act
             var response = testRestTemplate.exchange(
@@ -90,8 +77,29 @@ class UserV1ApiE2Test {
                 () -> assertThat(userData.id()).isNotNull(),
                 () -> assertThat(userData.userId()).isEqualTo(requestBody.userId()),
                 () -> assertThat(userData.email()).isEqualTo(requestBody.email()),
-                () -> assertThat(userData.birth()).isEqualTo(requestBody.birth())
+                () -> assertThat(userData.birth()).isEqualTo(requestBody.birth()),
+                () -> assertThat(userData.gender().name()).isEqualTo(requestBody.gender().name())
             );
+        }
+
+        @DisplayName("회원 가입 시 성별이 없을 경우, 400 Bad Request를 응답한다.")
+        @Test
+        void returnsBadRequest_whenGenderIsMissing() {
+            var requestBody = UserV1DtoFixture.SignUpRequest.complete()
+                .ignore(field(UserV1Dto.SignUpRequest::gender))
+                .create();
+
+            // act
+            var response = testRestTemplate.exchange(
+                ENDPOINT,
+                HttpMethod.POST,
+                new HttpEntity<>(requestBody),
+                new ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>>() {
+                }
+            );
+
+            // assert
+            assertAll(() -> assertTrue(response.getStatusCode().is4xxClientError()));
         }
     }
 }
