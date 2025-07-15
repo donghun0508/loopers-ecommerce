@@ -34,7 +34,7 @@ class UserTest {
             CoreException exception = assertThrows(CoreException.class, () -> User.of(command));
 
             // assert
-            assertThat(exception.getErrorType()).isEqualTo(ErrorType.INVALID_INPUT);
+            assertThat(exception.getErrorCode()).isEqualTo(ErrorType.INVALID_INPUT);
         }
 
         @DisplayName("이메일이 `xx@yy.zz` 형식에 맞지 않으면, User 객체 생성에 실패한다.")
@@ -51,7 +51,7 @@ class UserTest {
             CoreException exception = assertThrows(CoreException.class, () -> User.of(command));
 
             // assert
-            assertThat(exception.getErrorType()).isEqualTo(ErrorType.INVALID_INPUT);
+            assertThat(exception.getErrorCode()).isEqualTo(ErrorType.INVALID_INPUT);
         }
 
         @DisplayName("생년월일이 `yyyy-MM-dd` 형식에 맞지 않으면, User 객체 생성에 실패한다.")
@@ -68,7 +68,7 @@ class UserTest {
             CoreException exception = assertThrows(CoreException.class, () -> User.of(command));
 
             // assert
-            assertThat(exception.getErrorType()).isEqualTo(ErrorType.INVALID_INPUT);
+            assertThat(exception.getErrorCode()).isEqualTo(ErrorType.INVALID_INPUT);
         }
 
         static Stream<Arguments> invalidUserIds() {
