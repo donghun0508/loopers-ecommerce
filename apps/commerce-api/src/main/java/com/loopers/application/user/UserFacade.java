@@ -1,5 +1,6 @@
 package com.loopers.application.user;
 
+import com.loopers.domain.user.User;
 import com.loopers.domain.user.UserCommand;
 import com.loopers.domain.user.UserCommand.Create;
 import com.loopers.domain.user.UserService;
@@ -13,13 +14,16 @@ public class UserFacade {
 
     private final UserService userService;
 
-    public void signUp(UserCommand.Create command) {
+    public UserInfo signUp(UserCommand.Create command) {
         validateDuplicateUserId(command);
-        userService.create(command);
+        User savedUser = userService.create(command);
+        return UserInfo.from(savedUser);
     }
 
     private void validateDuplicateUserId(Create command) {
         userService.findByUserId(command.userId())
-            .ifPresent(user -> { throw new UserAlreadyExistsException(); });
+            .ifPresent(user -> {
+                throw new UserAlreadyExistsException();
+            });
     }
 }

@@ -9,7 +9,9 @@ import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.regex.Pattern;
+import lombok.Getter;
 
+@Getter
 @Entity
 @Table(name = "members")
 public class User extends BaseEntity {
