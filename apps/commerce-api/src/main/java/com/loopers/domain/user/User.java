@@ -1,10 +1,12 @@
 package com.loopers.domain.user;
 
 import com.loopers.domain.BaseEntity;
-import com.loopers.domain.user.UserCommand.Create;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -16,29 +18,57 @@ import lombok.Getter;
 @Table(name = "members")
 public class User extends BaseEntity {
 
+    @Column(
+        name = "user_id",
+        unique = true,
+        nullable = false
+    )
     private String userId;
+
+    @Column(
+        name = "email",
+        unique = true,
+        nullable = false
+    )
     private String email;
+
+    @Column(
+        name = "birth",
+        nullable = false
+    )
     private String birth;
+
+    @Enumerated(EnumType.STRING)
+    @Column(
+        name = "gender"
+    )
+    private Gender gender;
 
     protected User() {
 
     }
 
-    private User(String userId, String email, String birth) {
+    private User(String userId, String email, String birth, Gender gender) {
         this.userId = userId;
         this.email = email;
         this.birth = birth;
+        this.gender = gender;
     }
 
-    public static User of(Create command) {
+    public static User of(UserCommand.Create command) {
         validate(command);
-        return new User(command.userId(), command.email(), command.birth());
+        return new User(command.userId(), command.email(), command.birth(), command.gender());
     }
 
-    private static void validate(Create command) {
+    private static void validate(UserCommand.Create command) {
         Validator.userId(command.userId());
         Validator.email(command.email());
         Validator.birth(command.birth());
+        Validator.gender(command.gender());
+    }
+
+    public enum Gender {
+        M, F
     }
 
     private static class Validator {
@@ -70,6 +100,12 @@ public class User extends BaseEntity {
         public static void birth(String birth) {
             validateBirthFormat(birth);
             validateBirthDate(birth);
+        }
+
+        public static void gender(Gender gender) {
+            if (gender == null) {
+                throw new CoreException(ErrorType.INVALID_INPUT);
+            }
         }
 
         private static boolean isNullOrBlank(String value) {

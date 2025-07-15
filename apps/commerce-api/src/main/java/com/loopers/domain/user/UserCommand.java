@@ -1,11 +1,12 @@
 package com.loopers.domain.user;
 
+import com.loopers.domain.user.User.Gender;
 import lombok.Builder;
 
 public class UserCommand {
 
     @Builder
-    public record Create(String userId, String email, String birth) {
+    public record Create(String userId, String email, String birth, Gender gender) {
 
     }
 
