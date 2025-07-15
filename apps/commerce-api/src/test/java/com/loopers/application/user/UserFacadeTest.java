@@ -1,6 +1,7 @@
 package com.loopers.application.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
@@ -42,8 +43,8 @@ public class UserFacadeTest {
             // arrange
             String duplicateUserId = "testUser";
             UserCommand.Create command = UserCommandFixture.Create.complete()
-                .userId(duplicateUserId)
-                .build();
+                .set(field(UserCommand.Create::userId), duplicateUserId)
+                .create();
             userFacade.signUp(command);
 
             // act
@@ -58,7 +59,7 @@ public class UserFacadeTest {
         @Test
         void  doesNotThrow_whenValidUserData() {
             // arrange
-            UserCommand.Create command = UserCommandFixture.Create.complete().build();
+            UserCommand.Create command = UserCommandFixture.Create.complete().create();
 
             // act & assert
             assertDoesNotThrow(() -> userFacade.signUp(command));

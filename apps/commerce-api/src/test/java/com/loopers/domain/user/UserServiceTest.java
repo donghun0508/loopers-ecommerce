@@ -7,7 +7,7 @@ import static org.mockito.Mockito.doReturn;
 import com.loopers.domain.user.fixture.UserCommandFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.RepeatedTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -27,10 +27,10 @@ public class UserServiceTest {
     class Create {
 
         @DisplayName("회원 도메인 객체 생성 후 User 저장이 수행된다. ( spy 검증 )")
-        @Test
+        @RepeatedTest(10)
         void returnsUser_whenCreateUser() {
             // arrange
-            UserCommand.Create command = UserCommandFixture.Create.complete().build();
+            UserCommand.Create command = UserCommandFixture.Create.CACHE_FIXTURE;
             User expectedUser = User.of(command);
             doReturn(expectedUser).when(userRepository).save(any(User.class));
 
@@ -40,6 +40,11 @@ public class UserServiceTest {
             // assert
             assertThat(savedUser).isNotNull();
             assertThat(savedUser.getId()).isEqualTo(expectedUser.getId());
+            assertThat(savedUser.getUserId()).isEqualTo(expectedUser.getUserId());
+            assertThat(savedUser.getBirth()).isEqualTo(expectedUser.getBirth());
+            assertThat(savedUser.getEmail()).isEqualTo(expectedUser.getEmail());
+            assertThat(savedUser.getGender()).isEqualTo(expectedUser.getGender());
+
         }
     }
 }

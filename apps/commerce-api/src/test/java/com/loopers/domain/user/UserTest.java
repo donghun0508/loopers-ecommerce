@@ -1,6 +1,7 @@
 package com.loopers.domain.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.loopers.domain.user.fixture.UserCommandFixture;
@@ -27,8 +28,8 @@ class UserTest {
         void throwsInvalidException_whenUserIdIsInvalid(String invalidUserId) {
             // arrange
             UserCommand.Create command = UserCommandFixture.Create.complete()
-                .userId(invalidUserId)
-                .build();
+                .set(field(UserCommand.Create::userId), invalidUserId)
+                .create();
 
             // act
             CoreException exception = assertThrows(CoreException.class, () -> User.of(command));
@@ -44,8 +45,8 @@ class UserTest {
         void throwsInvalidException_whenEmailIsInvalid(String invalidEmail) {
             // arrange
             UserCommand.Create command = UserCommandFixture.Create.complete()
-                .email(invalidEmail)
-                .build();
+                .set(field(UserCommand.Create::email), invalidEmail)
+                .create();
 
             // act
             CoreException exception = assertThrows(CoreException.class, () -> User.of(command));
@@ -61,8 +62,8 @@ class UserTest {
         void throwsInvalidException_whenBirthIsInvalid(String invalidBirth) {
             // arrange
             UserCommand.Create command = UserCommandFixture.Create.complete()
-                .birth(invalidBirth)
-                .build();
+                .set(field(UserCommand.Create::birth), invalidBirth)
+                .create();
 
             // act
             CoreException exception = assertThrows(CoreException.class, () -> User.of(command));
