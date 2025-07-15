@@ -5,6 +5,7 @@ import com.loopers.domain.user.UserCommand;
 import com.loopers.domain.user.UserCommand.Create;
 import com.loopers.domain.user.UserService;
 import com.loopers.support.error.user.UserAlreadyExistsException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +19,12 @@ public class UserFacade {
         validateDuplicateUserId(command);
         User savedUser = userService.create(command);
         return UserInfo.from(savedUser);
+    }
+
+    public UserInfo getUser(Long id) {
+        return userService.findById(id)
+            .map(UserInfo::from)
+            .orElse(null);
     }
 
     private void validateDuplicateUserId(Create command) {

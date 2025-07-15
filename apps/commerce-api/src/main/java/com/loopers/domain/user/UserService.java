@@ -1,5 +1,6 @@
 package com.loopers.domain.user;
 
+import com.loopers.application.user.UserInfo;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,5 +21,10 @@ public class UserService {
     @Transactional(readOnly = true)
     public Optional<User> findByUserId(String userId) {
         return userRepository.findByUserId(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
     }
 }
