@@ -5,7 +5,7 @@ import com.loopers.domain.user.UserCommand;
 import com.loopers.domain.user.UserCommand.Create;
 import com.loopers.domain.user.UserService;
 import com.loopers.support.error.user.UserAlreadyExistsException;
-import java.util.Optional;
+import com.loopers.support.error.user.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +24,7 @@ public class UserFacade {
     public UserInfo getUser(Long id) {
         return userService.findById(id)
             .map(UserInfo::from)
-            .orElse(null);
+            .orElseThrow(UserNotFoundException::new);
     }
 
     private void validateDuplicateUserId(Create command) {

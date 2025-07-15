@@ -9,8 +9,9 @@ import static org.mockito.Mockito.verify;
 import com.loopers.domain.user.UserCommand;
 import com.loopers.domain.user.UserService;
 import com.loopers.domain.user.fixture.UserCommandFixture;
+import com.loopers.support.error.ErrorType;
 import com.loopers.support.error.user.UserAlreadyExistsException;
-import com.loopers.support.error.user.UserErrorType;
+import com.loopers.support.error.user.UserNotFoundException;
 import com.loopers.testcontainers.MySqlTestContainersConfig;
 import com.loopers.utils.DatabaseCleanUp;
 import org.instancio.Instancio;
@@ -63,7 +64,7 @@ public class UserFacadeIntegrationTest {
                 assertThrows(UserAlreadyExistsException.class, () -> userFacade.signUp(command));
 
             // assert
-            assertThat(exception.getErrorCode()).isEqualTo(UserErrorType.USER_ALREADY_EXISTS);
+            assertThat(exception.getErrorCode()).isEqualTo(ErrorType.CONFLICT);
         }
 
         @DisplayName("정상적인 회원 데이터인 경우, 회원가입에 성공한다.")
@@ -108,10 +109,11 @@ public class UserFacadeIntegrationTest {
             Long randomId = Instancio.create(Long.class);
 
             // act
-            UserInfo findUserInfo = userFacade.getUser(randomId);
+            UserNotFoundException exception =
+                assertThrows(UserNotFoundException.class, () -> userFacade.getUser(randomId));
 
             // assert
-            assertThat(findUserInfo).isNull();
+            assertThat(exception.getErrorCode()).isEqualTo(ErrorType.NOT_FOUND);
         }
     }
 }
