@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.regex.Pattern;
@@ -44,20 +45,27 @@ public class User extends BaseEntity {
     )
     private Gender gender;
 
+    @Column(
+        name = "point",
+        nullable = false
+    )
+    private Long point;
+
     protected User() {
 
     }
 
-    private User(String userId, String email, String birth, Gender gender) {
+    private User(String userId, String email, String birth, Gender gender, Long point) {
         this.userId = userId;
         this.email = email;
         this.birth = birth;
         this.gender = gender;
+        this.point = point;
     }
 
     public static User of(UserCommand.Create command) {
         validate(command);
-        return new User(command.userId(), command.email(), command.birth(), command.gender());
+        return new User(command.userId(), command.email(), command.birth(), command.gender(), 0L);
     }
 
     private static void validate(UserCommand.Create command) {

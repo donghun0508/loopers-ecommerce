@@ -29,6 +29,12 @@ public class UserFacade {
             .orElseThrow(UserNotFoundException::new);
     }
 
+    public UserPointInfo getUserPointInfo(Long id) {
+        return userService.findById(id)
+            .map(UserPointInfo::from)
+            .orElseThrow(UserNotFoundException::new);
+    }
+
     private void validateDuplicateUserId(Create command) {
         userService.findByUserId(command.userId())
             .ifPresent(user -> {
