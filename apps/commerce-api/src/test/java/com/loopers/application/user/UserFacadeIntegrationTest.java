@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 
+import com.loopers.domain.user.User;
 import com.loopers.domain.user.UserCommand;
 import com.loopers.domain.user.UserService;
 import com.loopers.domain.user.fixture.UserCommandFixture;
@@ -29,7 +30,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @Import(MySqlTestContainersConfig.class)
-public class UserFacadeIntegrationTest {
+class UserFacadeIntegrationTest {
 
     @Autowired
     private UserFacade userFacade;
@@ -102,9 +103,9 @@ public class UserFacadeIntegrationTest {
             assertThat(findUserInfo.gender()).isEqualTo(savedUserInfo.gender());
         }
 
-        @DisplayName("해당 ID 의 회원이 존재하지 않을 경우, null 이 반환된다.")
+        @DisplayName("해당 ID 의 회원이 존재하지 않을 경우, UserNotFoundException 예외를 던진다.")
         @Test
-        void returnsNull_whenUserNotFound() {
+        void throwsUserNotFoundException_whenUserNotFound() {
             // arrange
             Long randomId = Instancio.create(Long.class);
 
@@ -114,6 +115,21 @@ public class UserFacadeIntegrationTest {
 
             // assert
             assertThat(exception.getErrorCode()).isEqualTo(ErrorType.NOT_FOUND);
+        }
+
+        @DisplayName("해당 ID 의 회원이 존재할 경우, 보유 포인트가 반환된다.")
+        @Test
+        void returnUserPointInfo_whenValidIdIsProvided() {
+            // arrange
+            UserCommand.Create command = UserCommandFixture.Create.complete().create();
+            User savedUser = userService.create(command);
+
+            // act
+            UserPointInfo userPointInfo = userFacade.getUserPointInfo(savedUser.getId());
+
+            // assert
+            assertThat(userPointInfo).isNotNull();
+            assertThat(userPointInfo.point()).isEqualTo(savedUser.getPoint());
         }
     }
 }
