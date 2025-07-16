@@ -1,6 +1,7 @@
 package com.loopers.interfaces.api.user;
 
 import com.loopers.application.user.UserInfo;
+import com.loopers.application.user.UserPointInfo;
 import com.loopers.domain.user.User;
 import com.loopers.domain.user.User.Gender;
 import com.loopers.domain.user.UserCommand;
@@ -63,6 +64,20 @@ public class UserV1Dto {
             public static GenderResponse toResponse(Gender gender) {
                 return GenderResponse.valueOf(gender.name());
             }
+        }
+    }
+
+    @Builder(access = AccessLevel.PRIVATE)
+    public record UserPointResponse(
+        Long point
+    ) {
+
+        public static UserPointResponse from(UserPointInfo userPointInfo) {
+            Objects.requireNonNull(userPointInfo, "UserPointInfo 객체가 null입니다.");
+
+            return UserPointResponse.builder()
+                .point(userPointInfo.point())
+                .build();
         }
     }
 

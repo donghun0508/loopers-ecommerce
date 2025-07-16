@@ -7,6 +7,7 @@ import lombok.Builder;
 
 @Builder(access = AccessLevel.PRIVATE)
 public record UserPointInfo(
+    Long id,
     Long point
 ) {
 
@@ -14,6 +15,7 @@ public record UserPointInfo(
         Objects.requireNonNull(user, "User 객체가 null입니다.");
 
         return UserPointInfo.builder()
+            .id(user.getId())
             .point(user.getPoint())
             .build();
     }
