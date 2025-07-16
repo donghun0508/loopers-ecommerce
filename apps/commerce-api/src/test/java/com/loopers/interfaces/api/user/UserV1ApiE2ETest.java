@@ -6,13 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.loopers.interfaces.api.ApiResponse;
-import com.loopers.interfaces.api.example.ExampleV1Dto;
+import com.loopers.interfaces.api.user.UserV1Dto.UserPointResponse;
 import com.loopers.interfaces.api.user.UserV1Dto.UserResponse;
 import com.loopers.interfaces.api.user.fixture.UserV1DtoFixture;
 import com.loopers.testcontainers.MySqlTestContainersConfig;
 import com.loopers.utils.DatabaseCleanUp;
 import java.util.function.Function;
-import org.assertj.core.api.Assertions;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -103,7 +102,8 @@ class UserV1ApiE2ETest {
             String requestUrl = ENDPOINT_GET.apply(randomId);
 
             // act
-            ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>> responseType = new ParameterizedTypeReference<>() { };
+            ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>> responseType = new ParameterizedTypeReference<>() {
+            };
             ResponseEntity<ApiResponse<UserV1Dto.UserResponse>> response =
                 testRestTemplate.exchange(requestUrl, HttpMethod.GET, new HttpEntity<>(null), responseType);
 
@@ -122,7 +122,8 @@ class UserV1ApiE2ETest {
             String requestUrl = ENDPOINT_GET.apply(id);
 
             // act
-            ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>> responseType = new ParameterizedTypeReference<>() { };
+            ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>> responseType = new ParameterizedTypeReference<>() {
+            };
             ResponseEntity<ApiResponse<UserV1Dto.UserResponse>> response =
                 testRestTemplate.exchange(requestUrl, HttpMethod.GET, new HttpEntity<>(null), responseType);
 
@@ -134,6 +135,33 @@ class UserV1ApiE2ETest {
             );
 
             assertUserDataEquals(request, response.getBody().data());
+        }
+
+        @DisplayName("해당 ID 의 회원이 존재할 경우, 보유 포인트를 응답으로 반환한다.")
+        @Test
+        void returnsUserPointResponse_whenValidIdIsProvided() {
+            // arrange
+            UserV1Dto.SignUpRequest request = UserV1DtoFixture.SignUpRequest.complete().create();
+            Long id = signUpRequest(request).getBody().data().id();
+            String requestUrl = ENDPOINT_GET.apply(id) + "/point";
+
+            // act
+            ParameterizedTypeReference<ApiResponse<UserV1Dto.UserPointResponse>> responseType = new ParameterizedTypeReference<>() {
+            };
+            ResponseEntity<ApiResponse<UserV1Dto.UserPointResponse>> response =
+                testRestTemplate.exchange(requestUrl, HttpMethod.GET, new HttpEntity<>(null), responseType);
+
+            // assert
+            assertAll(
+                () -> assertTrue(response.getStatusCode().is2xxSuccessful()),
+                () -> assertThat(response.getBody()).isNotNull(),
+                () -> assertThat(response.getBody().data()).isNotNull()
+            );
+            var userPointResponse = response.getBody().data();
+            assertAll(
+                () -> assertThat(userPointResponse).isNotNull(),
+                () -> assertThat(userPointResponse.point()).isZero()
+            );
         }
     }
 
