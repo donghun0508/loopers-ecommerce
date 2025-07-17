@@ -8,6 +8,8 @@ import com.loopers.domain.user.User.Gender;
 import com.loopers.domain.user.fixture.UserCommandFixture;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
+import com.loopers.support.error.user.PointException;
+import com.loopers.support.error.user.UserErrorType;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -15,6 +17,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class UserTest {
 
@@ -87,6 +90,23 @@ class UserTest {
 
             // assert
             assertThat(exception.getErrorCode()).isEqualTo(ErrorType.INVALID_INPUT);
+        }
+
+        @DisplayName("0 이하의 정수로 포인트를 충전 시 실패한다.")
+        @ParameterizedTest
+        @NullSource
+        @ValueSource(longs = {0L, -1L, -100L, -999L})
+        void throwsPointException_whenAmountIsZeroOrBelow(Long invalidPoint) {
+            // arrange
+            UserCommand.Create command = UserCommandFixture.Create.complete().create();
+            User user = User.of(command);
+
+            // act
+            PointException exception = assertThrows(PointException.class,
+                () -> user.chargePoint(invalidPoint));
+
+            // assert
+            assertThat(exception.getErrorCode()).isEqualTo(UserErrorType.INVALID_CHARGE_AMOUNT);
         }
 
         static Stream<Arguments> invalidUserIds() {
