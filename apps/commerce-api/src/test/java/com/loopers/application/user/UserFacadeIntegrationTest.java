@@ -2,9 +2,7 @@ package com.loopers.application.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.field;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.verify;
 
 import com.loopers.domain.user.UserCommand;
 import com.loopers.domain.user.UserService;
@@ -73,10 +71,15 @@ class UserFacadeIntegrationTest {
             // arrange
             UserCommand.Create command = UserCommandFixture.Create.complete().create();
 
-            // act & assert
-            assertDoesNotThrow(() -> userFacade.signUp(command));
-            verify(userService).findByUserId(command.userId());
-            verify(userService).create(command);
+            // act
+            UserInfo userInfo = userFacade.signUp(command);
+
+            // assert
+            assertThat(userInfo).isNotNull();
+            assertThat(userInfo.userId()).isEqualTo(command.userId());
+            assertThat(userInfo.gender()).isEqualTo(command.gender());
+            assertThat(userInfo.birth()).isEqualTo(command.birth());
+            assertThat(userInfo.email()).isEqualTo(command.email());
         }
     }
 

@@ -1,7 +1,5 @@
 package com.loopers.application.user;
 
-import com.loopers.domain.point.PointCommand;
-import com.loopers.domain.point.PointService;
 import com.loopers.domain.user.User;
 import com.loopers.domain.user.UserCommand;
 import com.loopers.domain.user.UserCommand.Create;
@@ -17,13 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserFacade {
 
     private final UserService userService;
-    private final PointService pointService;
 
     @Transactional
     public UserInfo signUp(UserCommand.Create command) {
         validateDuplicateUserId(command);
         User savedUser = userService.create(command);
-        initializePoint(savedUser);
         return UserInfo.from(savedUser);
     }
 
@@ -38,10 +34,5 @@ public class UserFacade {
             .ifPresent(user -> {
                 throw new UserAlreadyExistsException();
             });
-    }
-
-    private void initializePoint(User user) {
-        PointCommand.Create command = PointCommand.Create.of(user.getId());
-        pointService.create(command);
     }
 }
