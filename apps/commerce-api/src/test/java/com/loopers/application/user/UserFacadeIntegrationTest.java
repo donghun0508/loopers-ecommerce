@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 
-import com.loopers.domain.user.User;
 import com.loopers.domain.user.UserCommand;
 import com.loopers.domain.user.UserService;
 import com.loopers.domain.user.fixture.UserCommandFixture;
@@ -93,11 +92,10 @@ class UserFacadeIntegrationTest {
             UserInfo savedUserInfo = userFacade.signUp(command);
 
             // act
-            UserInfo findUserInfo = userFacade.getUser(savedUserInfo.id());
+            UserInfo findUserInfo = userFacade.getUser(savedUserInfo.userId());
 
             // assert
             assertThat(findUserInfo).isNotNull();
-            assertThat(findUserInfo.id()).isEqualTo(savedUserInfo.id());
             assertThat(findUserInfo.userId()).isEqualTo(savedUserInfo.userId());
             assertThat(findUserInfo.birth()).isEqualTo(savedUserInfo.birth());
             assertThat(findUserInfo.gender()).isEqualTo(savedUserInfo.gender());
@@ -107,83 +105,14 @@ class UserFacadeIntegrationTest {
         @Test
         void throwsUserNotFoundException_whenGetUserWithNonExistentId() {
             // arrange
-            Long randomId = Instancio.create(Long.class);
+            String randomUserId = Instancio.create(String.class);
 
             // act
             UserNotFoundException exception =
-                assertThrows(UserNotFoundException.class, () -> userFacade.getUser(randomId));
+                assertThrows(UserNotFoundException.class, () -> userFacade.getUser(randomUserId));
 
             // assert
             assertThat(exception.getErrorCode()).isEqualTo(ErrorType.NOT_FOUND);
-        }
-    }
-
-    @DisplayName("포인트 조회 시, ")
-    @Nested
-    class GetPoint {
-        @DisplayName("해당 ID 의 회원이 존재할 경우, 보유 포인트가 반환된다.")
-        @Test
-        void returnUserPointInfo_whenValidIdIsProvided() {
-            // arrange
-            UserCommand.Create command = UserCommandFixture.Create.complete().create();
-            User savedUser = userService.create(command);
-
-            // act
-            UserPointInfo userPointInfo = userFacade.getUserPointInfo(savedUser.getId());
-
-            // assert
-            assertThat(userPointInfo).isNotNull();
-            assertThat(userPointInfo.point()).isEqualTo(savedUser.getPoint());
-        }
-
-        @DisplayName("해당 ID 의 회원이 존재하지 않을 경우, UserNotFoundException 예외를 반환된다.")
-        @Test
-        void throwsUserNotFoundException_whenGetUserPointInfoWithNonExistentId() {
-            // arrange
-            Long randomId = Instancio.create(Long.class);
-
-            // act
-            UserNotFoundException exception =
-                assertThrows(UserNotFoundException.class, () -> userFacade.getUserPointInfo(randomId));
-
-            // assert
-            assertThat(exception.getErrorCode()).isEqualTo(ErrorType.NOT_FOUND);
-        }
-    }
-
-    @DisplayName("포인트 충전 시, ")
-    @Nested
-    class ChargePoint {
-
-        @DisplayName("해당 ID 의 회원이 존재하지 않을 경우, UserNotFoundException 예외를 반환된다.")
-        @Test
-        void throwsUserNotFoundException_whenChargePointWithNonExistentId() {
-            // arrange
-            Long randomId = Instancio.create(Long.class);
-            Long amount = 100L;
-
-            // act
-            UserNotFoundException exception =
-                assertThrows(UserNotFoundException.class, () -> userFacade.chargePoint(randomId, amount));
-
-            // assert
-            assertThat(exception.getErrorCode()).isEqualTo(ErrorType.NOT_FOUND);
-        }
-
-        @DisplayName("해당 ID 의 회원이 존재할 경우, 총 보유 포인트가 반환된다.")
-        @Test
-        void returnUserPointInfo_whenValidIdIsProvided() {
-            // arrange
-            UserCommand.Create command = UserCommandFixture.Create.complete().create();
-            User savedUser = userService.create(command);
-            Long chargeAmount = 1000L;
-
-            // act
-            UserPointInfo userPointInfo = userFacade.chargePoint(savedUser.getId(), chargeAmount);
-
-            // assert
-            assertThat(userPointInfo).isNotNull();
-            assertThat(userPointInfo.point()).isEqualTo(chargeAmount);
         }
     }
 }
