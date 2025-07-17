@@ -16,11 +16,17 @@ public class UserFacade {
 
     private final UserService userService;
 
-    @Transactional
     public UserInfo signUp(UserCommand.Create command) {
         validateDuplicateUserId(command);
         User savedUser = userService.create(command);
         return UserInfo.from(savedUser);
+    }
+
+    @Transactional
+    public UserPointInfo chargePoint(String userId, Long amount) {
+        User user = userService.findByUserId(userId).orElseThrow(UserNotFoundException::new);
+        user.chargePoint(amount);
+        return UserPointInfo.from(user);
     }
 
     public UserInfo getUser(String userId) {
