@@ -5,6 +5,7 @@ import com.loopers.application.user.UserInfo;
 import com.loopers.application.user.UserPointInfo;
 import com.loopers.domain.user.UserCommand;
 import com.loopers.interfaces.api.ApiResponse;
+import com.loopers.interfaces.api.user.UserV1Dto.ChargePointRequest;
 import com.loopers.interfaces.api.user.UserV1Dto.SignUpRequest;
 import com.loopers.interfaces.api.user.UserV1Dto.UserPointResponse;
 import com.loopers.interfaces.api.user.UserV1Dto.UserResponse;
@@ -30,6 +31,13 @@ public class UserV1Controller implements UserV1ApiSpec {
         UserCommand.Create command = request.toCommand();
         UserInfo userInfo = userFacade.signUp(command);
         return ApiResponse.success(UserResponse.from(userInfo));
+    }
+
+    @PostMapping("/{id}/point")
+    @Override
+    public ApiResponse<UserPointResponse> chargePoint(@PathVariable Long id, @RequestBody ChargePointRequest request) {
+        UserPointInfo userPointInfo = userFacade.chargePoint(id, request.amount());
+        return ApiResponse.success(UserPointResponse.from(userPointInfo));
     }
 
     @GetMapping("/{id}")

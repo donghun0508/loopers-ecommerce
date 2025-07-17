@@ -18,6 +18,17 @@ public interface UserV1ApiSpec {
     );
 
     @Operation(
+        summary = "포인트 충전",
+        description = "사용자의 포인트를 충전합니다."
+    )
+    ApiResponse<UserV1Dto.UserPointResponse> chargePoint(
+        @Schema(name = "회원 ID", description = "충전할 회원의 ID")
+        Long id,
+        @Schema(name = "포인트 충전 요청", description = "충전할 포인트 정보")
+        UserV1Dto.ChargePointRequest request
+    );
+
+    @Operation(
         summary = "회원 조회",
         description = "ID로 회원 정보를 조회합니다."
     )

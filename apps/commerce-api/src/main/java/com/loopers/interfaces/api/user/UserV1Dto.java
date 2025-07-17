@@ -37,6 +37,11 @@ public class UserV1Dto {
         }
     }
 
+    @Builder
+    public record ChargePointRequest(Long amount) {
+
+    }
+
     @Builder(access = AccessLevel.PRIVATE)
     public record UserResponse(
         Long id,
