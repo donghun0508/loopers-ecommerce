@@ -3,6 +3,8 @@ package com.loopers.domain.user;
 import com.loopers.domain.BaseEntity;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
+import com.loopers.support.error.user.PointException;
+import com.loopers.support.error.user.UserErrorType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -67,15 +69,18 @@ public class User extends BaseEntity {
         return new User(command.userId(), command.email(), command.birth(), command.gender(), 0L);
     }
 
+    public void chargePoint(Long amount) {
+        if(amount == null || amount <= 0) {
+            throw new PointException(UserErrorType.INVALID_CHARGE_AMOUNT);
+        }
+        this.point += amount;
+    }
+
     private static void validate(UserCommand.Create command) {
         Validator.userId(command.userId());
         Validator.email(command.email());
         Validator.birth(command.birth());
         Validator.gender(command.gender());
-    }
-
-    public enum Gender {
-        M, F
     }
 
     private static class Validator {
@@ -134,5 +139,9 @@ public class User extends BaseEntity {
                 throw new CoreException(ErrorType.INVALID_INPUT);
             }
         }
+    }
+
+    public enum Gender {
+        M, F;
     }
 }
