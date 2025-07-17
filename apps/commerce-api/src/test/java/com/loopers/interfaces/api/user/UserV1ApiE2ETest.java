@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.loopers.interfaces.api.ApiResponse;
-import com.loopers.interfaces.api.user.UserV1Dto.UserPointResponse;
 import com.loopers.interfaces.api.user.UserV1Dto.UserResponse;
 import com.loopers.interfaces.api.user.fixture.UserV1DtoFixture;
 import com.loopers.testcontainers.MySqlTestContainersConfig;
@@ -23,6 +22,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
@@ -60,7 +60,7 @@ class UserV1ApiE2ETest {
         @Test
         void returnsUserResponse_whenValidUserData() {
             // arrange
-            UserV1Dto.SignUpRequest request = UserV1DtoFixture.SignUpRequest.CACHE_FIXTURE;
+            UserV1Dto.SignUpRequest request = UserV1DtoFixture.SignUpRequest.complete().create();
 
             // act
             var response = signUpRequest(request);
@@ -120,12 +120,14 @@ class UserV1ApiE2ETest {
             UserV1Dto.SignUpRequest request = UserV1DtoFixture.SignUpRequest.complete().create();
             Long id = signUpRequest(request).getBody().data().id();
             String requestUrl = ENDPOINT_GET.apply(id);
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("X_USER_ID", String.valueOf(id));
 
             // act
             ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>> responseType = new ParameterizedTypeReference<>() {
             };
             ResponseEntity<ApiResponse<UserV1Dto.UserResponse>> response =
-                testRestTemplate.exchange(requestUrl, HttpMethod.GET, new HttpEntity<>(null), responseType);
+                testRestTemplate.exchange(requestUrl, HttpMethod.GET, new HttpEntity<>(headers), responseType);
 
             // assert
             assertAll(
@@ -144,12 +146,14 @@ class UserV1ApiE2ETest {
             UserV1Dto.SignUpRequest request = UserV1DtoFixture.SignUpRequest.complete().create();
             Long id = signUpRequest(request).getBody().data().id();
             String requestUrl = ENDPOINT_GET.apply(id) + "/point";
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("X_USER_ID", String.valueOf(id));
 
             // act
             ParameterizedTypeReference<ApiResponse<UserV1Dto.UserPointResponse>> responseType = new ParameterizedTypeReference<>() {
             };
             ResponseEntity<ApiResponse<UserV1Dto.UserPointResponse>> response =
-                testRestTemplate.exchange(requestUrl, HttpMethod.GET, new HttpEntity<>(null), responseType);
+                testRestTemplate.exchange(requestUrl, HttpMethod.GET, new HttpEntity<>(headers), responseType);
 
             // assert
             assertAll(
@@ -161,6 +165,26 @@ class UserV1ApiE2ETest {
             assertAll(
                 () -> assertThat(userPointResponse).isNotNull(),
                 () -> assertThat(userPointResponse.point()).isZero()
+            );
+        }
+
+        @DisplayName("`X-USER-ID` 헤더가 없을 경우, `400 Bad Request` 응답을 반환한다.")
+        @Test
+        void returnsBadRequest_when_X_USER_ID_NotIsMissing() {
+            // arrange
+            UserV1Dto.SignUpRequest request = UserV1DtoFixture.SignUpRequest.complete().create();
+            Long id = signUpRequest(request).getBody().data().id();
+            String requestUrl = ENDPOINT_GET.apply(id) + "/point";
+
+            // act
+            ParameterizedTypeReference<ApiResponse<UserV1Dto.UserPointResponse>> responseType = new ParameterizedTypeReference<>() {
+            };
+            ResponseEntity<ApiResponse<UserV1Dto.UserPointResponse>> response =
+                testRestTemplate.exchange(requestUrl, HttpMethod.GET, new HttpEntity<>(null), responseType);
+
+            // assert
+            assertAll(
+                () -> assertTrue(response.getStatusCode().is4xxClientError())
             );
         }
     }
