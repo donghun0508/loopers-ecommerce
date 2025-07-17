@@ -117,5 +117,20 @@ class UserFacadeIntegrationTest {
             // assert
             assertThat(exception.getErrorCode()).isEqualTo(ErrorType.NOT_FOUND);
         }
+
+        @DisplayName("해당 ID 의 회원이 존재할 경우, 보유 포인트가 반환된다.")
+        @Test
+        void returnsUserPoint_whenValidIdIsProvided() {
+            // arrange
+            UserCommand.Create command = UserCommandFixture.Create.complete().create();
+            UserInfo savedUserInfo = userFacade.signUp(command);
+
+            // act
+            UserPointInfo findUserInfo = userFacade.getUserPoint(savedUserInfo.userId());
+
+            // assert
+            assertThat(findUserInfo).isNotNull();
+            assertThat(findUserInfo.point()).isZero();
+        }
     }
 }
