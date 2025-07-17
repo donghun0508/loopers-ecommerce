@@ -57,7 +57,7 @@ public class UserServiceTest {
             User savedUser = userService.create(command);
 
             // act
-            Optional<User> optionalUser = userService.findById(savedUser.getId());
+            Optional<User> optionalUser = userService.findByUserId(savedUser.getUserId());
 
             // assert
             assertThat(optionalUser).isPresent();
@@ -69,10 +69,10 @@ public class UserServiceTest {
         @Test
         void returnNull_whenInValidIdIsProvided() {
             // arrange
-            Long randomId = Instancio.create(Long.class);
+            String randomUserId = Instancio.create(String.class);
 
             // act
-            Optional<User> optionalUser = userService.findById(randomId);
+            Optional<User> optionalUser = userService.findByUserId(randomUserId);
 
             // assert
             assertThat(optionalUser).isNotPresent();
