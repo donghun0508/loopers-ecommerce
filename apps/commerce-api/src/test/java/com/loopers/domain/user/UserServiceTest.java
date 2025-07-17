@@ -5,9 +5,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
 import com.loopers.domain.user.fixture.UserCommandFixture;
+import java.util.Optional;
+import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -30,7 +33,7 @@ public class UserServiceTest {
         @RepeatedTest(10)
         void returnsUser_whenCreateUser() {
             // arrange
-            UserCommand.Create command = UserCommandFixture.Create.CACHE_FIXTURE;
+            UserCommand.Create command = UserCommandFixture.Create.complete().create();
             User expectedUser = User.of(command);
             doReturn(expectedUser).when(userRepository).save(any(User.class));
 
@@ -38,13 +41,49 @@ public class UserServiceTest {
             User savedUser = userService.create(command);
 
             // assert
-            assertThat(savedUser).isNotNull();
-            assertThat(savedUser.getId()).isEqualTo(expectedUser.getId());
-            assertThat(savedUser.getUserId()).isEqualTo(expectedUser.getUserId());
-            assertThat(savedUser.getBirth()).isEqualTo(expectedUser.getBirth());
-            assertThat(savedUser.getEmail()).isEqualTo(expectedUser.getEmail());
-            assertThat(savedUser.getGender()).isEqualTo(expectedUser.getGender());
-
+            assertUserEquals(savedUser, expectedUser);
         }
+    }
+
+    @DisplayName("회원 서비스에서, ")
+    @Nested
+    class Read {
+
+        @DisplayName("해당 ID 의 회원이 존재할 경우, 회원 정보가 반환된다.")
+        @Test
+        void returnsUser_whenValidIdIsProvided() {
+            // arrange
+            UserCommand.Create command = UserCommandFixture.Create.complete().create();
+            User savedUser = userService.create(command);
+
+            // act
+            Optional<User> optionalUser = userService.findById(savedUser.getId());
+
+            // assert
+            assertThat(optionalUser).isPresent();
+            User foundUser = optionalUser.get();
+            assertUserEquals(foundUser, savedUser);
+        }
+
+        @DisplayName("해당 ID 의 회원이 존재하지 않을 경우, null 이 반환된다.")
+        @Test
+        void returnNull_whenInValidIdIsProvided() {
+            // arrange
+            Long randomId = Instancio.create(Long.class);
+
+            // act
+            Optional<User> optionalUser = userService.findById(randomId);
+
+            // assert
+            assertThat(optionalUser).isNotPresent();
+        }
+    }
+
+    private void assertUserEquals(User actual, User expected) {
+        assertThat(actual.getId()).isEqualTo(expected.getId());
+        assertThat(actual.getUserId()).isEqualTo(expected.getUserId());
+        assertThat(actual.getBirth()).isEqualTo(expected.getBirth());
+        assertThat(actual.getEmail()).isEqualTo(expected.getEmail());
+        assertThat(actual.getGender()).isEqualTo(expected.getGender());
     }
 }
