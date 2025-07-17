@@ -1,7 +1,6 @@
 package com.loopers.interfaces.api.user;
 
 import com.loopers.application.user.UserInfo;
-import com.loopers.application.user.UserPointInfo;
 import com.loopers.domain.user.User;
 import com.loopers.domain.user.User.Gender;
 import com.loopers.domain.user.UserCommand;
@@ -37,14 +36,8 @@ public class UserV1Dto {
         }
     }
 
-    @Builder
-    public record ChargePointRequest(Long amount) {
-
-    }
-
     @Builder(access = AccessLevel.PRIVATE)
     public record UserResponse(
-        Long id,
         String userId,
         String email,
         String birth,
@@ -54,7 +47,6 @@ public class UserV1Dto {
             Objects.requireNonNull(userInfo, "UserInfo 객체가 null입니다.");
 
             return UserResponse.builder()
-                .id(userInfo.id())
                 .userId(userInfo.userId())
                 .email(userInfo.email())
                 .birth(userInfo.birth())
@@ -63,27 +55,11 @@ public class UserV1Dto {
         }
 
         public enum GenderResponse {
-            M, F
-            ;
+            M, F;
 
             public static GenderResponse toResponse(Gender gender) {
                 return GenderResponse.valueOf(gender.name());
             }
         }
     }
-
-    @Builder(access = AccessLevel.PRIVATE)
-    public record UserPointResponse(
-        Long point
-    ) {
-
-        public static UserPointResponse from(UserPointInfo userPointInfo) {
-            Objects.requireNonNull(userPointInfo, "UserPointInfo 객체가 null입니다.");
-
-            return UserPointResponse.builder()
-                .point(userPointInfo.point())
-                .build();
-        }
-    }
-
 }
