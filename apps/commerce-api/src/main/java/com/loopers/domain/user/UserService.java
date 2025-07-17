@@ -21,9 +21,4 @@ public class UserService {
     public Optional<User> findByUserId(String userId) {
         return userRepository.findByUserId(userId);
     }
-
-    @Transactional(readOnly = true)
-    public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
-    }
 }
