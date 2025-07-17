@@ -8,7 +8,6 @@ import com.loopers.support.error.user.UserAlreadyExistsException;
 import com.loopers.support.error.user.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Component
@@ -22,22 +21,9 @@ public class UserFacade {
         return UserInfo.from(savedUser);
     }
 
-    @Transactional
-    public UserPointInfo chargePoint(Long id, Long amount) {
-        User user = userService.findById(id).orElseThrow(UserNotFoundException::new);
-        user.chargePoint(amount);
-        return UserPointInfo.from(user);
-    }
-
-    public UserInfo getUser(Long id) {
-        return userService.findById(id)
+    public UserInfo getUser(String userId) {
+        return userService.findByUserId(userId)
             .map(UserInfo::from)
-            .orElseThrow(UserNotFoundException::new);
-    }
-
-    public UserPointInfo getUserPointInfo(Long id) {
-        return userService.findById(id)
-            .map(UserPointInfo::from)
             .orElseThrow(UserNotFoundException::new);
     }
 
