@@ -12,20 +12,6 @@ public class UserCommandFixture {
 
     public static class Create {
 
-        public static final UserCommand.Create CACHE_FIXTURE =
-            Instancio.of(UserCommand.Create.class)
-                .generate(field(UserCommand.Create::userId), gen -> gen.string()
-                    .length(5, 10)
-                    .alphaNumeric()
-                )
-                .generate(field(UserCommand.Create::email), gen -> gen.net().email())
-                .generate(field(UserCommand.Create::birth), gen -> gen.temporal()
-                    .localDate()
-                    .range(LocalDate.of(1950, 1, 1), LocalDate.of(2005, 12, 31))
-                    .as(date -> date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                )
-                .create();
-
         public static InstancioApi<UserCommand.Create> complete() {
             return Instancio.of(UserCommand.Create.class)
                 .generate(field(UserCommand.Create::userId), gen -> gen.string()
