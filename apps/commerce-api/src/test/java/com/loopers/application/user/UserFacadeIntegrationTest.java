@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.loopers.domain.user.User;
 import com.loopers.domain.user.UserCommand;
 import com.loopers.domain.user.UserService;
 import com.loopers.domain.user.fixture.UserCommandFixture;
@@ -131,6 +132,42 @@ class UserFacadeIntegrationTest {
             // assert
             assertThat(findUserInfo).isNotNull();
             assertThat(findUserInfo.point()).isZero();
+        }
+    }
+
+    @DisplayName("포인트 충전 시, ")
+    @Nested
+    class PointCharge {
+
+        @DisplayName("해당 ID 의 회원이 존재하지 않을 경우, UserNotFoundException 예외를 반환된다.")
+        @Test
+        void throwsUserNotFoundException_whenChargePointWithNonExistentId() {
+            // arrange
+            String randomId = Instancio.create(String.class);
+            Long amount = 100L;
+
+            // act
+            UserNotFoundException exception =
+                assertThrows(UserNotFoundException.class, () -> userFacade.chargePoint(randomId, amount));
+
+            // assert
+            assertThat(exception.getErrorCode()).isEqualTo(ErrorType.NOT_FOUND);
+        }
+
+        @DisplayName("해당 ID 의 회원이 존재할 경우, 총 보유 포인트가 반환된다.")
+        @Test
+        void returnUserPointInfo_whenValidIdIsProvided() {
+            // arrange
+            UserCommand.Create command = UserCommandFixture.Create.complete().create();
+            User savedUser = userService.create(command);
+            Long chargeAmount = 1000L;
+
+            // act
+            UserPointInfo userPointInfo = userFacade.chargePoint(savedUser.getUserId(), chargeAmount);
+
+            // assert
+            assertThat(userPointInfo).isNotNull();
+            assertThat(userPointInfo.point()).isEqualTo(chargeAmount);
         }
     }
 }
