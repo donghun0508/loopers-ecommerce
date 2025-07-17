@@ -9,8 +9,6 @@ import com.loopers.interfaces.api.ApiResponse;
 import com.loopers.interfaces.api.user.fixture.UserV1DtoFixture;
 import com.loopers.testcontainers.MySqlTestContainersConfig;
 import com.loopers.utils.DatabaseCleanUp;
-import java.util.function.Function;
-import org.instancio.Instancio;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -32,7 +30,6 @@ import org.springframework.test.context.ActiveProfiles;
 class UserV1ApiE2ETest {
 
     private static final String ENDPOINT = "/api/v1/users";
-    private static final Function<Long, String> ENDPOINT_GET = id -> "/api/v1/users/" + id;
 
     private final TestRestTemplate testRestTemplate;
     private final DatabaseCleanUp databaseCleanUp;
@@ -73,7 +70,6 @@ class UserV1ApiE2ETest {
                 () -> assertThat(response.getBody().data()).isNotNull(),
                 () -> {
                     var actual = response.getBody().data();
-                    assertThat(actual.id()).isNotNull();
                     assertThat(actual.userId()).isEqualTo(request.userId());
                     assertThat(actual.email()).isEqualTo(request.email());
                     assertThat(actual.birth()).isEqualTo(request.birth());
@@ -97,72 +93,6 @@ class UserV1ApiE2ETest {
             // assert
             assertAll(() -> assertTrue(response.getStatusCode().is4xxClientError()));
         }
-
-        @DisplayName("존재하는 유저가 1000원을 충전할 경우, 충전된 보유 총량을 응답으로 반환한다.")
-        @Test
-        void returnUserPointResponse_whenValidUserCharges1000Won() {
-            // arrange
-            var signUpRequest = UserV1DtoFixture.SignUpRequest.complete().create();
-            var userId = testRestTemplate.exchange(
-                ENDPOINT,
-                HttpMethod.POST,
-                new HttpEntity<>(signUpRequest),
-                new ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>>() {}
-            ).getBody().data().id();
-
-            var chargeAmount = 1000L;
-            var chargePointRequest = UserV1Dto.ChargePointRequest.builder()
-                .amount(chargeAmount)
-                .build();
-
-            var headers = new HttpHeaders();
-            headers.set("X_USER_ID", String.valueOf(userId));
-
-            // act
-            var response = testRestTemplate.exchange(
-                ENDPOINT + "/{id}/point",
-                HttpMethod.POST,
-                new HttpEntity<>(chargePointRequest, headers),
-                new ParameterizedTypeReference<ApiResponse<UserV1Dto.UserPointResponse>>() {},
-                userId
-            );
-
-            // assert
-            assertAll(
-                () -> assertTrue(response.getStatusCode().is2xxSuccessful()),
-                () -> assertThat(response.getBody()).isNotNull(),
-                () -> assertThat(response.getBody().data()).isNotNull(),
-                () -> assertThat(response.getBody().data().point()).isEqualTo(chargeAmount)
-            );
-        }
-
-        @DisplayName("존재하지 않는 유저로 요청할 경우, `404 Not Found` 응답을 반환한다.")
-        @Test
-        void returns404NotFound_whenUserDoesNotExist() {
-            // arrange
-            var id = 1L;
-            var chargeAmount = 1000L;
-            var chargePointRequest = UserV1Dto.ChargePointRequest.builder()
-                .amount(chargeAmount)
-                .build();
-
-            var headers = new HttpHeaders();
-            headers.set("X_USER_ID", String.valueOf(id));
-
-            // act
-            var response = testRestTemplate.exchange(
-                ENDPOINT + "/{id}/point",
-                HttpMethod.POST,
-                new HttpEntity<>(chargePointRequest, headers),
-                new ParameterizedTypeReference<ApiResponse<UserV1Dto.UserPointResponse>>() {},
-                id
-            );
-
-            // assert
-            assertAll(
-                () -> assertTrue(response.getStatusCode().is4xxClientError())
-            );
-        }
     }
 
     @DisplayName("GET /api/v1/users/{id}")
@@ -173,14 +103,15 @@ class UserV1ApiE2ETest {
         @Test
         void returns404NotFound_whenUserDoesNotExist() {
             // arrange
-            Long randomId = Instancio.create(Long.class);
-            String requestUrl = ENDPOINT_GET.apply(randomId);
+            String userId = "12345";
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("X-USER-ID", userId);
 
             // act
             ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>> responseType = new ParameterizedTypeReference<>() {
             };
             ResponseEntity<ApiResponse<UserV1Dto.UserResponse>> response =
-                testRestTemplate.exchange(requestUrl, HttpMethod.GET, new HttpEntity<>(null), responseType);
+                testRestTemplate.exchange(ENDPOINT + "/me", HttpMethod.GET, new HttpEntity<>(headers), responseType);
 
             // assert
             assertAll(
@@ -193,21 +124,20 @@ class UserV1ApiE2ETest {
         void returnsUserResponse_whenValidIdIsProvided() {
             // arrange
             UserV1Dto.SignUpRequest request = UserV1DtoFixture.SignUpRequest.complete().create();
-            Long id = testRestTemplate.exchange(ENDPOINT, HttpMethod.POST, new HttpEntity<>(request), new ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>>() {
+            String userId = testRestTemplate.exchange(ENDPOINT, HttpMethod.POST, new HttpEntity<>(request), new ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>>() {
                 })
                 .getBody()
                 .data()
-                .id();
+                .userId();
 
-            String requestUrl = ENDPOINT_GET.apply(id);
             HttpHeaders headers = new HttpHeaders();
-            headers.set("X_USER_ID", String.valueOf(id));
+            headers.set("X-USER-ID", String.valueOf(userId));
 
             // act
             ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>> responseType = new ParameterizedTypeReference<>() {
             };
             ResponseEntity<ApiResponse<UserV1Dto.UserResponse>> response =
-                testRestTemplate.exchange(requestUrl, HttpMethod.GET, new HttpEntity<>(headers), responseType);
+                testRestTemplate.exchange(ENDPOINT + "/me", HttpMethod.GET, new HttpEntity<>(headers), responseType);
 
             // assert
             assertAll(
@@ -216,71 +146,11 @@ class UserV1ApiE2ETest {
                 () -> assertThat(response.getBody().data()).isNotNull(),
                 () -> {
                     var actual = response.getBody().data();
-                    assertThat(actual.id()).isNotNull();
                     assertThat(actual.userId()).isEqualTo(request.userId());
                     assertThat(actual.email()).isEqualTo(request.email());
                     assertThat(actual.birth()).isEqualTo(request.birth());
                     assertThat(actual.gender().name()).isEqualTo(request.gender().name());
                 }
-            );
-        }
-
-        @DisplayName("해당 ID 의 회원이 존재할 경우, 보유 포인트를 응답으로 반환한다.")
-        @Test
-        void returnsUserPointResponse_whenValidIdIsProvided() {
-            // arrange
-            UserV1Dto.SignUpRequest request = UserV1DtoFixture.SignUpRequest.complete().create();
-            Long id = testRestTemplate.exchange(ENDPOINT, HttpMethod.POST, new HttpEntity<>(request), new ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>>() {
-                })
-                .getBody()
-                .data()
-                .id();
-
-            String requestUrl = ENDPOINT_GET.apply(id) + "/point";
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("X_USER_ID", String.valueOf(id));
-
-            // act
-            ParameterizedTypeReference<ApiResponse<UserV1Dto.UserPointResponse>> responseType = new ParameterizedTypeReference<>() {
-            };
-            ResponseEntity<ApiResponse<UserV1Dto.UserPointResponse>> response =
-                testRestTemplate.exchange(requestUrl, HttpMethod.GET, new HttpEntity<>(headers), responseType);
-
-            // assert
-            assertAll(
-                () -> assertTrue(response.getStatusCode().is2xxSuccessful()),
-                () -> assertThat(response.getBody()).isNotNull(),
-                () -> assertThat(response.getBody().data()).isNotNull()
-            );
-            var userPointResponse = response.getBody().data();
-            assertAll(
-                () -> assertThat(userPointResponse).isNotNull(),
-                () -> assertThat(userPointResponse.point()).isZero()
-            );
-        }
-
-        @DisplayName("`X-USER-ID` 헤더가 없을 경우, `400 Bad Request` 응답을 반환한다.")
-        @Test
-        void returnsBadRequest_when_X_USER_ID_NotIsMissing() {
-            // arrange
-            UserV1Dto.SignUpRequest request = UserV1DtoFixture.SignUpRequest.complete().create();
-            Long id = testRestTemplate.exchange(ENDPOINT, HttpMethod.POST, new HttpEntity<>(request), new ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>>() {
-                })
-                .getBody()
-                .data()
-                .id();
-
-            String requestUrl = ENDPOINT_GET.apply(id) + "/point";
-
-            // act
-            ParameterizedTypeReference<ApiResponse<UserV1Dto.UserPointResponse>> responseType = new ParameterizedTypeReference<>() {
-            };
-            ResponseEntity<ApiResponse<UserV1Dto.UserPointResponse>> response =
-                testRestTemplate.exchange(requestUrl, HttpMethod.GET, new HttpEntity<>(null), responseType);
-
-            // assert
-            assertAll(
-                () -> assertTrue(response.getStatusCode().is4xxClientError())
             );
         }
     }
