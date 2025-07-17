@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.loopers.interfaces.api.ApiResponse;
-import com.loopers.interfaces.api.user.UserV1Dto.UserResponse;
 import com.loopers.interfaces.api.user.fixture.UserV1DtoFixture;
 import com.loopers.testcontainers.MySqlTestContainersConfig;
 import com.loopers.utils.DatabaseCleanUp;
@@ -63,7 +62,8 @@ class UserV1ApiE2ETest {
             UserV1Dto.SignUpRequest request = UserV1DtoFixture.SignUpRequest.complete().create();
 
             // act
-            ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>> responseType = new ParameterizedTypeReference<>() {};
+            ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>> responseType = new ParameterizedTypeReference<>() {
+            };
             var response = testRestTemplate.exchange(ENDPOINT, HttpMethod.POST, new HttpEntity<>(request), responseType);
 
             // assert
@@ -90,11 +90,78 @@ class UserV1ApiE2ETest {
                 .create();
 
             // act
-            ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>> responseType = new ParameterizedTypeReference<>() {};
+            ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>> responseType = new ParameterizedTypeReference<>() {
+            };
             var response = testRestTemplate.exchange(ENDPOINT, HttpMethod.POST, new HttpEntity<>(request), responseType);
 
             // assert
             assertAll(() -> assertTrue(response.getStatusCode().is4xxClientError()));
+        }
+
+        @DisplayName("존재하는 유저가 1000원을 충전할 경우, 충전된 보유 총량을 응답으로 반환한다.")
+        @Test
+        void returnUserPointResponse_whenValidUserCharges1000Won() {
+            // arrange
+            var signUpRequest = UserV1DtoFixture.SignUpRequest.complete().create();
+            var userId = testRestTemplate.exchange(
+                ENDPOINT,
+                HttpMethod.POST,
+                new HttpEntity<>(signUpRequest),
+                new ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>>() {}
+            ).getBody().data().id();
+
+            var chargeAmount = 1000L;
+            var chargePointRequest = UserV1Dto.ChargePointRequest.builder()
+                .amount(chargeAmount)
+                .build();
+
+            var headers = new HttpHeaders();
+            headers.set("X_USER_ID", String.valueOf(userId));
+
+            // act
+            var response = testRestTemplate.exchange(
+                ENDPOINT + "/{id}/point",
+                HttpMethod.POST,
+                new HttpEntity<>(chargePointRequest, headers),
+                new ParameterizedTypeReference<ApiResponse<UserV1Dto.UserPointResponse>>() {},
+                userId
+            );
+
+            // assert
+            assertAll(
+                () -> assertTrue(response.getStatusCode().is2xxSuccessful()),
+                () -> assertThat(response.getBody()).isNotNull(),
+                () -> assertThat(response.getBody().data()).isNotNull(),
+                () -> assertThat(response.getBody().data().point()).isEqualTo(chargeAmount)
+            );
+        }
+
+        @DisplayName("존재하지 않는 유저로 요청할 경우, `404 Not Found` 응답을 반환한다.")
+        @Test
+        void returns404NotFound_whenUserDoesNotExist() {
+            // arrange
+            var id = 1L;
+            var chargeAmount = 1000L;
+            var chargePointRequest = UserV1Dto.ChargePointRequest.builder()
+                .amount(chargeAmount)
+                .build();
+
+            var headers = new HttpHeaders();
+            headers.set("X_USER_ID", String.valueOf(id));
+
+            // act
+            var response = testRestTemplate.exchange(
+                ENDPOINT + "/{id}/point",
+                HttpMethod.POST,
+                new HttpEntity<>(chargePointRequest, headers),
+                new ParameterizedTypeReference<ApiResponse<UserV1Dto.UserPointResponse>>() {},
+                id
+            );
+
+            // assert
+            assertAll(
+                () -> assertTrue(response.getStatusCode().is4xxClientError())
+            );
         }
     }
 
@@ -126,7 +193,8 @@ class UserV1ApiE2ETest {
         void returnsUserResponse_whenValidIdIsProvided() {
             // arrange
             UserV1Dto.SignUpRequest request = UserV1DtoFixture.SignUpRequest.complete().create();
-            Long id = testRestTemplate.exchange(ENDPOINT, HttpMethod.POST, new HttpEntity<>(request), new ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>>() {})
+            Long id = testRestTemplate.exchange(ENDPOINT, HttpMethod.POST, new HttpEntity<>(request), new ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>>() {
+                })
                 .getBody()
                 .data()
                 .id();
@@ -162,7 +230,8 @@ class UserV1ApiE2ETest {
         void returnsUserPointResponse_whenValidIdIsProvided() {
             // arrange
             UserV1Dto.SignUpRequest request = UserV1DtoFixture.SignUpRequest.complete().create();
-            Long id = testRestTemplate.exchange(ENDPOINT, HttpMethod.POST, new HttpEntity<>(request), new ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>>() {})
+            Long id = testRestTemplate.exchange(ENDPOINT, HttpMethod.POST, new HttpEntity<>(request), new ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>>() {
+                })
                 .getBody()
                 .data()
                 .id();
@@ -195,7 +264,8 @@ class UserV1ApiE2ETest {
         void returnsBadRequest_when_X_USER_ID_NotIsMissing() {
             // arrange
             UserV1Dto.SignUpRequest request = UserV1DtoFixture.SignUpRequest.complete().create();
-            Long id = testRestTemplate.exchange(ENDPOINT, HttpMethod.POST, new HttpEntity<>(request), new ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>>() {})
+            Long id = testRestTemplate.exchange(ENDPOINT, HttpMethod.POST, new HttpEntity<>(request), new ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>>() {
+                })
                 .getBody()
                 .data()
                 .id();
