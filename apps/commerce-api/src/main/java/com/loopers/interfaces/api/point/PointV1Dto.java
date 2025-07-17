@@ -7,6 +7,13 @@ import lombok.Builder;
 
 public class PointV1Dto {
 
+    @Builder
+    public record ChargeRequest(
+        Long amount
+    ) {
+
+    }
+
     @Builder(access = AccessLevel.PRIVATE)
     public record PointResponse(
         Long point
