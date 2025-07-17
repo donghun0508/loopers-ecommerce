@@ -63,16 +63,23 @@ class UserV1ApiE2ETest {
             UserV1Dto.SignUpRequest request = UserV1DtoFixture.SignUpRequest.complete().create();
 
             // act
-            var response = signUpRequest(request);
+            ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>> responseType = new ParameterizedTypeReference<>() {};
+            var response = testRestTemplate.exchange(ENDPOINT, HttpMethod.POST, new HttpEntity<>(request), responseType);
 
             // assert
             assertAll(
                 () -> assertTrue(response.getStatusCode().is2xxSuccessful()),
                 () -> assertThat(response.getBody()).isNotNull(),
-                () -> assertThat(response.getBody().data()).isNotNull()
+                () -> assertThat(response.getBody().data()).isNotNull(),
+                () -> {
+                    var actual = response.getBody().data();
+                    assertThat(actual.id()).isNotNull();
+                    assertThat(actual.userId()).isEqualTo(request.userId());
+                    assertThat(actual.email()).isEqualTo(request.email());
+                    assertThat(actual.birth()).isEqualTo(request.birth());
+                    assertThat(actual.gender().name()).isEqualTo(request.gender().name());
+                }
             );
-
-            assertUserDataEquals(request, response.getBody().data());
         }
 
         @DisplayName("회원 가입 시 성별이 없을 경우, 400 Bad Request를 응답한다.")
@@ -83,7 +90,8 @@ class UserV1ApiE2ETest {
                 .create();
 
             // act
-            var response = signUpRequest(request);
+            ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>> responseType = new ParameterizedTypeReference<>() {};
+            var response = testRestTemplate.exchange(ENDPOINT, HttpMethod.POST, new HttpEntity<>(request), responseType);
 
             // assert
             assertAll(() -> assertTrue(response.getStatusCode().is4xxClientError()));
@@ -118,7 +126,11 @@ class UserV1ApiE2ETest {
         void returnsUserResponse_whenValidIdIsProvided() {
             // arrange
             UserV1Dto.SignUpRequest request = UserV1DtoFixture.SignUpRequest.complete().create();
-            Long id = signUpRequest(request).getBody().data().id();
+            Long id = testRestTemplate.exchange(ENDPOINT, HttpMethod.POST, new HttpEntity<>(request), new ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>>() {})
+                .getBody()
+                .data()
+                .id();
+
             String requestUrl = ENDPOINT_GET.apply(id);
             HttpHeaders headers = new HttpHeaders();
             headers.set("X_USER_ID", String.valueOf(id));
@@ -133,10 +145,16 @@ class UserV1ApiE2ETest {
             assertAll(
                 () -> assertTrue(response.getStatusCode().is2xxSuccessful()),
                 () -> assertThat(response.getBody()).isNotNull(),
-                () -> assertThat(response.getBody().data()).isNotNull()
+                () -> assertThat(response.getBody().data()).isNotNull(),
+                () -> {
+                    var actual = response.getBody().data();
+                    assertThat(actual.id()).isNotNull();
+                    assertThat(actual.userId()).isEqualTo(request.userId());
+                    assertThat(actual.email()).isEqualTo(request.email());
+                    assertThat(actual.birth()).isEqualTo(request.birth());
+                    assertThat(actual.gender().name()).isEqualTo(request.gender().name());
+                }
             );
-
-            assertUserDataEquals(request, response.getBody().data());
         }
 
         @DisplayName("해당 ID 의 회원이 존재할 경우, 보유 포인트를 응답으로 반환한다.")
@@ -144,7 +162,11 @@ class UserV1ApiE2ETest {
         void returnsUserPointResponse_whenValidIdIsProvided() {
             // arrange
             UserV1Dto.SignUpRequest request = UserV1DtoFixture.SignUpRequest.complete().create();
-            Long id = signUpRequest(request).getBody().data().id();
+            Long id = testRestTemplate.exchange(ENDPOINT, HttpMethod.POST, new HttpEntity<>(request), new ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>>() {})
+                .getBody()
+                .data()
+                .id();
+
             String requestUrl = ENDPOINT_GET.apply(id) + "/point";
             HttpHeaders headers = new HttpHeaders();
             headers.set("X_USER_ID", String.valueOf(id));
@@ -173,7 +195,11 @@ class UserV1ApiE2ETest {
         void returnsBadRequest_when_X_USER_ID_NotIsMissing() {
             // arrange
             UserV1Dto.SignUpRequest request = UserV1DtoFixture.SignUpRequest.complete().create();
-            Long id = signUpRequest(request).getBody().data().id();
+            Long id = testRestTemplate.exchange(ENDPOINT, HttpMethod.POST, new HttpEntity<>(request), new ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>>() {})
+                .getBody()
+                .data()
+                .id();
+
             String requestUrl = ENDPOINT_GET.apply(id) + "/point";
 
             // act
@@ -187,25 +213,5 @@ class UserV1ApiE2ETest {
                 () -> assertTrue(response.getStatusCode().is4xxClientError())
             );
         }
-    }
-
-    private ResponseEntity<ApiResponse<UserV1Dto.UserResponse>> signUpRequest(Object requestBody) {
-        return testRestTemplate.exchange(
-            ENDPOINT,
-            HttpMethod.POST,
-            new HttpEntity<>(requestBody),
-            new ParameterizedTypeReference<>() {
-            }
-        );
-    }
-
-    private void assertUserDataEquals(UserV1Dto.SignUpRequest expected, UserResponse actual) {
-        assertAll(
-            () -> assertThat(actual.id()).isNotNull(),
-            () -> assertThat(actual.userId()).isEqualTo(expected.userId()),
-            () -> assertThat(actual.email()).isEqualTo(expected.email()),
-            () -> assertThat(actual.birth()).isEqualTo(expected.birth()),
-            () -> assertThat(actual.gender().name()).isEqualTo(expected.gender().name())
-        );
     }
 }
