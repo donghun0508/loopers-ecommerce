@@ -105,7 +105,7 @@ class UserFacadeIntegrationTest {
 
         @DisplayName("해당 ID 의 회원이 존재하지 않을 경우, UserNotFoundException 예외를 던진다.")
         @Test
-        void throwsUserNotFoundException_whenUserNotFound() {
+        void throwsUserNotFoundException_whenGetUserWithNonExistentId() {
             // arrange
             Long randomId = Instancio.create(Long.class);
 
@@ -116,7 +116,11 @@ class UserFacadeIntegrationTest {
             // assert
             assertThat(exception.getErrorCode()).isEqualTo(ErrorType.NOT_FOUND);
         }
+    }
 
+    @DisplayName("포인트 조회 시, ")
+    @Nested
+    class GetPoint {
         @DisplayName("해당 ID 의 회원이 존재할 경우, 보유 포인트가 반환된다.")
         @Test
         void returnUserPointInfo_whenValidIdIsProvided() {
@@ -130,6 +134,20 @@ class UserFacadeIntegrationTest {
             // assert
             assertThat(userPointInfo).isNotNull();
             assertThat(userPointInfo.point()).isEqualTo(savedUser.getPoint());
+        }
+
+        @DisplayName("해당 ID 의 회원이 존재하지 않을 경우, UserNotFoundException 예외를 반환된다.")
+        @Test
+        void throwsUserNotFoundException_whenGetUserPointInfoWithNonExistentId() {
+            // arrange
+            Long randomId = Instancio.create(Long.class);
+
+            // act
+            UserNotFoundException exception =
+                assertThrows(UserNotFoundException.class, () -> userFacade.getUserPointInfo(randomId));
+
+            // assert
+            assertThat(exception.getErrorCode()).isEqualTo(ErrorType.NOT_FOUND);
         }
     }
 }
