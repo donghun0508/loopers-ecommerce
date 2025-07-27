@@ -1,23 +1,26 @@
 package com.loopers.domain.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.loopers.domain.user.User.Gender;
 import com.loopers.domain.user.fixture.UserCommandFixture;
+import com.loopers.domain.user.fixture.UserFixture;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
 import com.loopers.support.error.user.PointException;
 import com.loopers.support.error.user.UserErrorType;
 import java.util.stream.Stream;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 class UserTest {
 
@@ -92,23 +95,6 @@ class UserTest {
             assertThat(exception.getErrorCode()).isEqualTo(ErrorType.INVALID_INPUT);
         }
 
-        @DisplayName("0 이하의 정수로 포인트를 충전 시 실패한다.")
-        @ParameterizedTest
-        @NullSource
-        @ValueSource(longs = {0L, -1L, -100L, -999L})
-        void throwsPointException_whenAmountIsZeroOrBelow(Long invalidPoint) {
-            // arrange
-            UserCommand.Create command = UserCommandFixture.Create.complete().create();
-            User user = User.of(command);
-
-            // act
-            PointException exception = assertThrows(PointException.class,
-                () -> user.chargePoint(invalidPoint));
-
-            // assert
-            assertThat(exception.getErrorCode()).isEqualTo(UserErrorType.INVALID_CHARGE_AMOUNT);
-        }
-
         static Stream<Arguments> invalidUserIds() {
             return TestDataProvider.invalidUserIds();
         }
@@ -163,6 +149,35 @@ class UserTest {
             private static Stream<Arguments> args(String... values) {
                 return Stream.of(values).map(Arguments::of);
             }
+        }
+    }
+
+    @DisplayName("회원 포인트 사용 시, ")
+    @Nested
+    class Point {
+
+        @DisplayName("보유한 포인트보다 큰 포인트를 사용할 경우 예외를 반환한다.")
+        @Test
+        void usePointsTest() {
+            User user = UserFixture.builder()
+                .withPointBalance(123L)
+                .build();
+            Money useMoney = new Money(10000L);
+
+            assertThatThrownBy(() -> user.usePoints(useMoney))
+                .isInstanceOf(IllegalArgumentException.class);
+        }
+
+        @DisplayName("포인트 충전 시 0원일 경우 예외를 반환한다.")
+        @Test
+        void earnPointsTest() {
+            User user = UserFixture.builder().build();
+            Money earnPoint = Money.ZERO;
+
+            assertThatThrownBy(() -> user.earnPoints(earnPoint))
+                .asInstanceOf(InstanceOfAssertFactories.type(PointException.class))
+                .extracting(PointException::getErrorCode)
+                .isEqualTo(UserErrorType.INVALID_CHARGE_AMOUNT);
         }
     }
 }
