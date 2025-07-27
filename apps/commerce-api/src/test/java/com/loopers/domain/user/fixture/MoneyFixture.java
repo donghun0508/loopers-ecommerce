@@ -42,8 +42,7 @@ public class MoneyFixture {
         }
 
         Money zero() {
-            this.api = this.api.set(field(Money::value), 0L);
-            return complete();
+            return with(0L).build();
         }
 
         public Money build() {
