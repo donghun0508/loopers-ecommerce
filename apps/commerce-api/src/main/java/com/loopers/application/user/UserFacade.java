@@ -25,7 +25,7 @@ public class UserFacade {
     @Transactional
     public UserPointInfo chargePoint(String userId, Long amount) {
         User user = userService.findByUserId(userId).orElseThrow(UserNotFoundException::new);
-        user.chargePoint(new Money(amount));
+        user.usePoints(new Money(amount));
         return UserPointInfo.from(user);
     }
 
