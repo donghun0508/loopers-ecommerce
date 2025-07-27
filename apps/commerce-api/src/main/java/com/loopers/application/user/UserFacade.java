@@ -1,8 +1,8 @@
 package com.loopers.application.user;
 
+import com.loopers.domain.user.Money;
 import com.loopers.domain.user.User;
 import com.loopers.domain.user.UserCommand;
-import com.loopers.domain.user.UserCommand.Create;
 import com.loopers.domain.user.UserService;
 import com.loopers.support.error.user.UserAlreadyExistsException;
 import com.loopers.support.error.user.UserNotFoundException;
@@ -25,7 +25,7 @@ public class UserFacade {
     @Transactional
     public UserPointInfo chargePoint(String userId, Long amount) {
         User user = userService.findByUserId(userId).orElseThrow(UserNotFoundException::new);
-        user.chargePoint(amount);
+        user.chargePoint(new Money(amount));
         return UserPointInfo.from(user);
     }
 

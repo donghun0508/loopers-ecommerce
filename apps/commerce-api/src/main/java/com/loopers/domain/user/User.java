@@ -3,21 +3,25 @@ package com.loopers.domain.user;
 import com.loopers.domain.BaseEntity;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
-import com.loopers.support.error.user.PointException;
-import com.loopers.support.error.user.UserErrorType;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.regex.Pattern;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
 @Table(name = "members")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
 
     @Column(
@@ -46,17 +50,10 @@ public class User extends BaseEntity {
     )
     private Gender gender;
 
-    @Column(
-        name = "point",
-        nullable = false
-    )
-    private Long point;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Point point;
 
-    protected User() {
-
-    }
-
-    private User(String userId, String email, String birth, Gender gender, Long point) {
+    private User(String userId, String email, String birth, Gender gender, Point point) {
         this.userId = userId;
         this.email = email;
         this.birth = birth;
@@ -66,14 +63,23 @@ public class User extends BaseEntity {
 
     public static User of(UserCommand.Create command) {
         validate(command);
-        return new User(command.userId(), command.email(), command.birth(), command.gender(), 0L);
+
+        User user = new User();
+        user.userId = command.userId();
+        user.email = command.email();
+        user.birth = command.birth();
+        user.gender = command.gender();
+        user.point = Point.initial(user);
+
+        return user;
     }
 
-    public void chargePoint(Long amount) {
-        if(amount == null || amount <= 0) {
-            throw new PointException(UserErrorType.INVALID_CHARGE_AMOUNT);
-        }
-        this.point += amount;
+    public void chargePoint(Money amount) {
+        this.point.credit(amount);
+    }
+
+    public Money getPoint() {
+        return this.point.getBalance();
     }
 
     private static void validate(UserCommand.Create command) {
