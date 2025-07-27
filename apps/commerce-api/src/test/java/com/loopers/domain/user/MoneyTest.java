@@ -55,8 +55,8 @@ class MoneyTest {
         @DisplayName("정상적인 두 금액을 더하면 올바른 결과를 반환한다.")
         @Test
         void success_whenAddingValidAmounts() {
-            Money money1 = MoneyFixture.create();
-            Money money2 = MoneyFixture.create();
+            Money money1 = MoneyFixture.complete();
+            Money money2 = MoneyFixture.complete();
             Long totalValue = money1.value() + money2.value();
 
             Money result = money1.add(money2);
@@ -67,7 +67,7 @@ class MoneyTest {
         @DisplayName("0원과 다른 금액을 더해도 올바른 결과를 반환한다.")
         @Test
         void success_whenAddingWithZero() {
-            Money money = MoneyFixture.create();
+            Money money = MoneyFixture.complete();
             Money zero = MoneyFixture.zero();
 
             Money result1 = money.add(zero);
@@ -117,7 +117,7 @@ class MoneyTest {
         @DisplayName("같은 금액을 빼면 0원이 된다.")
         @Test
         void success_whenSubtractingSameAmount() {
-            Money money = MoneyFixture.create();
+            Money money = MoneyFixture.complete();
 
             Money result = money.subtract(money);
 

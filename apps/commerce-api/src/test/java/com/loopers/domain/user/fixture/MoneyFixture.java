@@ -8,8 +8,8 @@ import org.instancio.InstancioApi;
 
 public class MoneyFixture {
 
-    public static Money create() {
-        return new MoneyBuilder().create();
+    public static Money complete() {
+        return new MoneyBuilder().build();
     }
 
     public static Money zero() {
@@ -17,10 +17,14 @@ public class MoneyFixture {
     }
 
     public static Money with(long value) {
-        return new MoneyBuilder().with(value).create();
+        return new MoneyBuilder().with(value).build();
     }
 
-    static class MoneyBuilder {
+    public static MoneyBuilder builder() {
+        return new MoneyBuilder();
+    }
+
+    public static class MoneyBuilder {
 
         static final Long MIN_TEST_AMOUNT = 1L;
         static final Long MAX_TEST_AMOUNT = 1_000_000L;
@@ -39,10 +43,10 @@ public class MoneyFixture {
 
         Money zero() {
             this.api = this.api.set(field(Money::value), 0L);
-            return create();
+            return complete();
         }
 
-        Money create() {
+        public Money build() {
             return this.api.create();
         }
     }
