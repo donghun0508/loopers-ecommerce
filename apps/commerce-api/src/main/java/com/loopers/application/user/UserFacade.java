@@ -17,7 +17,7 @@ public class UserFacade {
     private final UserService userService;
 
     public UserInfo signUp(UserCommand.Create command) {
-        validateDuplicateUserId(command);
+        validateDuplicateUserId(command.userId());
         User savedUser = userService.create(command);
         return UserInfo.from(savedUser);
     }
@@ -41,9 +41,8 @@ public class UserFacade {
             .orElseThrow(UserNotFoundException::new);
     }
 
-    private void validateDuplicateUserId(Create command) {
-        userService.findByUserId(command.userId())
-            .ifPresent(user -> {
+    public void validateDuplicateUserId(String userId) {
+        userService.findByUserId(userId).ifPresent(user -> {
                 throw new UserAlreadyExistsException();
             });
     }
