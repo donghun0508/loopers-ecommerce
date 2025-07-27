@@ -1,4 +1,4 @@
-rootProject.name = "29CART"
+rootProject.name = "29cart"
 
 include(
     ":apps:commerce-api",
