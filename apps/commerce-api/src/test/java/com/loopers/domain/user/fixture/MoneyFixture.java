@@ -1,0 +1,49 @@
+package com.loopers.domain.user.fixture;
+
+import static org.instancio.Select.field;
+
+import com.loopers.domain.user.Money;
+import org.instancio.Instancio;
+import org.instancio.InstancioApi;
+
+public class MoneyFixture {
+
+    public static Money create() {
+        return new MoneyBuilder().create();
+    }
+
+    public static Money zero() {
+        return new MoneyBuilder().zero();
+    }
+
+    public static Money with(long value) {
+        return new MoneyBuilder().with(value).create();
+    }
+
+    static class MoneyBuilder {
+
+        static final Long MIN_TEST_AMOUNT = 1L;
+        static final Long MAX_TEST_AMOUNT = 1_000_000L;
+
+        InstancioApi<Money> api;
+
+        MoneyBuilder() {
+            this.api = Instancio.of(Money.class)
+                .generate(field(Money::value), gen -> gen.longs().range(MIN_TEST_AMOUNT, MAX_TEST_AMOUNT));
+        }
+
+        MoneyBuilder with(long amount) {
+            this.api = this.api.set(field(Money::value), amount);
+            return this;
+        }
+
+        Money zero() {
+            this.api = this.api.set(field(Money::value), 0L);
+            return create();
+        }
+
+        Money create() {
+            return this.api.create();
+        }
+    }
+}
