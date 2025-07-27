@@ -13,7 +13,7 @@ classDiagram
     }
 
     class Point {
-        -Money balanace
+        -Money balance
         +deduct(Money amount) void
         +credit(Money amount) void
         +hasEnoughBalance(Money amount) boolean
