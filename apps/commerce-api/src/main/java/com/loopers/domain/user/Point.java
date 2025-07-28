@@ -6,6 +6,7 @@ import com.loopers.support.error.user.UserErrorType;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -15,12 +16,19 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "point")
+@Table(
+    name = "point"
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Point extends BaseEntity {
 
     @OneToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(
+        name = "user_id",
+        foreignKey = @ForeignKey(name = "FK_POINT_USER_ID"),
+        nullable = false,
+        updatable = false
+    )
     private User user;
 
     @AttributeOverride(name = "value", column = @Column(name = "balance"))

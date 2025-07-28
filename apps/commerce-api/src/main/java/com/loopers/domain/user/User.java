@@ -8,19 +8,26 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.regex.Pattern;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.NaturalId;
 
 @Getter
 @Entity
-@Table(name = "users")
+@Table(
+    name = "users",
+    uniqueConstraints = {
+        @UniqueConstraint(name = "UK_USER_USER_ID", columnNames = {"user_id"}),
+        @UniqueConstraint(name = "UK_USER_EMAIL", columnNames = {"email"})
+    }
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
 
@@ -29,6 +36,7 @@ public class User extends BaseEntity {
         unique = true,
         nullable = false
     )
+    @NaturalId
     private String userId;
 
     @Column(
@@ -50,7 +58,7 @@ public class User extends BaseEntity {
     )
     private Gender gender;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Point point;
 
     public static User of(UserCommand.Create command) {
