@@ -3,7 +3,7 @@ package com.loopers.domain.order;
 import static java.util.Objects.requireNonNull;
 
 import com.loopers.domain.BaseEntity;
-import com.loopers.domain.order.OrderCommand.AddOrderLineCommand;
+import com.loopers.domain.order.OrderCommand.AddOrderLine;
 import com.loopers.domain.shared.Money;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -29,17 +29,15 @@ public class Order extends BaseEntity {
     @Embedded
     private OrderLines orderLines;
 
-    public static Order create(Long userId) {
-        requireNonNull(userId, "회원 Id가 null입니다.");
-
+    public static Order create(OrderCommand.Create command) {
         Order order = new Order();
-        order.userId = userId;
+        order.userId = command.userId();
         order.orderLines = OrderLines.empty();
 
         return order;
     }
 
-    public void addOrderLine(AddOrderLineCommand command) {
+    public void addOrderLine(AddOrderLine command) {
         OrderLine orderLine = OrderLine.createItem(this, command);
         orderLines.add(orderLine);
     }

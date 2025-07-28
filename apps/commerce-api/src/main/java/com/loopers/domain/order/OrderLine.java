@@ -1,7 +1,7 @@
 package com.loopers.domain.order;
 
 import com.loopers.domain.BaseEntity;
-import com.loopers.domain.order.OrderCommand.AddOrderLineCommand;
+import com.loopers.domain.order.OrderCommand.AddOrderLine;
 import com.loopers.domain.shared.Money;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
@@ -44,7 +44,7 @@ public class OrderLine extends BaseEntity {
     @AttributeOverride(name = "value", column = @Column(name = "price"))
     private Money price;
 
-    static OrderLine createItem(Order order, AddOrderLineCommand command) {
+    static OrderLine createItem(Order order, AddOrderLine command) {
         if (command.quantity() <= 0) {
             throw new IllegalArgumentException("주문 수량이 0보다 작을 순 없습니다.");
         }
