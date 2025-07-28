@@ -2,7 +2,7 @@ package com.loopers.domain.fixture;
 
 import static org.instancio.Select.field;
 
-import com.loopers.domain.order.OrderCommand.OrderLine.AddCommand;
+import com.loopers.domain.order.OrderCommand.AddOrderLineCommand;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 
@@ -16,28 +16,28 @@ public class OrderCommandFixture {
 
         public static class OrderLineBuilder {
 
-            private InstancioApi<AddCommand> api;
+            private InstancioApi<AddOrderLineCommand> api;
 
             public OrderLineBuilder() {
-                this.api = Instancio.of(AddCommand.class);
+                this.api = Instancio.of(AddOrderLineCommand.class);
             }
 
             public OrderLineBuilder withProductId(Long productId) {
-                this.api = this.api.set(field(AddCommand::productId), productId);
+                this.api = this.api.set(field(AddOrderLineCommand::productId), productId);
                 return this;
             }
 
             public OrderLineBuilder withPrice(Long price) {
-                this.api = this.api.set(field(AddCommand::price), price);
+                this.api = this.api.set(field(AddOrderLineCommand::price), price);
                 return this;
             }
 
             public OrderLineBuilder withQuantity(Long quantity) {
-                this.api = this.api.set(field(AddCommand::quantity), quantity);
+                this.api = this.api.set(field(AddOrderLineCommand::quantity), quantity);
                 return this;
             }
 
-            public AddCommand build() {
+            public AddOrderLineCommand build() {
                 return this.api.create();
             }
         }

@@ -3,6 +3,7 @@ package com.loopers.domain.order;
 import static java.util.Objects.requireNonNull;
 
 import com.loopers.domain.BaseEntity;
+import com.loopers.domain.order.OrderCommand.AddOrderLineCommand;
 import com.loopers.domain.shared.Money;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -38,7 +39,7 @@ public class Order extends BaseEntity {
         return order;
     }
 
-    public void addOrderLine(OrderCommand.OrderLine.AddCommand command) {
+    public void addOrderLine(AddOrderLineCommand command) {
         OrderLine orderLine = OrderLine.createItem(this, command);
         orderLines.add(orderLine);
     }
