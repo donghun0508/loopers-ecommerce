@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "members")
+@Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
 
@@ -52,14 +52,6 @@ public class User extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Point point;
-
-    private User(String userId, String email, String birth, Gender gender, Point point) {
-        this.userId = userId;
-        this.email = email;
-        this.birth = birth;
-        this.gender = gender;
-        this.point = point;
-    }
 
     public static User of(UserCommand.Create command) {
         validate(command);
