@@ -53,8 +53,4 @@ public class Point extends BaseEntity {
         }
         this.balance = this.balance.add(amount);
     }
-
-    boolean hasEnoughBalance(Money amount) {
-        return this.balance.isGreaterThanOrEqual(amount);
-    }
 }

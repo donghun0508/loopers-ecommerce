@@ -15,7 +15,7 @@ public record UserPointInfo(
         Objects.requireNonNull(user, "User 객체가 null입니다.");
 
         return UserPointInfo.builder()
-            .point(user.getPoint().value())
+            .point(user.getAvailablePoints().value())
             .userId(user.getUserId())
             .build();
     }

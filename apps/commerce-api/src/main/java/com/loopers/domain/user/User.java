@@ -74,13 +74,6 @@ public class User extends BaseEntity {
         return user;
     }
 
-    private static void validate(UserCommand.Create command) {
-        Validator.userId(command.userId());
-        Validator.email(command.email());
-        Validator.birth(command.birth());
-        Validator.gender(command.gender());
-    }
-
     public void usePoints(Money amount) {
         this.point.deduct(amount);
     }
@@ -89,8 +82,15 @@ public class User extends BaseEntity {
         this.point.credit(amount);
     }
 
-    public Money getPoint() {
+    public Money getAvailablePoints() {
         return this.point.getBalance();
+    }
+
+    private static void validate(UserCommand.Create command) {
+        Validator.userId(command.userId());
+        Validator.email(command.email());
+        Validator.birth(command.birth());
+        Validator.gender(command.gender());
     }
 
     private static class Validator {
