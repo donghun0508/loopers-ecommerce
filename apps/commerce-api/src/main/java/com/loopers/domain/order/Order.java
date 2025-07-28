@@ -38,7 +38,7 @@ public class Order extends BaseEntity {
         return order;
     }
 
-    public void addOrderLine(OrderCommand.OrderLine command) {
+    public void addOrderLine(OrderCommand.OrderLine.AddCommand command) {
         OrderLine orderLine = OrderLine.createItem(this, command);
         orderLines.add(orderLine);
     }

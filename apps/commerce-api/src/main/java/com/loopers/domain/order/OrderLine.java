@@ -43,7 +43,7 @@ public class OrderLine extends BaseEntity {
     @AttributeOverride(name = "value", column = @Column(name = "price"))
     private Money price;
 
-    static OrderLine createItem(Order order, OrderCommand.OrderLine command) {
+    static OrderLine createItem(Order order, OrderCommand.OrderLine.AddCommand command) {
         if (command.quantity() <= 0) {
             throw new IllegalArgumentException("주문 수량이 0보다 작을 순 없습니다.");
         }

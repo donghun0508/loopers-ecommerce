@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.loopers.domain.fixture.OrderCommandFixture;
 import com.loopers.domain.fixture.OrderFixture;
 import com.loopers.domain.fixture.UserFixture;
+import com.loopers.domain.order.OrderCommand.OrderLine.AddCommand;
 import com.loopers.domain.user.User;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Stream;
@@ -45,7 +46,7 @@ class OrderTest {
 
     @DisplayName("주문 항목 추가 시,")
     @Nested
-    class OrderLine {
+    class AddCommandOrderLineRequest {
 
         @DisplayName("주문 수량이 0이하인 경우 예외를 반환한다.")
         @ParameterizedTest
@@ -54,9 +55,9 @@ class OrderTest {
         )
         void throwException_whenQuantityIsZeroOrNegative(Long invalidQuantity) {
             Order order = OrderFixture.builder().build();
-            OrderCommand.OrderLine orderLineCommand = OrderCommandFixture.OrderLine.builder().withQuantity(invalidQuantity).build();
+            AddCommand addOrderLineRequestCommand = OrderCommandFixture.OrderLine.builder().withQuantity(invalidQuantity).build();
 
-            assertThatThrownBy(() -> order.addOrderLine(orderLineCommand))
+            assertThatThrownBy(() -> order.addOrderLine(addOrderLineRequestCommand))
                 .isInstanceOf(IllegalArgumentException.class);
         }
 
@@ -65,12 +66,12 @@ class OrderTest {
         void throwException_whenAddingDuplicateProductId() {
             Long duplicateProductId = 1L;
             Order order = OrderFixture.builder().build();
-            OrderCommand.OrderLine orderLine1 = OrderCommandFixture.OrderLine.builder().withProductId(duplicateProductId).withQuantity(100L).build();
-            OrderCommand.OrderLine orderLine2 = OrderCommandFixture.OrderLine.builder().withProductId(duplicateProductId).withQuantity(100L).build();
+            AddCommand addOrderLineRequest1 = OrderCommandFixture.OrderLine.builder().withProductId(duplicateProductId).withQuantity(100L).build();
+            AddCommand addOrderLineRequest2 = OrderCommandFixture.OrderLine.builder().withProductId(duplicateProductId).withQuantity(100L).build();
 
-            order.addOrderLine(orderLine1);
+            order.addOrderLine(addOrderLineRequest1);
 
-            assertThatThrownBy(() -> order.addOrderLine(orderLine2))
+            assertThatThrownBy(() -> order.addOrderLine(addOrderLineRequest2))
                 .isInstanceOf(IllegalStateException.class);
         }
 
@@ -81,8 +82,8 @@ class OrderTest {
             Order order = OrderFixture.builder().withEmptyOrderLine().build();
 
             for(int i = 0; i < orderLineCount; i++) {
-                OrderCommand.OrderLine orderLine = OrderCommandFixture.OrderLine.builder().build();
-                order.addOrderLine(orderLine);
+                AddCommand addOrderLineRequest = OrderCommandFixture.OrderLine.builder().build();
+                order.addOrderLine(addOrderLineRequest);
             }
 
             assertThat(order.getOrderLineCount()).isEqualTo(orderLineCount);
@@ -96,9 +97,9 @@ class OrderTest {
             Long totalAmount = 0L;
 
             for(int i = 0; i < orderLineCount; i++) {
-                OrderCommand.OrderLine orderLine = OrderCommandFixture.OrderLine.builder().build();
-                order.addOrderLine(orderLine);
-                totalAmount += (orderLine.price() * orderLine.quantity());
+                AddCommand addOrderLineRequest = OrderCommandFixture.OrderLine.builder().build();
+                order.addOrderLine(addOrderLineRequest);
+                totalAmount += (addOrderLineRequest.price() * addOrderLineRequest.quantity());
             }
 
             assertThat(order.getTotalAmount().value()).isEqualTo(totalAmount);
