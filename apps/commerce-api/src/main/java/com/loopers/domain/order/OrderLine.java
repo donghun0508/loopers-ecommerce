@@ -1,7 +1,6 @@
 package com.loopers.domain.order;
 
 import com.loopers.domain.BaseEntity;
-import com.loopers.domain.shared.Quantity;
 import com.loopers.domain.shared.Money;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
