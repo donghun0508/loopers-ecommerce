@@ -3,7 +3,7 @@ package com.loopers.domain.user;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-import com.loopers.domain.user.fixture.MoneyFixture;
+import com.loopers.domain.fixture.MoneyFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

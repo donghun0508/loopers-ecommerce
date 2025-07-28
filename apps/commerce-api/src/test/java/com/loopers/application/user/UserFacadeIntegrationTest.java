@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.loopers.domain.user.User;
 import com.loopers.domain.user.UserCommand;
 import com.loopers.domain.user.UserService;
-import com.loopers.domain.user.fixture.UserCommandFixture;
+import com.loopers.domain.fixture.UserCommandFixture;
 import com.loopers.support.error.ErrorType;
 import com.loopers.support.error.user.UserAlreadyExistsException;
 import com.loopers.support.error.user.UserNotFoundException;

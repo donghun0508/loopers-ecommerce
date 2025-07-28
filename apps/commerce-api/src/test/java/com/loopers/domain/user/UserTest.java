@@ -6,8 +6,8 @@ import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.loopers.domain.user.User.Gender;
-import com.loopers.domain.user.fixture.UserCommandFixture;
-import com.loopers.domain.user.fixture.UserFixture;
+import com.loopers.domain.fixture.UserCommandFixture;
+import com.loopers.domain.fixture.UserFixture;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
 import com.loopers.support.error.user.PointException;

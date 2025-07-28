@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
-import com.loopers.domain.user.fixture.UserCommandFixture;
+import com.loopers.domain.fixture.UserCommandFixture;
 import java.util.Optional;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;

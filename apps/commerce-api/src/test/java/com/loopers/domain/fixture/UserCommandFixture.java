@@ -1,4 +1,4 @@
-package com.loopers.domain.user.fixture;
+package com.loopers.domain.fixture;
 
 import static org.instancio.Select.field;
 
