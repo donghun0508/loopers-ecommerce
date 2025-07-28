@@ -3,7 +3,7 @@ package com.loopers.domain.fixture;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 
-import com.loopers.domain.user.Money;
+import com.loopers.domain.shared.Money;
 import com.loopers.domain.user.Point;
 import com.loopers.domain.user.User;
 import java.lang.reflect.Field;

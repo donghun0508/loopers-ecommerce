@@ -1,6 +1,6 @@
 package com.loopers.application.user;
 
-import com.loopers.domain.user.Money;
+import com.loopers.domain.shared.Money;
 import com.loopers.domain.user.User;
 import com.loopers.domain.user.UserCommand;
 import com.loopers.domain.user.UserService;

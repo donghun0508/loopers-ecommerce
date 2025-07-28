@@ -1,4 +1,4 @@
-package com.loopers.domain.user;
+package com.loopers.domain.shared;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;

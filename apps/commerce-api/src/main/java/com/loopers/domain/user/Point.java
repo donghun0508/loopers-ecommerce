@@ -1,6 +1,7 @@
 package com.loopers.domain.user;
 
 import com.loopers.domain.BaseEntity;
+import com.loopers.domain.shared.Money;
 import com.loopers.support.error.user.PointException;
 import com.loopers.support.error.user.UserErrorType;
 import jakarta.persistence.AttributeOverride;

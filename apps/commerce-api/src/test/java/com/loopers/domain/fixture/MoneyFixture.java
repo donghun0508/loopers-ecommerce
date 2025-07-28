@@ -2,7 +2,7 @@ package com.loopers.domain.fixture;
 
 import static org.instancio.Select.field;
 
-import com.loopers.domain.user.Money;
+import com.loopers.domain.shared.Money;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 

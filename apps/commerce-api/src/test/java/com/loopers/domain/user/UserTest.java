@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.loopers.domain.shared.Money;
 import com.loopers.domain.user.User.Gender;
 import com.loopers.domain.fixture.UserCommandFixture;
 import com.loopers.domain.fixture.UserFixture;

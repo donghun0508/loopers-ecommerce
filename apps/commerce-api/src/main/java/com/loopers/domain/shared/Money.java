@@ -1,4 +1,4 @@
-package com.loopers.domain.user;
+package com.loopers.domain.shared;
 
 
 import jakarta.persistence.Embeddable;
