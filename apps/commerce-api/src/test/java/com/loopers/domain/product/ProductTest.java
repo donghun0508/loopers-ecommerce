@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import com.loopers.domain.fixture.ProductFixture;
+import com.loopers.domain.product.ProductCommand.DecreaseStock;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -19,9 +20,9 @@ class ProductTest {
         void throwsInvalidException_whenGenderIsNullAndEmpty() {
             long initialStock = 10L;
             Product product = ProductFixture.builder().withStock(initialStock).build();
-            ProductCommand.DecreaseStockCommand decreaseStockCommand = new ProductCommand.DecreaseStockCommand(Stock.of(initialStock + 1L));
+            DecreaseStock decreaseStock = new DecreaseStock(Stock.of(initialStock + 1L));
 
-            assertThatThrownBy(() -> product.decreaseStock(decreaseStockCommand))
+            assertThatThrownBy(() -> product.decreaseStock(decreaseStock))
                 .isInstanceOf(IllegalArgumentException.class);
         }
 
@@ -40,7 +41,7 @@ class ProductTest {
             long initialStock = 10L;
             long decreaseStock = 5L;
             Product product = ProductFixture.builder().withStock(initialStock).build();
-            ProductCommand.DecreaseStockCommand decreaseStockCommand = new ProductCommand.DecreaseStockCommand(Stock.of(decreaseStock));
+            DecreaseStock decreaseStockCommand = new DecreaseStock(Stock.of(decreaseStock));
 
             product.decreaseStock(decreaseStockCommand);
 

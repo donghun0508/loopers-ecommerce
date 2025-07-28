@@ -1,7 +1,7 @@
 package com.loopers.domain.product;
 
 import com.loopers.domain.BaseEntity;
-import com.loopers.domain.product.ProductCommand.DecreaseStockCommand;
+import com.loopers.domain.product.ProductCommand.DecreaseStock;
 import com.loopers.domain.shared.Money;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
@@ -23,7 +23,7 @@ public class Product extends BaseEntity {
     @AttributeOverride(name = "count", column = @Column(name = "stock"))
     private Stock stock;
 
-    public void decreaseStock(DecreaseStockCommand quantity) {
+    public void decreaseStock(DecreaseStock quantity) {
         this.stock = this.stock.subtract(quantity.quantity());
     }
 }

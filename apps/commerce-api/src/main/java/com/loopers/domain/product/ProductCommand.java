@@ -6,9 +6,9 @@ import lombok.Builder;
 public class ProductCommand {
 
     @Builder
-    public record DecreaseStockCommand(Stock quantity) {
+    public record DecreaseStock(Stock quantity) {
 
-        public DecreaseStockCommand {
+        public DecreaseStock {
             Objects.requireNonNull(quantity, "Stock cannot be null");
         }
     }
