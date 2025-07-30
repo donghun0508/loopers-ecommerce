@@ -8,27 +8,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.loopers.environment.annotations.E2ETest;
 import com.loopers.interfaces.api.ApiResponse;
 import com.loopers.interfaces.api.user.fixture.UserV1DtoFixture;
-import com.loopers.testcontainers.MySqlTestContainersConfig;
 import com.loopers.utils.DatabaseCleanUp;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
 
 @E2ETest
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
-@Import(MySqlTestContainersConfig.class)
 class UserV1ApiE2ETest {
 
     private static final String ENDPOINT = "/api/v1/users";

@@ -29,9 +29,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 
 @E2ETest
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
-@Import(MySqlTestContainersConfig.class)
 class PointV1ApiE2ETest {
 
     private static final String ENDPOINT = "/api/v1/points";
