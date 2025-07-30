@@ -40,15 +40,15 @@ public class OrderLines {
             .reduce(Money.ZERO, Money::add);
     }
 
+    Integer size() {
+        return this.lines.size();
+    }
+
     private void validateDuplicateProduct(OrderLine orderLine) {
         boolean exists = lines.stream().anyMatch(line -> line.hasSameProduct(orderLine));
 
         if (exists) {
             throw new IllegalStateException("이미 동일한 상품이 주문 목록에 존재합니다. " + orderLine);
         }
-    }
-
-    public Integer size() {
-        return this.lines.size();
     }
 }
