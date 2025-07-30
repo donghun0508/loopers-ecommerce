@@ -43,7 +43,7 @@ public class UserFacade {
 
     public void validateDuplicateUserId(String userId) {
         userService.findByUserId(userId).ifPresent(user -> {
-                throw new UserAlreadyExistsException();
-            });
+            throw new UserAlreadyExistsException();
+        });
     }
 }

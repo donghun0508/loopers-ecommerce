@@ -1,6 +1,5 @@
 package com.loopers.domain.fixture;
 
-import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 
 import com.loopers.domain.product.Product;
@@ -25,14 +24,7 @@ public class ProductFixture {
         private InstancioApi<Product> api;
 
         public ProductBuilder() {
-            this.api = Instancio.of(Product.class)
-
-                .onComplete(all(Product.class), (Product order) -> {
-                    try {
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+            this.api = Instancio.of(Product.class);
         }
 
         public ProductBuilder withId(Long id) {
