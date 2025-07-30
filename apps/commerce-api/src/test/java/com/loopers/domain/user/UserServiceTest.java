@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
 import com.loopers.domain.fixture.UserCommandFixture;
+import com.loopers.environment.annotations.IntegrationTest;
 import java.util.Optional;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
+@IntegrationTest
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class UserServiceTest {
 

@@ -8,6 +8,7 @@ import com.loopers.domain.user.User;
 import com.loopers.domain.user.UserCommand;
 import com.loopers.domain.user.UserService;
 import com.loopers.domain.fixture.UserCommandFixture;
+import com.loopers.environment.annotations.IntegrationTest;
 import com.loopers.support.error.ErrorType;
 import com.loopers.support.error.user.UserAlreadyExistsException;
 import com.loopers.support.error.user.UserNotFoundException;
@@ -25,6 +26,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
+@IntegrationTest
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @Import(MySqlTestContainersConfig.class)
