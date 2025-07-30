@@ -1,7 +1,8 @@
 package com.loopers.domain.product;
 
+import static com.loopers.utils.ValidationUtils.requireNonNull;
+
 import com.loopers.domain.BaseEntity;
-import com.loopers.domain.product.ProductCommand.DecreaseStock;
 import com.loopers.domain.shared.Money;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
@@ -23,7 +24,8 @@ public class Product extends BaseEntity {
     @AttributeOverride(name = "count", column = @Column(name = "stock"))
     private Stock stock;
 
-    public void decreaseStock(DecreaseStock quantity) {
-        this.stock = this.stock.subtract(quantity.quantity());
+    public void decreaseStock(Long quantity) {
+        requireNonNull(quantity, "수량은 null일 수 없습니다.");
+        this.stock = this.stock.subtract(new Stock(quantity));
     }
 }

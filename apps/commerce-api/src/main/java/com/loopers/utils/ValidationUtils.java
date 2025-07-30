@@ -20,7 +20,9 @@ public class ValidationUtils {
         return value;
     }
 
-    public static void requirePositive(long value, String message) {
+    public static void requirePositive(Long value, String message) {
+        requireNonNull(value, message);
+
         if (value <= 0) {
             throw new IllegalArgumentException(message);
         }

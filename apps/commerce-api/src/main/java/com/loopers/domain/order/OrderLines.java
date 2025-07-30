@@ -5,8 +5,9 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -14,24 +15,33 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class OrderLines {
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLine> lines;
 
-    OrderLines(List<OrderLine> lines) {
+    private OrderLines(List<OrderLine> lines) {
         this.lines = new ArrayList<>(lines);
-    }
-
-    static OrderLines empty() {
-        return new OrderLines(Collections.emptyList());
     }
 
     public static OrderLines of(List<OrderLine> orderLines) {
         return new OrderLines(orderLines);
     }
 
+    public static OrderLines empty() {
+        return new OrderLines(new ArrayList<>());
+    }
+
     void add(OrderLine orderLine) {
         validateDuplicateProduct(orderLine);
         this.lines.add(orderLine);
+    }
+
+    Map<Long, Long> map() {
+        return this.lines.stream()
+            .map(OrderLine::toPickedItemEntry)
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                Map.Entry::getValue
+            ));
     }
 
     Money calculateTotalPrice() {
@@ -40,7 +50,7 @@ public class OrderLines {
             .reduce(Money.ZERO, Money::add);
     }
 
-    Integer size() {
+    int size() {
         return this.lines.size();
     }
 

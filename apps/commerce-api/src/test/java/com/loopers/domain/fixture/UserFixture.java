@@ -16,6 +16,12 @@ import org.instancio.Select;
 
 public class UserFixture {
 
+    public static UserBuilder integration() {
+        return new UserBuilder()
+            .withIdClear()
+            .withZeroPoint();
+    }
+
     public static UserBuilder builder() {
         return new UserBuilder();
     }
@@ -57,6 +63,11 @@ public class UserFixture {
         public UserBuilder withPointBalance(long amount) {
             Scope balance = Select.field(Point::getBalance).toScope();
             this.api = this.api.set(field(Point::getBalance).within(balance), new Money(amount));
+            return this;
+        }
+
+        public UserBuilder withIdClear() {
+            this.api = this.api.set(field(User::getId), null);
             return this;
         }
 

@@ -4,11 +4,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import com.loopers.domain.fixture.ProductFixture;
-import com.loopers.domain.product.ProductCommand.DecreaseStock;
+import com.loopers.environment.annotations.UnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+@UnitTest
 class ProductTest {
 
     @DisplayName("상품 도메인 재고 관련, ")
@@ -20,7 +21,7 @@ class ProductTest {
         void throwsInvalidException_whenGenderIsNullAndEmpty() {
             long initialStock = 10L;
             Product product = ProductFixture.builder().withStock(initialStock).build();
-            DecreaseStock decreaseStock = new DecreaseStock(Stock.of(initialStock + 1L));
+            long decreaseStock = initialStock + 1L;
 
             assertThatThrownBy(() -> product.decreaseStock(decreaseStock))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -41,9 +42,8 @@ class ProductTest {
             long initialStock = 10L;
             long decreaseStock = 5L;
             Product product = ProductFixture.builder().withStock(initialStock).build();
-            DecreaseStock decreaseStockCommand = new DecreaseStock(Stock.of(decreaseStock));
 
-            product.decreaseStock(decreaseStockCommand);
+            product.decreaseStock(decreaseStock);
 
             assertThat(product.getStock().count()).isEqualTo(initialStock - decreaseStock);
         }

@@ -3,20 +3,21 @@ package com.loopers.domain.fixture;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 
-import com.loopers.domain.fixture.UserFixture.UserBuilder;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.Stock;
 import com.loopers.domain.shared.Money;
-import com.loopers.domain.user.Point;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
-import org.instancio.Scope;
-import org.instancio.Select;
 
 public class ProductFixture {
 
     public static ProductBuilder builder() {
         return new ProductBuilder();
+    }
+
+    public static ProductBuilder integration() {
+        return new ProductBuilder()
+            .withId(null);
     }
 
     public static class ProductBuilder {
@@ -34,8 +35,18 @@ public class ProductFixture {
                 });
         }
 
+        public ProductBuilder withId(Long id) {
+            this.api = this.api.set(field(Product::getId), id);
+            return this;
+        }
+
         public ProductBuilder withStock(Long stock) {
             this.api = this.api.set(field(Stock::count), stock);
+            return this;
+        }
+
+        public ProductBuilder withPrice(long price) {
+            this.api = this.api.set(field(Money::value), price);
             return this;
         }
 

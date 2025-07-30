@@ -9,6 +9,7 @@ import com.loopers.domain.shared.Money;
 import com.loopers.domain.user.User.Gender;
 import com.loopers.domain.fixture.UserCommandFixture;
 import com.loopers.domain.fixture.UserFixture;
+import com.loopers.environment.annotations.UnitTest;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
 import com.loopers.support.error.user.PointException;
@@ -23,6 +24,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 
+@UnitTest
 class UserTest {
 
     @DisplayName("회원 명령 객체 생성 시,")

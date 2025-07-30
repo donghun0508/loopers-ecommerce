@@ -2,42 +2,60 @@ package com.loopers.domain.fixture;
 
 import static org.instancio.Select.field;
 
-import com.loopers.domain.order.OrderCommand.AddOrderLine;
+import com.loopers.domain.order.OrderCommand;
+import com.loopers.domain.order.OrderCommand.Create.OrderItem;
+import java.util.List;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
+import org.instancio.Select;
 
 public class OrderCommandFixture {
 
-    public static class OrderLine {
+    public static class Create {
 
-        public static OrderLineBuilder builder() {
-            return new OrderLineBuilder();
+        public static Builder builder() {
+            return new Builder();
         }
 
-        public static class OrderLineBuilder {
+        public static class Builder {
 
-            private InstancioApi<AddOrderLine> api;
+            private InstancioApi<OrderCommand.Create> api;
 
-            public OrderLineBuilder() {
-                this.api = Instancio.of(AddOrderLine.class);
+            static final Integer MIN_TEST_SIZE = 1;
+            static final Integer MAX_TEST_SIZE = 10;
+
+            public Builder() {
+                this.api = Instancio.of(OrderCommand.Create.class)
+                    .set(field(OrderCommand.Create::items),
+                        Instancio.ofList(OrderItem.class)
+                            .generate(Select.root(), gen -> gen.collection()
+                                .minSize(MIN_TEST_SIZE)
+                                .maxSize(MAX_TEST_SIZE))
+                            .generate(field(OrderItem::productId), gen -> gen.longs().min(1L).max(1000L))
+                            .generate(field(OrderItem::price), gen -> gen.longs().min(1000L).max(100000L))
+                            .generate(field(OrderItem::quantity), gen -> gen.longs().min(1L).max(10L))
+                            .create()
+                    )
+                ;
             }
 
-            public OrderLineBuilder withProductId(Long productId) {
-                this.api = this.api.set(field(AddOrderLine::productId), productId);
+            public Builder withOrderItemEmpty() {
+                return withOrderItems(0);
+            }
+
+            public Builder withOrderItems(int size) {
+                List<OrderItem> orderItems = Instancio.ofList(OrderItem.class)
+                    .size(size)
+                    .generate(field(OrderItem::productId), gen -> gen.longs().min(1L).max(1000L))
+                    .generate(field(OrderItem::price), gen -> gen.longs().min(1000L).max(100000L))
+                    .generate(field(OrderItem::quantity), gen -> gen.longs().min(1L).max(10L))
+                    .create();
+
+                this.api = this.api.set(field(OrderCommand.Create::items), orderItems);
                 return this;
             }
 
-            public OrderLineBuilder withPrice(Long price) {
-                this.api = this.api.set(field(AddOrderLine::price), price);
-                return this;
-            }
-
-            public OrderLineBuilder withQuantity(Long quantity) {
-                this.api = this.api.set(field(AddOrderLine::quantity), quantity);
-                return this;
-            }
-
-            public AddOrderLine build() {
+            public OrderCommand.Create build() {
                 return this.api.create();
             }
         }

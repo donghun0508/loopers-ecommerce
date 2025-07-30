@@ -11,6 +11,7 @@ public class MySqlTestContainersConfig {
 
     static {
         mySqlContainer = new MySQLContainer<>(DockerImageName.parse("mysql:8.0"))
+            .withReuse(true)
             .withDatabaseName("loopers")
             .withUsername("test")
             .withPassword("test")
