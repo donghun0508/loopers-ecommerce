@@ -35,8 +35,7 @@ public class HeartTest {
 
             assertThat(heart).satisfies(h -> {
                 assertThat(h.getUserId()).isEqualTo(command.userId());
-                assertThat(h.getTargetId()).isEqualTo(command.targetId());
-                assertThat(h.getTargetType()).isEqualTo(command.targetType());
+                assertThat(h.getTarget()).isEqualTo(command.target());
             });
         }
 

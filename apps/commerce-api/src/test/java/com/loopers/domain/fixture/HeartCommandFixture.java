@@ -3,7 +3,7 @@ package com.loopers.domain.fixture;
 import static org.instancio.Select.field;
 
 import com.loopers.domain.heart.HeartCommand;
-import com.loopers.domain.heart.TargetType;
+import com.loopers.domain.heart.Target;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 
@@ -28,13 +28,8 @@ public class HeartCommandFixture {
                 return null;
             }
 
-            public Builder withTargetId(Long targetId) {
-                this.api.set(field(HeartCommand.Create::targetId), targetId);
-                return this;
-            }
-
-            public Builder withTargetType(TargetType targetType) {
-                this.api.set(field(HeartCommand.Create::targetType), targetType);
+            public Builder withTarget(Target target) {
+                this.api.set(field(HeartCommand.Create::target), target);
                 return this;
             }
 
