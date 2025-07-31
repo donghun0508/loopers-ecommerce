@@ -16,6 +16,11 @@ public class ProductService {
         return productRepository.findAllById(productIds);
     }
 
+    @Transactional(readOnly = true)
+    public boolean existById(Long productId) {
+        return productRepository.existsById(productId);
+    }
+
     @Transactional
     public void saveAll(List<Product> purchaseProducts) {
         purchaseProducts.forEach(this::save);

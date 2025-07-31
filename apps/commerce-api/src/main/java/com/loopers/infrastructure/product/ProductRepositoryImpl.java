@@ -18,6 +18,11 @@ class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
+    public boolean existsById(Long productId) {
+        return productJpaRepository.existsById(productId);
+    }
+
+    @Override
     public Product save(Product product) {
         return productJpaRepository.save(product);
     }
