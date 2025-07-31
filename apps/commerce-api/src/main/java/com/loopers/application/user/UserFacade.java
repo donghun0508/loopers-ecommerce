@@ -1,11 +1,14 @@
 package com.loopers.application.user;
 
+import static java.util.Objects.isNull;
+
 import com.loopers.domain.shared.Money;
 import com.loopers.domain.user.User;
 import com.loopers.domain.user.UserCommand;
 import com.loopers.domain.user.UserService;
 import com.loopers.support.error.user.UserAlreadyExistsException;
 import com.loopers.support.error.user.UserNotFoundException;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,26 +27,22 @@ public class UserFacade {
 
     @Transactional
     public UserPointInfo chargePoint(String userId, Long amount) {
-        User user = userService.findByUserId(userId).orElseThrow(UserNotFoundException::new);
+        User user = userService.findByUserId(userId);
         user.earnPoints(new Money(amount));
         return UserPointInfo.from(user);
     }
 
     public UserInfo getUser(String userId) {
-        return userService.findByUserId(userId)
-            .map(UserInfo::from)
-            .orElseThrow(UserNotFoundException::new);
+        return UserInfo.from(userService.findByUserId(userId));
     }
 
     public UserPointInfo getUserPoint(String userId) {
-        return userService.findByUserId(userId)
-            .map(UserPointInfo::from)
-            .orElseThrow(UserNotFoundException::new);
+        return UserPointInfo.from(userService.findByUserId(userId));
     }
 
     public void validateDuplicateUserId(String userId) {
-        userService.findByUserId(userId).ifPresent(user -> {
+        if(userService.existByUserId(userId)) {
             throw new UserAlreadyExistsException();
-        });
+        }
     }
 }

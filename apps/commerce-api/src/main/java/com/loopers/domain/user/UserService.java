@@ -1,5 +1,8 @@
 package com.loopers.domain.user;
 
+import static java.util.Objects.isNull;
+
+import com.loopers.support.error.user.UserNotFoundException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,13 +20,18 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    @Transactional(readOnly = true)
-    public Optional<User> findByUserId(String userId) {
-        return userRepository.findByUserId(userId);
-    }
-
     @Transactional
     public User save(User user) {
         return userRepository.save(user);
+    }
+
+    @Transactional(readOnly = true)
+    public User findByUserId(String userId) {
+        return userRepository.findByUserId(userId).orElseThrow(UserNotFoundException::new);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean existByUserId(String userId) {
+        return userRepository.findByUserId(userId).isPresent();
     }
 }

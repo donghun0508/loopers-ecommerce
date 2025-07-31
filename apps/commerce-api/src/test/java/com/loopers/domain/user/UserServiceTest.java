@@ -1,12 +1,14 @@
 package com.loopers.domain.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
 import com.loopers.domain.fixture.UserCommandFixture;
 import com.loopers.environment.annotations.IntegrationTest;
-import java.util.Optional;
+import com.loopers.support.error.user.UserNotFoundException;
+import org.assertj.core.api.Assertions;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -59,25 +61,19 @@ public class UserServiceTest {
             User savedUser = userService.create(command);
 
             // act
-            Optional<User> optionalUser = userService.findByUserId(savedUser.getUserId());
+            User foundUser = userService.findByUserId(savedUser.getUserId());
 
             // assert
-            assertThat(optionalUser).isPresent();
-            User foundUser = optionalUser.get();
             assertUserEquals(foundUser, savedUser);
         }
 
-        @DisplayName("해당 ID 의 회원이 존재하지 않을 경우, null 이 반환된다.")
+        @DisplayName("해당 ID 의 회원이 존재하지 않을 경우, 예외를 반환한다.")
         @Test
         void returnNull_whenInValidIdIsProvided() {
-            // arrange
             String randomUserId = Instancio.create(String.class);
 
-            // act
-            Optional<User> optionalUser = userService.findByUserId(randomUserId);
-
-            // assert
-            assertThat(optionalUser).isNotPresent();
+            assertThatThrownBy(() -> userService.findByUserId(randomUserId))
+                .isInstanceOf(UserNotFoundException.class);
         }
     }
 

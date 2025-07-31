@@ -25,7 +25,7 @@ public class OrderFacade {
 
     @Transactional
     public void requestOrder(String userId, OrderCommand.Create command) {
-        User buyer = userService.findByUserId(userId).orElseThrow(UserNotFoundException::new);
+        User buyer = userService.findByUserId(userId);
         List<Product> products = productService.findAllById(command.productIds());
 
         Order order = Order.create(buyer.getId(), command);
