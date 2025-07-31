@@ -9,13 +9,11 @@ public class HeartCommand {
     @Builder
     public record Create(
         Long userId,
-        Long targetId,
-        TargetType targetType
+        Target target
     ) {
         public Create {
             requireNonNull(userId, "사용자 ID가 null일 수 없습니다.");
-            requireNonNull(targetId, "대상 ID가 null일 수 없습니다.");
-            requireNonNull(targetType, "대상 타입이 null일 수 없습니다.");
+            requireNonNull(target, "좋아요 대상이 null일 수 없습니다.");
         }
     }
 
