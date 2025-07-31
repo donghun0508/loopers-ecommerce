@@ -1,7 +1,7 @@
 package com.loopers.infrastructure.order;
 
-import com.loopers.domain.order.Order;
-import com.loopers.domain.order.OrderRepository;
+import com.loopers.domain.command.order.Order;
+import com.loopers.domain.command.order.OrderRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

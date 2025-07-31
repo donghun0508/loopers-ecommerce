@@ -1,7 +1,7 @@
 package com.loopers.application.heart;
 
 import com.loopers.application.heart.validate.TargetValidate;
-import com.loopers.domain.heart.Target;
+import com.loopers.domain.command.heart.Target;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

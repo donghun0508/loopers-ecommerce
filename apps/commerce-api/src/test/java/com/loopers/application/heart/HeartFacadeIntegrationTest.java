@@ -2,16 +2,16 @@ package com.loopers.application.heart;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import com.loopers.domain.fixture.ProductFixture;
-import com.loopers.domain.fixture.UserFixture;
-import com.loopers.domain.heart.Heart;
-import com.loopers.domain.heart.HeartService;
-import com.loopers.domain.heart.Target;
-import com.loopers.domain.heart.TargetType;
-import com.loopers.domain.product.Product;
-import com.loopers.domain.product.ProductRepository;
-import com.loopers.domain.user.User;
-import com.loopers.domain.user.UserRepository;
+import com.loopers.domain.command.fixture.ProductFixture;
+import com.loopers.domain.command.fixture.UserFixture;
+import com.loopers.domain.command.heart.Heart;
+import com.loopers.domain.command.heart.HeartService;
+import com.loopers.domain.command.heart.Target;
+import com.loopers.domain.command.heart.TargetType;
+import com.loopers.domain.command.product.Product;
+import com.loopers.domain.command.product.ProductRepository;
+import com.loopers.domain.command.user.User;
+import com.loopers.domain.command.user.UserRepository;
 import com.loopers.environment.annotations.IntegrationTest;
 import jakarta.persistence.Table;
 import java.util.List;

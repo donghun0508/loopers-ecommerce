@@ -1,14 +1,10 @@
 package com.loopers.application.user;
 
-import static java.util.Objects.isNull;
-
-import com.loopers.domain.shared.Money;
-import com.loopers.domain.user.User;
-import com.loopers.domain.user.UserCommand;
-import com.loopers.domain.user.UserService;
+import com.loopers.domain.command.shared.Money;
+import com.loopers.domain.command.user.User;
+import com.loopers.domain.command.user.UserCommand;
+import com.loopers.domain.command.user.UserService;
 import com.loopers.support.error.user.UserAlreadyExistsException;
-import com.loopers.support.error.user.UserNotFoundException;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

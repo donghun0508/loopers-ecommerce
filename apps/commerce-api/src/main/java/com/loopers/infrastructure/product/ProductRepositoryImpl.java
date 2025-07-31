@@ -1,7 +1,7 @@
 package com.loopers.infrastructure.product;
 
-import com.loopers.domain.product.Product;
-import com.loopers.domain.product.ProductRepository;
+import com.loopers.domain.command.product.Product;
+import com.loopers.domain.command.product.ProductRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -28,7 +28,7 @@ class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public List<Product>  saveAll(List<Product> product) {
+    public List<Product> saveAll(List<Product> product) {
         return productJpaRepository.saveAll(product);
     }
 }

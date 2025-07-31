@@ -1,14 +1,13 @@
 package com.loopers.application.order;
 
-import com.loopers.domain.order.Order;
-import com.loopers.domain.order.OrderCommand;
-import com.loopers.domain.order.OrderService;
-import com.loopers.domain.product.Product;
-import com.loopers.domain.product.ProductService;
-import com.loopers.domain.product.StockManager;
-import com.loopers.domain.user.User;
-import com.loopers.domain.user.UserService;
-import com.loopers.support.error.user.UserNotFoundException;
+import com.loopers.domain.command.order.Order;
+import com.loopers.domain.command.order.OrderCommand;
+import com.loopers.domain.command.order.OrderService;
+import com.loopers.domain.command.product.Product;
+import com.loopers.domain.command.product.ProductService;
+import com.loopers.domain.command.product.StockManager;
+import com.loopers.domain.command.user.User;
+import com.loopers.domain.command.user.UserService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

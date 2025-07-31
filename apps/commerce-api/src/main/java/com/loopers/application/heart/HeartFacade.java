@@ -1,11 +1,10 @@
 package com.loopers.application.heart;
 
-import com.loopers.domain.heart.Heart;
-import com.loopers.domain.heart.HeartCommand;
-import com.loopers.domain.heart.HeartService;
-import com.loopers.domain.heart.Target;
-import com.loopers.domain.user.User;
-import com.loopers.domain.user.UserService;
+import com.loopers.domain.command.heart.HeartCommand;
+import com.loopers.domain.command.heart.HeartService;
+import com.loopers.domain.command.heart.Target;
+import com.loopers.domain.command.user.User;
+import com.loopers.domain.command.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;

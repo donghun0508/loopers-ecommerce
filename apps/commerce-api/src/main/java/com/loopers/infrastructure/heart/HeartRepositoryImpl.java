@@ -1,9 +1,9 @@
 package com.loopers.infrastructure.heart;
 
-import com.loopers.domain.heart.Heart;
-import com.loopers.domain.heart.HeartRepository;
-import com.loopers.domain.heart.Target;
-import com.loopers.domain.heart.TargetType;
+import com.loopers.domain.command.heart.Heart;
+import com.loopers.domain.command.heart.HeartRepository;
+import com.loopers.domain.command.heart.Target;
+import com.loopers.domain.command.heart.TargetType;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;

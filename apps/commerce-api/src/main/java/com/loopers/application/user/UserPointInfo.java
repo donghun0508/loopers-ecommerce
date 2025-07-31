@@ -1,6 +1,6 @@
 package com.loopers.application.user;
 
-import com.loopers.domain.user.User;
+import com.loopers.domain.command.user.User;
 import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Builder;

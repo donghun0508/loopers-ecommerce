@@ -1,9 +1,9 @@
 package com.loopers.application.heart.validate;
 
-import static com.loopers.domain.heart.TargetType.PRODUCT;
+import static com.loopers.domain.command.heart.TargetType.PRODUCT;
 
-import com.loopers.domain.heart.TargetType;
-import com.loopers.domain.product.ProductService;
+import com.loopers.domain.command.heart.TargetType;
+import com.loopers.domain.command.product.ProductService;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
 import lombok.RequiredArgsConstructor;
