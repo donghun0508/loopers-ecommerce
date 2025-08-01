@@ -1,4 +1,4 @@
-package com.loopers.interfaces.api;
+package com.loopers.interfaces.api.shared;
 
 import com.loopers.domain.query.shared.PageConstants;
 import lombok.Data;

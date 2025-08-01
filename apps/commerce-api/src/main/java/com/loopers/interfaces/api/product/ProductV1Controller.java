@@ -4,7 +4,7 @@ import com.loopers.application.product.ProductFacade;
 import com.loopers.domain.query.product.ProductQuery;
 import com.loopers.interfaces.api.ApiHeaders;
 import com.loopers.interfaces.api.ApiResponse;
-import com.loopers.interfaces.api.PaginationRequest;
+import com.loopers.interfaces.api.shared.PaginationRequest;
 import com.loopers.interfaces.api.product.ProductV1Dto.GetDetail;
 import com.loopers.interfaces.api.product.ProductV1Dto.GetList;
 import lombok.RequiredArgsConstructor;

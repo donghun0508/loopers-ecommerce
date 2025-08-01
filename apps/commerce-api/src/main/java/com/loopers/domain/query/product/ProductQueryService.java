@@ -3,7 +3,6 @@ package com.loopers.domain.query.product;
 import static com.loopers.support.error.ErrorType.NOT_FOUND;
 
 import com.loopers.support.error.CoreException;
-import com.loopers.support.error.ErrorType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

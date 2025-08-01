@@ -1,7 +1,7 @@
 package com.loopers.interfaces.api.product;
 
 import com.loopers.interfaces.api.ApiResponse;
-import com.loopers.interfaces.api.PaginationRequest;
+import com.loopers.interfaces.api.shared.PaginationRequest;
 import com.loopers.interfaces.api.product.ProductV1Dto.GetList.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
