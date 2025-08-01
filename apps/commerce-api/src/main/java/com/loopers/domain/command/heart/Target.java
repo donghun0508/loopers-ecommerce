@@ -1,9 +1,11 @@
 package com.loopers.domain.command.heart;
 
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 
 @Embeddable
-public record Target(Long targetId, TargetType targetType) {
+public record Target(Long targetId, @Enumerated(value = EnumType.STRING) TargetType targetType) {
 
     public Target {
         if (targetId == null) {

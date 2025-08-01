@@ -55,7 +55,7 @@ class HeartFacadeIntegrationTest {
         void concurrentLikeTest_withUniqueConstraint() throws InterruptedException {
             executeConcurrentLikeTest(
                 heartFacade::likeUnsafe,
-                count -> assertThat(count).isGreaterThan(1)
+                count -> assertThat(count).isEqualTo(1)
             );
         }
 
