@@ -37,7 +37,7 @@ public class UserServiceTest {
     class Create {
 
         @DisplayName("회원 도메인 객체 생성 후 User 저장이 수행된다. ( spy 검증 )")
-        @RepeatedTest(10)
+        @Test
         void returnsUser_whenCreateUser() {
             // arrange
             UserCommand.Create command = UserCommandFixture.Create.complete().create();

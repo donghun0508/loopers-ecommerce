@@ -1,11 +1,13 @@
 package com.loopers.interfaces.api.user;
 
+import static com.loopers.interfaces.api.ApiHeaders.USER_ID;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.loopers.environment.annotations.E2ETest;
+import com.loopers.interfaces.api.ApiHeaders;
 import com.loopers.interfaces.api.ApiResponse;
 import com.loopers.interfaces.api.user.fixture.UserV1DtoFixture;
 import com.loopers.utils.DatabaseCleanUp;
@@ -100,7 +102,7 @@ class UserV1ApiE2ETest {
             // arrange
             String userId = "12345";
             HttpHeaders headers = new HttpHeaders();
-            headers.set("X-USER-ID", userId);
+            headers.set(USER_ID, userId);
 
             // act
             ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>> responseType = new ParameterizedTypeReference<>() {
@@ -126,7 +128,7 @@ class UserV1ApiE2ETest {
                 .userId();
 
             HttpHeaders headers = new HttpHeaders();
-            headers.set("X-USER-ID", String.valueOf(userId));
+            headers.set(USER_ID, String.valueOf(userId));
 
             // act
             ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>> responseType = new ParameterizedTypeReference<>() {
