@@ -3,12 +3,11 @@ package com.loopers.application.order;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-import com.loopers.domain.command.fixture.OrderCommandFixture;
 import com.loopers.domain.command.fixture.ProductFixture;
 import com.loopers.domain.command.fixture.UserFixture;
 import com.loopers.domain.command.order.Order;
-import com.loopers.domain.command.order.OrderCommand;
-import com.loopers.domain.command.order.OrderCommand.Create.OrderItem;
+import com.loopers.domain.command.order.OrderForm;
+import com.loopers.domain.command.order.OrderForm.PurchaseItem;
 import com.loopers.domain.command.order.OrderRepository;
 import com.loopers.domain.command.product.Product;
 import com.loopers.domain.command.product.ProductRepository;
@@ -58,9 +57,11 @@ class OrderFacadeIntegrationTest {
         @Test
         void throwsInvalidException_whenUserNotFound() {
             String nonExistentUserId = "no-user-id";
-            OrderCommand.Create command = OrderCommandFixture.Create.builder().build();
+            OrderForm orderForm = OrderForm.builder()
+                .purchaseItems(List.of(new PurchaseItem(Long.MAX_VALUE, 1000L)))
+                .build();
 
-            assertThatThrownBy(() -> orderFacade.requestOrder(nonExistentUserId, command))
+            assertThatThrownBy(() -> orderFacade.requestOrder(nonExistentUserId, orderForm))
                 .isInstanceOf(UserNotFoundException.class);
         }
 
@@ -69,14 +70,12 @@ class OrderFacadeIntegrationTest {
         void throwsInvalidException_whenProductNotFound() {
             User user = UserFixture.integration().build();
             userRepository.save(user);
-            OrderCommand.Create command = new OrderCommand.Create(
-                List.of(
-                    new OrderItem(Long.MAX_VALUE, 1000L, 1000L),
-                    new OrderItem(Long.MAX_VALUE - 1, 1000L, 1000L)
-                )
-            );
 
-            assertThatThrownBy(() -> orderFacade.requestOrder(user.getUserId(), command))
+            OrderForm orderForm = OrderForm.builder()
+                .purchaseItems(List.of(new PurchaseItem(Long.MAX_VALUE, 1000L)))
+                .build();
+
+            assertThatThrownBy(() -> orderFacade.requestOrder(user.getUserId(), orderForm))
                 .isInstanceOf(IllegalArgumentException.class);
         }
 
@@ -97,19 +96,28 @@ class OrderFacadeIntegrationTest {
                 ProductFixture.integration().withStock(200L).withPrice(200L).build()
             ));
 
-            List<OrderItem> orderItems = products.stream()
-                .map(product -> new OrderItem(
+            List<PurchaseItem> purchaseItems = products.stream()
+                .map(product -> new PurchaseItem(
                     product.getId(),
-                    product.getPrice().value(),
-                    Math.max(1L, product.getStock().count() / 10)
+                    Math.max(1, (product.getStock().count() / 10))
                 ))
                 .toList();
 
-            OrderCommand.Create command = new OrderCommand.Create(orderItems);
-            totalUsePrice = command.totalPrice();
+            OrderForm orderForm = OrderForm.builder()
+                .purchaseItems(purchaseItems)
+                .build();
+
+            totalUsePrice = products.stream()
+                .mapToLong(product -> {
+                    Long quantity = orderForm.getQuantity(product.getId());
+                    return product.getPrice().value() * quantity;
+                })
+                .sum();
+
+            Map<Long, Long> orderItems = orderForm.getPurchaseItemQuantityMap();
 
             // act
-            orderFacade.requestOrder(user.getUserId(), command);
+            orderFacade.requestOrder(user.getUserId(), orderForm);
 
             // assert
             User findUser = userRepository.findByUserId(user.getUserId()).orElseThrow();
@@ -120,9 +128,8 @@ class OrderFacadeIntegrationTest {
             assertThat(findOrder.getOrderLineCount()).isEqualTo(orderItems.size());
             assertThat(findOrder).satisfies(order -> {
                 Map<Long, Long> actualLines = order.lines();
-                orderItems.forEach(expectedItem ->
-                    assertThat(actualLines.get(expectedItem.productId()))
-                        .isEqualTo(expectedItem.quantity())
+                orderItems.forEach((productId, expectedQuantity) ->
+                    assertThat(actualLines.get(productId)).isEqualTo(expectedQuantity)
                 );
 
                 assertThat(actualLines).hasSize(orderItems.size());

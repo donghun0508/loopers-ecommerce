@@ -1,6 +1,7 @@
 package com.loopers.domain.command.order;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.in;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import com.loopers.domain.command.order.OrderCommand;
@@ -24,11 +25,19 @@ class OrderCommandTest {
     @Nested
     class Create {
 
+        @DisplayName("회원 Id가 null인 경우 예외를 발생시킨다.")
+        @ParameterizedTest
+        @NullSource
+        void throwsException_whenUserIdIsNull(Long invalidUserId) {
+            assertThatThrownBy(() -> new OrderCommand.Create(invalidUserId, List.of()))
+                .isInstanceOf(NullPointerException.class);
+        }
+
         @DisplayName("주문 항목이 비어 있는 경우 예외를 발생시킨다.")
         @ParameterizedTest
         @NullSource
         void throwsException_whenItemsIsNull(List<OrderItem> invalidItems) {
-            assertThatThrownBy(() -> new OrderCommand.Create(invalidItems))
+            assertThatThrownBy(() -> new OrderCommand.Create(1L, invalidItems))
                 .isInstanceOf(NullPointerException.class);
         }
 
@@ -36,7 +45,7 @@ class OrderCommandTest {
         @ParameterizedTest
         @EmptySource
         void throwsException_whenItemsIsEmpty(List<OrderItem> invalidItems) {
-            assertThatThrownBy(() -> new OrderCommand.Create(invalidItems))
+            assertThatThrownBy(() -> new OrderCommand.Create(1L,invalidItems))
                 .isInstanceOf(IllegalArgumentException.class);
         }
 

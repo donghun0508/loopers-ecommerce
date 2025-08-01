@@ -30,11 +30,11 @@ public class Order extends BaseEntity {
     @Embedded
     private OrderLines orderLines;
 
-    public static Order create(Long userId, OrderCommand.Create command) {
-        requireNonNull(userId, "회원 ID가 null입니다.");
+    public static Order create(OrderCommand.Create command) {
+        requireNonNull(command, "주문 생성 명령 요청은 null일 수 없습니다.");
 
         Order order = new Order();
-        order.userId = userId;
+        order.userId = command.userId();
         order.orderLines = OrderLines.empty();
 
         for (OrderItem item : command.items()) {

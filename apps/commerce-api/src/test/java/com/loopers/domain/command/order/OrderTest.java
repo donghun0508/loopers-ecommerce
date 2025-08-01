@@ -24,23 +24,13 @@ class OrderTest {
     @Nested
     class Create {
 
-        @DisplayName("회원 PK값이 null인 경우 예외가 발생한다.")
-        @ParameterizedTest
-        @NullSource
-        void createOrder_whenUserIdIsNull(Long invalidUserId) {
-            OrderCommand.Create command = OrderCommandFixture.Create.builder().build();
-
-            assertThatThrownBy(() -> Order.create(invalidUserId, command))
-                .isInstanceOf(NullPointerException.class);
-        }
-
         @DisplayName("회원 PK값이 유효한 경우 주문 객체를 생성한다.")
         @Test
         void createOrder_whenUserIdIsValid() {
             Long validUserId = 1L;
-            OrderCommand.Create command = OrderCommandFixture.Create.builder().build();
+            OrderCommand.Create command = OrderCommandFixture.Create.builder().withUserId(validUserId).build();
 
-            Order order = Order.create(validUserId, command);
+            Order order = Order.create(command);
 
             assertThat(order).satisfies(o -> {
                 assertThat(o).isNotNull();

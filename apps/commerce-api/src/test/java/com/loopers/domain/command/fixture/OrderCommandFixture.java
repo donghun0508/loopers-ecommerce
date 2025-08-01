@@ -55,6 +55,11 @@ public class OrderCommandFixture {
                 return this;
             }
 
+            public Builder withUserId(Long userId) {
+                this.api =  this.api.set(field(OrderCommand.Create::userId), userId);
+                return this;
+            }
+
             public OrderCommand.Create build() {
                 return this.api.create();
             }

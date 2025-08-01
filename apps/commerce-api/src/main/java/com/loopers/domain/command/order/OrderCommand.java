@@ -10,9 +10,13 @@ import lombok.Builder;
 
 public class OrderCommand {
 
-    public record Create(List<OrderItem> items) {
+    public record Create(
+        Long userId,
+        List<OrderItem> items
+    ) {
 
         public Create {
+            requireNonNull(userId, "회원 Id는 null일 수 없습니다.");
             requireNonNull(items, "주문 항목은 null일 수 없습니다.");
             requireNonEmpty(items, "주문 항목은 비어있을 수 없습니다.");
         }
