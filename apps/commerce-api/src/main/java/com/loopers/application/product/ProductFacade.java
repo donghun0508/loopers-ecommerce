@@ -14,7 +14,11 @@ public class ProductFacade {
 
     private final ProductQueryService productQueryService;
 
-    public Page<Response> getProducts(ProductQuery.List.Condition condition, Pageable pageable) {
+    public Page<ProductQuery.List.Response> getProducts(ProductQuery.List.Condition condition, Pageable pageable) {
         return productQueryService.findProducts(condition, pageable);
+    }
+
+    public ProductQuery.Detail.Response getProductDetail(ProductQuery.Detail.Condition condition) {
+        return productQueryService.findProductDetail(condition);
     }
 }

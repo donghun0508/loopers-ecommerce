@@ -4,6 +4,7 @@ import com.loopers.interfaces.api.ApiResponse;
 import com.loopers.interfaces.api.PaginationRequest;
 import com.loopers.interfaces.api.product.ProductV1Dto.GetList.Response;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 
@@ -16,5 +17,15 @@ public interface ProductV1ApiSpec {
     )
     ApiResponse<Page<Response>> getProducts(
         ProductV1Dto.GetList.Request request, PaginationRequest paginationRequest
+    );
+
+    @Operation(
+        summary = "상품 상세 조회",
+        description = "상품의 상세 정보를 조회합니다."
+    )
+    ApiResponse<ProductV1Dto.GetDetail.Response> getProductDetail(
+        Long productId,
+        @Parameter(hidden = true)
+        String userId
     );
 }

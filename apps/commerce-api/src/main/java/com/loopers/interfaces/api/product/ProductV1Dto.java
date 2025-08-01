@@ -56,4 +56,47 @@ public class ProductV1Dto {
         }
     }
 
+    public static class GetDetail {
+
+        public record Response(
+            Long productId,
+            ProductDetailInfo product,
+            BrandDetailInfo brand
+        ) {
+
+            public record ProductDetailInfo(
+                String productName,
+                boolean isSoldOut,
+                Long price,
+                Long likeCount,
+                boolean isLiked
+            ) {
+
+            }
+
+            public record BrandDetailInfo(
+                Long brandId,
+                String brandName
+            ) {
+
+            }
+
+            public static GetDetail.Response from(ProductQuery.Detail.Response response) {
+                return new GetDetail.Response(
+                    response.productId(),
+                    new ProductDetailInfo(
+                        response.product().productName(),
+                        response.product().isSoldOut(),
+                        response.product().price(),
+                        response.product().likeCount(),
+                        response.product().isLiked()
+                    ),
+                    new BrandDetailInfo(
+                        response.brand().brandId(),
+                        response.brand().brandName()
+                    )
+                );
+            }
+        }
+    }
 }

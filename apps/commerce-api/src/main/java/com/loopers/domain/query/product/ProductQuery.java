@@ -37,4 +37,38 @@ public class ProductQuery {
             }
         }
     }
+
+    public static class Detail {
+
+        public record Condition(
+            Long productId,
+            String userId
+        ) {
+
+        }
+
+        public record Response(
+            Long productId,
+            ProductDetailInfo product,
+            BrandDetailInfo brand
+        ) {
+
+            public record ProductDetailInfo(
+                String productName,
+                boolean isSoldOut,
+                Long price,
+                Long likeCount,
+                boolean isLiked
+            ) {
+
+            }
+
+            public record BrandDetailInfo(
+                Long brandId,
+                String brandName
+            ) {
+
+            }
+        }
+    }
 }
