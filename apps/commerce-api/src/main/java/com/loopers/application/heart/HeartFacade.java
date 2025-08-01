@@ -5,9 +5,14 @@ import com.loopers.domain.command.heart.HeartService;
 import com.loopers.domain.command.heart.Target;
 import com.loopers.domain.command.user.User;
 import com.loopers.domain.command.user.UserService;
+import com.loopers.domain.query.heart.HeartQuery.List.Condition;
+import com.loopers.domain.query.heart.HeartQuery.List.Response;
+import com.loopers.domain.query.heart.HeartQueryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -17,6 +22,7 @@ public class HeartFacade {
 
     private final UserService userService;
     private final HeartService heartService;
+    private final HeartQueryService heartQueryService;
     private final TargetValidateService targetValidateService;
 
     public void like(String userId, Target target) {
@@ -47,8 +53,12 @@ public class HeartFacade {
     }
 
     private void duplicateHeart(Target target, User user) {
-        if(heartService.existsByUserIdAndTarget(user.getId(), target)) {
+        if (heartService.existsByUserIdAndTarget(user.getId(), target)) {
             throw new IllegalArgumentException("이미 좋아요를 눌렀습니다.");
         }
+    }
+
+    public Page<Response> getHeartList(Condition condition, Pageable pageable) {
+        return heartQueryService.getHeartList(condition, pageable);
     }
 }
