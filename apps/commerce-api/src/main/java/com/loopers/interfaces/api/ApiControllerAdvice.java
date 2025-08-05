@@ -4,14 +4,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.loopers.support.error.CoreException;
-import com.loopers.support.error.ErrorCode;
 import com.loopers.support.error.ErrorType;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -25,13 +18,20 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.server.ServerWebInputException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 @RestControllerAdvice
 @Slf4j
 public class ApiControllerAdvice {
     @ExceptionHandler
     public ResponseEntity<ApiResponse<?>> handle(CoreException e) {
         log.warn("CoreException : {}", e.getCustomMessage() != null ? e.getCustomMessage() : e.getMessage(), e);
-        return failureResponse(e.getErrorCode(), e.getCustomMessage());
+        return failureResponse(e.getErrorType(), e.getCustomMessage());
     }
 
     @ExceptionHandler
@@ -69,7 +69,7 @@ public class ApiControllerAdvice {
         });
 
         String message = errors.isEmpty() ? "입력값 검증에 실패했습니다."
-            : String.format("입력값 검증에 실패했습니다. 오류 필드: %s", String.join(", ", errors.keySet()));
+                : String.format("입력값 검증에 실패했습니다. 오류 필드: %s", String.join(", ", errors.keySet()));
         return failureResponse(ErrorType.BAD_REQUEST, message);
     }
 
@@ -146,8 +146,8 @@ public class ApiControllerAdvice {
         return matcher.find() ? matcher.group(1) : "";
     }
 
-    private ResponseEntity<ApiResponse<?>> failureResponse(ErrorCode errorCode, String errorMessage) {
-        return ResponseEntity.status(errorCode.getStatus())
-            .body(ApiResponse.fail(errorCode.getCode(), errorMessage != null ? errorMessage : errorCode.getMessage()));
+    private ResponseEntity<ApiResponse<?>> failureResponse(ErrorType errorType, String errorMessage) {
+        return ResponseEntity.status(errorType.getStatus())
+            .body(ApiResponse.fail(errorType.getCode(), errorMessage != null ? errorMessage : errorType.getMessage()));
     }
 }

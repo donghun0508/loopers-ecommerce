@@ -1,21 +1,19 @@
 package com.loopers.application.order;
 
-import com.loopers.domain.command.order.Order;
-import com.loopers.domain.command.order.OrderFactory;
-import com.loopers.domain.command.order.OrderForm;
-import com.loopers.domain.command.order.OrderService;
-import com.loopers.domain.command.product.Product;
-import com.loopers.domain.command.product.ProductService;
-import com.loopers.domain.command.product.StockManager;
-import com.loopers.domain.command.user.User;
-import com.loopers.domain.command.user.UserService;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import com.loopers.application.order.CriteriaCommand.OrderRequestCriteria;
+import com.loopers.domain.catalog.Product;
+import com.loopers.domain.catalog.ProductManager;
+import com.loopers.domain.catalog.ProductService;
+import com.loopers.domain.order.Order;
+import com.loopers.domain.order.OrderCreateCommand;
+import com.loopers.domain.order.OrderService;
+import com.loopers.domain.user.User;
+import com.loopers.domain.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Component
@@ -24,21 +22,17 @@ public class OrderFacade {
     private final UserService userService;
     private final ProductService productService;
     private final OrderService orderService;
-    private final StockManager stockManager;
-    private final OrderFactory orderFactory;
 
     @Transactional
-    public void requestOrder(String userId, OrderForm orderForm) {
-        User buyer = userService.findByUserId(userId);
-        List<Product> products = productService.findAllById(orderForm.productIds());
+    public void requestOrder(OrderRequestCriteria criteria) {
+        User buyer = userService.findByAccountId(criteria.accountId());
+        List<Product> actualProducts = productService.findAll(criteria.purchaseProductIds());
 
-        Order order = orderFactory.createOrder(buyer, products, orderForm);
-        stockManager.deduct(order.lines(), products);
+        ProductManager productManager = ProductManager.assign(actualProducts, criteria.purchaseProducts());
+        productManager.decreaseStock();
+        buyer.usePoint(productManager.totalPrice());
 
-        buyer.usePoints(order.getTotalAmount());
-
-        userService.save(buyer);
-        orderService.save(order);
-        productService.saveAll(products);
+        OrderCreateCommand orderCreateCommand = OrderCreateCommand.of(buyer.getId(), productManager.snapshots());
+        Order order = orderService.create(orderCreateCommand);
     }
 }

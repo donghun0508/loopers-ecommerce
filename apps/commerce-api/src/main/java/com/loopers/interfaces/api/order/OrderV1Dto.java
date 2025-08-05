@@ -1,33 +1,19 @@
 package com.loopers.interfaces.api.order;
 
-import com.loopers.domain.command.order.OrderForm;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class OrderV1Dto {
+    public record OrderRequest(List<PurchaseItem> items) {
 
-    public static class RequestOrder {
+        public Map<Long, Long> toPurchaseMap() {
+            return items.stream()
+                    .collect(Collectors.toMap(PurchaseItem::productId, PurchaseItem::quantity));
+        }
 
-        public record Request(
-            List<PurchaseItem> items
-        ) {
+        public record PurchaseItem(Long productId, Long quantity) {
 
-            public OrderForm toOrderForm() {
-                return OrderForm.builder()
-                    .purchaseItems(
-                        items.stream().map(item ->
-                                new OrderForm.PurchaseItem(item.productId, item.quantity))
-                            .toList()
-                    )
-                    .build();
-            }
-
-            public record PurchaseItem(
-                Long productId,
-                Long quantity
-            ) {
-
-            }
         }
     }
-
 }

@@ -1,29 +1,29 @@
 package com.loopers.interfaces.api.point;
 
-import com.loopers.application.user.UserPointInfo;
-import java.util.Objects;
+import com.loopers.application.user.Results.UserPointResult;
 import lombok.AccessLevel;
 import lombok.Builder;
 
+import java.util.Objects;
+
 public class PointV1Dto {
 
-    @Builder
-    public record ChargeRequest(
-        Long amount
-    ) {
+    public record ChargeRequest(Long amount) {
 
     }
 
     @Builder(access = AccessLevel.PRIVATE)
     public record PointResponse(
-        Long point
+            String userId,
+            Long point
     ) {
-        public static PointResponse from(UserPointInfo userPointInfo) {
-            Objects.requireNonNull(userPointInfo, "UserPointInfo 객체가 null입니다.");
+        public static PointResponse from(UserPointResult userPointResult) {
+            Objects.requireNonNull(userPointResult, "UserPointResult 객체가 null입니다.");
 
             return PointResponse.builder()
-                .point(userPointInfo.point())
-                .build();
+                    .userId(userPointResult.accountId())
+                    .point(userPointResult.point())
+                    .build();
         }
     }
 }

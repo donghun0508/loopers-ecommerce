@@ -1,36 +1,32 @@
 package com.loopers.interfaces.api.heart;
 
-import com.loopers.domain.query.heart.HeartQuery.List;
+
+import com.loopers.application.heart.Results.HeartResult;
 
 public class HeartV1Dto {
+    public record Response(ProductInfo product) {
 
-    public static class GetList {
+        public static Response from(HeartResult heartResult) {
+            return new Response(ProductInfo.from(heartResult.product()));
+        }
 
-        public record Response(
-            ProductInfo product
-        ) {
-
-            public record ProductInfo(
+        public record ProductInfo(
                 String productName,
                 boolean isSoldOut,
                 Long price,
                 Long brandId,
                 String brandName,
                 Long likeCount
-            ) {
+        ) {
 
-            }
-
-            public static HeartV1Dto.GetList.Response from(List.Response response) {
-                return new HeartV1Dto.GetList.Response(
-                    new ProductInfo(
-                        response.product().productName()
-                        , response.product().isSoldOut()
-                        , response.product().price()
-                        , response.product().brandId()
-                        , response.product().brandName()
-                        , response.product().likeCount()
-                    )
+            public static ProductInfo from(HeartResult.ProductInfo product) {
+                return new ProductInfo(
+                        product.productName(),
+                        product.isSoldOut(),
+                        product.price(),
+                        product.brandId(),
+                        product.brandName(),
+                        product.likeCount()
                 );
             }
         }

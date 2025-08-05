@@ -1,8 +1,7 @@
 package com.loopers.interfaces.api.heart;
 
 import com.loopers.interfaces.api.ApiResponse;
-import com.loopers.interfaces.api.heart.HeartV1Dto.GetList.Response;
-import com.loopers.interfaces.api.shared.PaginationRequest;
+import com.loopers.interfaces.api.PaginationRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,8 +17,8 @@ public interface HeartV1ApiSpec {
     ApiResponse<?> removeHeart(Long productId, @Parameter(hidden = true) String userId);
 
     @Operation(summary = "내가 좋아요 한 상품 목록 조회", description = "내가 좋아요 한 상품 목록을 조회합니다.")
-    ApiResponse<Page<Response>> getHeartList(
-        @Parameter(description = "페이지 정보") PaginationRequest paginationRequest,
-        @Parameter(hidden = true) String userId
+    ApiResponse<Page<HeartV1Dto.Response>> getHeartList(
+            @Parameter(description = "페이지 정보") PaginationRequest paginationRequest,
+            @Parameter(hidden = true) String userId
     );
 }

@@ -1,13 +1,13 @@
 -- User 테스트 데이터 INSERT (3명)
-INSERT INTO users (user_id, email, birth, gender, created_at, updated_at)
-VALUES ('test', 'john.doe@example.com', '1995-03-15', 'M', NOW(), NOW()),
-       ('alice456', 'alice.smith@example.com', '1992-07-22', 'F', NOW(), NOW()),
-       ('bob789', 'bob.wilson@example.com', '1988-11-08', 'M', NOW(), NOW());
+INSERT INTO users (account_id, email, birth, gender, created_at, updated_at)
+VALUES ('test', 'john.doe@example.com', '1995-03-15', 'MALE', NOW(), NOW()),
+       ('alice456', 'alice.smith@example.com', '1992-07-22', 'FEMALE', NOW(), NOW()),
+       ('bob789', 'bob.wilson@example.com', '1988-11-08', 'MALE', NOW(), NOW());
 
 INSERT INTO point (user_id, balance, created_at, updated_at)
-VALUES ((SELECT id FROM users WHERE user_id = 'test'), 0, NOW(), NOW()),
-       ((SELECT id FROM users WHERE user_id = 'alice456'), 50000, NOW(), NOW()),
-       ((SELECT id FROM users WHERE user_id = 'bob789'), 25000, NOW(), NOW());
+VALUES ((SELECT id FROM users WHERE account_id = 'test'), 0, NOW(), NOW()),
+       ((SELECT id FROM users WHERE account_id = 'alice456'), 50000, NOW(), NOW()),
+       ((SELECT id FROM users WHERE account_id = 'bob789'), 25000, NOW(), NOW());
 
 
 INSERT INTO brand (name, created_at, updated_at)
@@ -71,8 +71,8 @@ VALUES (1, 'Alpha Bag', 15000, 100, '2024-12-15 14:32:10', now()),
 
 INSERT INTO heart (user_id, target_id, target_type, created_at, updated_at)
 VALUES
-    ((SELECT id FROM users WHERE user_id = 'test'), (SELECT id FROM product WHERE brand_id = 1 AND name = 'Alpha Bag' LIMIT 1), 'PRODUCT', NOW(), NOW()),
-    ((SELECT id FROM users WHERE user_id = 'alice456'), (SELECT id FROM product WHERE brand_id = 1 AND name = 'Alpha Bag' LIMIT 1),'PRODUCT',NOW(),NOW()),
-    ((SELECT id FROM users WHERE user_id = 'test'), (SELECT id FROM product WHERE brand_id = 1 AND name = 'Beta Shoes' LIMIT 1),'PRODUCT',NOW(),NOW()),
-    ((SELECT id FROM users WHERE user_id = 'alice456'), (SELECT id FROM product WHERE brand_id = 1 AND name = 'Beta Shoes' LIMIT 1),'PRODUCT',NOW(),NOW())
+    ((SELECT id FROM users WHERE account_id = 'test'), (SELECT id FROM product WHERE brand_id = 1 AND name = 'Alpha Bag' LIMIT 1), 'PRODUCT', NOW(), NOW()),
+    ((SELECT id FROM users WHERE account_id = 'alice456'), (SELECT id FROM product WHERE brand_id = 1 AND name = 'Alpha Bag' LIMIT 1),'PRODUCT',NOW(),NOW()),
+    ((SELECT id FROM users WHERE account_id = 'test'), (SELECT id FROM product WHERE brand_id = 1 AND name = 'Beta Shoes' LIMIT 1),'PRODUCT',NOW(),NOW()),
+    ((SELECT id FROM users WHERE account_id = 'alice456'), (SELECT id FROM product WHERE brand_id = 1 AND name = 'Beta Shoes' LIMIT 1),'PRODUCT',NOW(),NOW())
 ;

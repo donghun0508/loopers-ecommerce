@@ -1,24 +1,18 @@
 package com.loopers.interfaces.api.heart;
 
+import com.loopers.application.heart.CriteriaCommand;
+import com.loopers.application.heart.CriteriaCommand.LikeCriteria;
+import com.loopers.application.heart.CriteriaQuery.GetHeartListCriteria;
 import com.loopers.application.heart.HeartFacade;
-import com.loopers.domain.command.heart.Target;
-import com.loopers.domain.command.heart.TargetType;
-import com.loopers.domain.query.heart.HeartQuery;
-import com.loopers.domain.query.heart.HeartQuery.List.Condition;
+import com.loopers.application.heart.HeartQueryFacade;
+import com.loopers.application.heart.Results.HeartResult;
+import com.loopers.domain.heart.TargetType;
 import com.loopers.interfaces.api.ApiHeaders;
 import com.loopers.interfaces.api.ApiResponse;
-import com.loopers.interfaces.api.heart.HeartV1Dto.GetList.Response;
-import com.loopers.interfaces.api.shared.PaginationRequest;
+import com.loopers.interfaces.api.PaginationRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -26,35 +20,38 @@ import org.springframework.web.bind.annotation.RestController;
 public class HeartV1Controller implements HeartV1ApiSpec {
 
     private final HeartFacade heartFacade;
+    private final HeartQueryFacade heartQueryFacade;
 
     @Override
     @PostMapping("/products/{productId}")
     public ApiResponse<?> addHeart(
-        @PathVariable Long productId,
-        @RequestHeader(value = ApiHeaders.USER_ID, required = true) String userId
+            @PathVariable Long productId,
+            @RequestHeader(value = ApiHeaders.USER_ID, required = true) String userId
     ) {
-        heartFacade.like(userId, Target.of(productId, TargetType.PRODUCT));
+        LikeCriteria criteria = LikeCriteria.of(userId, productId, TargetType.PRODUCT);
+        heartFacade.like(criteria);
         return ApiResponse.success();
     }
 
     @Override
     @DeleteMapping("/products/{productId}")
     public ApiResponse<?> removeHeart(
-        @PathVariable Long productId,
-        @RequestHeader(value = ApiHeaders.USER_ID, required = true) String userId
+            @PathVariable Long productId,
+            @RequestHeader(value = ApiHeaders.USER_ID, required = true) String userId
     ) {
-        heartFacade.unlike(userId, Target.of(productId, TargetType.PRODUCT));
+        CriteriaCommand.UnlikeCriteria criteria = CriteriaCommand.UnlikeCriteria.of(userId, productId, TargetType.PRODUCT);
+        heartFacade.unlike(criteria);
         return ApiResponse.success();
     }
 
     @Override
     @GetMapping("/products")
-    public ApiResponse<Page<Response>> getHeartList(
-        @ModelAttribute PaginationRequest paginationRequest,
-        @RequestHeader(value = ApiHeaders.USER_ID, required = true) String userId
+    public ApiResponse<Page<HeartV1Dto.Response>> getHeartList(
+            @ModelAttribute PaginationRequest paginationRequest,
+            @RequestHeader(value = ApiHeaders.USER_ID, required = true) String userId
     ) {
-        Condition condition = new Condition(userId);
-        Page<HeartQuery.List.Response> responses = heartFacade.getHeartList(condition, paginationRequest.toPageable());
-        return ApiResponse.success(responses.map(HeartV1Dto.GetList.Response::from));
+        GetHeartListCriteria criteria = GetHeartListCriteria.of(userId, paginationRequest.toPageable());
+        Page<HeartResult> heartResults = heartQueryFacade.getHeartList(criteria);
+        return ApiResponse.success(heartResults.map(HeartV1Dto.Response::from));
     }
 }

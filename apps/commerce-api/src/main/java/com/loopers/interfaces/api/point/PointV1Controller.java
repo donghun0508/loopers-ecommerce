@@ -1,18 +1,16 @@
 package com.loopers.interfaces.api.point;
 
-import static com.loopers.interfaces.api.ApiHeaders.USER_ID;
-
+import com.loopers.application.user.CriteriaCommand.UserPointChargeCriteria;
+import com.loopers.application.user.CriteriaQuery.GetUserPointCriteria;
+import com.loopers.application.user.Results.UserPointResult;
 import com.loopers.application.user.UserFacade;
-import com.loopers.application.user.UserPointInfo;
-import com.loopers.interfaces.api.ApiHeaders;
 import com.loopers.interfaces.api.ApiResponse;
+import com.loopers.interfaces.api.point.PointV1ApiSpec;
+import com.loopers.interfaces.api.point.PointV1Dto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import static com.loopers.interfaces.api.ApiHeaders.USER_ID;
 
 @RequiredArgsConstructor
 @RestController
@@ -24,19 +22,21 @@ public class PointV1Controller implements PointV1ApiSpec {
     @GetMapping
     @Override
     public ApiResponse<PointV1Dto.PointResponse> getPoint(
-        @RequestHeader(value = USER_ID) String userId
+            @RequestHeader(value = USER_ID) String userId
     ) {
-        UserPointInfo userPointInfo = userFacade.getUserPoint(userId);
-        return ApiResponse.success(PointV1Dto.PointResponse.from(userPointInfo));
+        GetUserPointCriteria criteria = GetUserPointCriteria.of(userId);
+        UserPointResult userPointResult = userFacade.getPoint(criteria);
+        return ApiResponse.success(PointV1Dto.PointResponse.from(userPointResult));
     }
 
     @PostMapping("/charge")
     @Override
     public ApiResponse<PointV1Dto.PointResponse> chargePoint(
-        @RequestHeader(value = USER_ID) String userId,
-        @RequestBody PointV1Dto.ChargeRequest request
+            @RequestHeader(value = USER_ID) String userId,
+            @RequestBody PointV1Dto.ChargeRequest request
     ) {
-        UserPointInfo userPointInfo = userFacade.chargePoint(userId, request.amount());
-        return ApiResponse.success(PointV1Dto.PointResponse.from(userPointInfo));
+        UserPointChargeCriteria criteria = UserPointChargeCriteria.of(userId, request.amount());
+        UserPointResult userPointResult = userFacade.chargePoint(criteria);
+        return ApiResponse.success(PointV1Dto.PointResponse.from(userPointResult));
     }
 }
