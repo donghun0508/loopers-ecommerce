@@ -19,6 +19,33 @@ class ConcurrencyTest {
     }
 
     @Test
+    void testMultiThreadedIncrement() throws InterruptedException {
+        counter = 0; // 초기화
+
+        int threadCount = 1000;
+        int incrementPerThread = 1000;
+
+        CountDownLatch latch = new CountDownLatch(threadCount);
+
+        try (ExecutorService executor = Executors.newFixedThreadPool(threadCount)) {
+            for (int i = 0; i < threadCount; i++) {
+                executor.submit(() -> {
+                    for (int j = 0; j < incrementPerThread; j++) {
+                        counter++;
+                    }
+                    latch.countDown();
+                });
+            }
+        }
+        latch.await();
+
+        int expected = threadCount * incrementPerThread;
+        log.info("예상값: {}", expected);
+        log.info("실제값: {}", counter);
+        log.info("차이: {}", expected - counter);
+    }
+
+    @Test
     void testConcurrencyProblem() throws InterruptedException {
         counter = 0; // 초기화
 
