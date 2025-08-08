@@ -8,6 +8,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static com.loopers.support.error.ErrorType.NOT_FOUND;
 
 @Slf4j
@@ -36,5 +38,15 @@ public class UserService {
     @Transactional(readOnly = true)
     public User findByAccountId(AccountId accountId) {
         return userRepository.findByAccountId(accountId).orElseThrow(() -> new CoreException(NOT_FOUND));
+    }
+
+    @Transactional
+    public User findByAccountIdWithLock(AccountId accountId) {
+        return userRepository.findByAccountIdWithLock(accountId).orElseThrow(() -> new CoreException(NOT_FOUND));
+    }
+
+    @Transactional
+    public List<User> findAllByIdIn(List<Long> userIds) {
+        return userRepository.findAllByIdIn(userIds);
     }
 }

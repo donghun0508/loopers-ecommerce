@@ -8,4 +8,5 @@ import org.springframework.data.domain.Page;
 public interface HeartQueryFacade {
 
     Page<HeartResult> getHeartList(GetHeartListCriteria criteria);
+
 }

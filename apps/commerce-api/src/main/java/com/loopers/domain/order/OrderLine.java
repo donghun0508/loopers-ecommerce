@@ -32,7 +32,7 @@ class OrderLine extends BaseEntity {
     )
     private Long productId;
 
-    @AttributeOverride(name = "value", column = @Column(name = "price"))
+    @AttributeOverride(name = "value", column = @Column(name = "unit_price"))
     private Money price;
 
     @AttributeOverride(name = "count", column = @Column(name = "quantity"))

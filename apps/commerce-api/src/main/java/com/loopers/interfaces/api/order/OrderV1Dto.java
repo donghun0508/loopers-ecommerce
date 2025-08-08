@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class OrderV1Dto {
-    public record OrderRequest(List<PurchaseItem> items) {
+    public record OrderRequest(Long couponId, List<PurchaseItem> items) {
 
         public Map<Long, Long> toPurchaseMap() {
             return items.stream()
