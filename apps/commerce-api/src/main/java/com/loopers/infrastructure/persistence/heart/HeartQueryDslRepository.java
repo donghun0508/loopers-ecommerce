@@ -33,7 +33,7 @@ class HeartQueryDslRepository implements HeartQueryRepository {
                         , constructor(HeartResult.ProductInfo.class
                                 , product.name
                                 , product.stock.count.eq(0L)
-                                , product.price.value
+                                , product.unitPrice.value
                                 , brand.id
                                 , brand.name
                                 , select(heart.count())

@@ -28,7 +28,7 @@ class OrderLines {
         this.lines = new ArrayList<>(lines);
     }
 
-    static OrderLines from(Order order, List<OrderItem> orderItems) {
+    static OrderLines of(Order order, List<OrderItem> orderItems) {
         requireNonEmpty(orderItems, "주문 항목은 비어있을 수 없습니다.");
         return new OrderLines(
                 orderItems.stream().map(item -> OrderLine.from(order, item)).collect(toList())

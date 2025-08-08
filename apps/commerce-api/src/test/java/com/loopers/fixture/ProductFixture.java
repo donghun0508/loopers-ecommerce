@@ -33,12 +33,12 @@ public class ProductFixture {
         }
 
         public ProductBuilder stock(Stock stock) {
-            this.api.set(field(Stock::count), stock);
+            this.api.set(field(Product::getStock), stock);
             return this;
         }
 
         public ProductBuilder price(Money price) {
-            this.api.set(field(Money::value), price);
+            this.api.set(field(Product::getUnitPrice), price);
             return this;
         }
 

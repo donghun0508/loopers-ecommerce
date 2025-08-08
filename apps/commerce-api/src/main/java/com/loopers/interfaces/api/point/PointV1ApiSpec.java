@@ -1,7 +1,6 @@
 package com.loopers.interfaces.api.point;
 
 import com.loopers.interfaces.api.ApiResponse;
-import com.loopers.interfaces.api.point.PointV1Dto;
 import com.loopers.interfaces.api.point.PointV1Dto.ChargeRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

@@ -16,11 +16,10 @@ public class Results {
         }
     }
 
-
     public record UserPointResult(String accountId, Long point) {
 
         public static UserPointResult from(User user) {
-            return new UserPointResult(user.getAccountId().value(), user.point().value());
+            return new UserPointResult(user.getAccountId().value(), user.getTotalPoint().value());
         }
     }
 

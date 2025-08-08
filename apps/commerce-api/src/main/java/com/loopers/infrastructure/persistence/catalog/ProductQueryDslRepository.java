@@ -47,7 +47,7 @@ class ProductQueryDslRepository implements ProductQueryRepository {
                         , constructor(GetProductListResult.ProductInfo.class
                                 , product.name
                                 , product.stock.count.eq(0L)
-                                , product.price.value
+                                , product.unitPrice.value
                                 , brand.id
                                 , brand.name
                                 , select(heart.count())
@@ -85,7 +85,7 @@ class ProductQueryDslRepository implements ProductQueryRepository {
                                 , constructor(GetProductDetailResult.ProductDetailInfo.class
                                         , product.name
                                         , product.stock.count.eq(0L)
-                                        , product.price.value
+                                        , product.unitPrice.value
                                         , select(heart.count())
                                                 .from(heart)
                                                 .where(
@@ -142,7 +142,7 @@ class ProductQueryDslRepository implements ProductQueryRepository {
     private OrderSpecifier<?>[] getOrderBy(SortType sortType) {
         return switch (sortType) {
             case LATEST -> new OrderSpecifier[]{product.createdAt.desc()};
-            case PRICE_ASC -> new OrderSpecifier[]{product.price.value.asc()};
+            case PRICE_ASC -> new OrderSpecifier[]{product.unitPrice.value.asc()};
             case LIKES_DESC -> new OrderSpecifier[]{createLikeCountOrderDesc()};
         };
     }
