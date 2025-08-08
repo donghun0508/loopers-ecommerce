@@ -2,11 +2,18 @@ package com.loopers.application.heart;
 
 import com.loopers.application.heart.CriteriaQuery.GetHeartListCriteria;
 import com.loopers.application.heart.Results.HeartResult;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Component;
 
+@RequiredArgsConstructor
+@Component
+public class HeartQueryFacade {
 
-public interface HeartQueryFacade {
+    private final HeartQueryService heartQueryService;
 
-    Page<HeartResult> getHeartList(GetHeartListCriteria criteria);
+    public Page<HeartResult> getHeartList(GetHeartListCriteria criteria) {
+        return heartQueryService.getHeartList(criteria);
+    }
 
 }
