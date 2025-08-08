@@ -1,13 +1,19 @@
 -- User 테스트 데이터 INSERT (3명)
-INSERT INTO users (user_id, email, birth, gender, created_at, updated_at)
-VALUES ('test', 'john.doe@example.com', '1995-03-15', 'M', NOW(), NOW()),
-       ('alice456', 'alice.smith@example.com', '1992-07-22', 'F', NOW(), NOW()),
-       ('bob789', 'bob.wilson@example.com', '1988-11-08', 'M', NOW(), NOW());
+INSERT INTO users (account_id, email, birth, gender, created_at, updated_at)
+VALUES ('test', 'john.doe@example.com', '1995-03-15', 'MALE', NOW(), NOW()),
+       ('test2', 'alice.smith@example.com', '1992-07-22', 'FEMALE', NOW(), NOW()),
+       ('bob789', 'bob.wilson@example.com', '1988-11-08', 'MALE', NOW(), NOW()),
+       ('noPoint', 'no-point@example.com', '1981-11-08', 'MALE', NOW(), NOW()),
+       ('blue', 'blue@example.com', '1981-11-08', 'MALE', NOW(), NOW())
+;
 
 INSERT INTO point (user_id, balance, created_at, updated_at)
-VALUES ((SELECT id FROM users WHERE user_id = 'test'), 0, NOW(), NOW()),
-       ((SELECT id FROM users WHERE user_id = 'alice456'), 50000, NOW(), NOW()),
-       ((SELECT id FROM users WHERE user_id = 'bob789'), 25000, NOW(), NOW());
+VALUES ((SELECT id FROM users WHERE account_id = 'test'), 100000000, NOW(), NOW()),
+       ((SELECT id FROM users WHERE account_id = 'test2'), 50000000, NOW(), NOW()),
+       ((SELECT id FROM users WHERE account_id = 'bob789'), 2500000, NOW(), NOW()),
+       ((SELECT id FROM users WHERE account_id = 'noPoint'), 0, NOW(), NOW()),
+       ((SELECT id FROM users WHERE account_id = 'blue'), 15321000, NOW(), NOW())
+;
 
 
 INSERT INTO brand (name, created_at, updated_at)
@@ -17,12 +23,12 @@ VALUES ('Luminous', NOW(), NOW()),
        ('EchoCraft', NOW(), NOW()),
        ('VividEra', NOW(), NOW());
 
-INSERT INTO product (brand_id, name, price, stock, created_at, updated_at)
+INSERT INTO product (brand_id, name, unit_price, stock, created_at, updated_at)
 VALUES (1, 'Alpha Bag', 15000, 100, '2024-12-15 14:32:10', now()),
        (1, 'Beta Shoes', 25000, 50, '2024-11-28 09:15:33', now()),
-       (1, 'Gamma Watch', 8500, 0, '2025-01-03 16:47:22', now()),
+       (1, 'Gamma Watch', 8500, 20, '2025-01-03 16:47:22', now()),
        (1, 'Delta Jacket', 45000, 30, '2024-10-12 11:28:45', now()),
-       (1, 'Echo Hat', 12000, 0, '2024-12-31 08:12:17', now()),
+       (1, 'Echo Hat', 12000, 50, '2024-12-31 08:12:17', now()),
        (1, 'Foxtrot Shirt', 35000, 80, '2024-09-22 13:55:29', now()),
        (1, 'Golf Pants', 7500, 300, '2025-01-18 10:03:44', now()),
        (1, 'Hotel Socks', 28000, 60, '2024-11-05 15:41:18', now()),
@@ -70,9 +76,12 @@ VALUES (1, 'Alpha Bag', 15000, 100, '2024-12-15 14:32:10', now()),
        (1, 'Beta Hat', 25500, 102, '2025-01-23 12:53:26', now());
 
 INSERT INTO heart (user_id, target_id, target_type, created_at, updated_at)
-VALUES
-    ((SELECT id FROM users WHERE user_id = 'test'), (SELECT id FROM product WHERE brand_id = 1 AND name = 'Alpha Bag' LIMIT 1), 'PRODUCT', NOW(), NOW()),
-    ((SELECT id FROM users WHERE user_id = 'alice456'), (SELECT id FROM product WHERE brand_id = 1 AND name = 'Alpha Bag' LIMIT 1),'PRODUCT',NOW(),NOW()),
-    ((SELECT id FROM users WHERE user_id = 'test'), (SELECT id FROM product WHERE brand_id = 1 AND name = 'Beta Shoes' LIMIT 1),'PRODUCT',NOW(),NOW()),
-    ((SELECT id FROM users WHERE user_id = 'alice456'), (SELECT id FROM product WHERE brand_id = 1 AND name = 'Beta Shoes' LIMIT 1),'PRODUCT',NOW(),NOW())
+VALUES ((SELECT id FROM users WHERE account_id = 'test'),
+        (SELECT id FROM product WHERE brand_id = 1 AND name = 'Alpha Bag' LIMIT 1), 'PRODUCT', NOW(), NOW()),
+    ((SELECT id FROM users WHERE account_id = 'test2'), (SELECT id FROM product WHERE brand_id = 1 AND name = 'Alpha Bag' LIMIT 1),'PRODUCT',NOW(),NOW()),
+    ((SELECT id FROM users WHERE account_id = 'test'), (SELECT id FROM product WHERE brand_id = 1 AND name = 'Beta Shoes' LIMIT 1),'PRODUCT',NOW(),NOW()),
+    ((SELECT id FROM users WHERE account_id = 'test2'), (SELECT id FROM product WHERE brand_id = 1 AND name = 'Beta Shoes' LIMIT 1),'PRODUCT',NOW(),NOW())
 ;
+
+INSERT INTO issued_coupon (name, code, target_scope, target_id, issued_at, expired_at, discount_type, discount_value, status, created_at, updated_at)
+VALUES ('나이키 쿠폰', 'NIKE2024', 'USER', (SELECT id FROM users WHERE account_id = 'test'), '2025-01-23 12:53:26', '3000-12-31 23:59:59', 'FIXED', 10, 'AVAILABLE', NOW(), NOW());

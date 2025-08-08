@@ -1,6 +1,5 @@
 package com.loopers.fixture;
 
-import com.loopers.application.user.CriteriaCommand;
 import com.loopers.application.user.CriteriaCommand.UserRegisterCriteria;
 import com.loopers.domain.user.AccountId;
 import com.loopers.domain.user.Birth;

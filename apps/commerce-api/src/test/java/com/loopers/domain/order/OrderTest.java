@@ -56,7 +56,7 @@ class OrderTest {
                     .map(item -> item.price().multiply(item.quantity().count()))
                     .reduce(Money.ZERO, Money::add);
 
-            assertThat(order.getTotalAmount()).isEqualTo(expectedTotalPrice);
+            assertThat(order.paidAmount()).isEqualTo(expectedTotalPrice);
         }
     }
 }

@@ -1,7 +1,8 @@
 package com.loopers.domain.order;
 
-import com.loopers.domain.catalog.ProductManager.ProductSnapshot;
+import com.loopers.domain.catalog.StockRecord;
 import com.loopers.domain.shared.Money;
+import com.loopers.domain.user.User;
 
 import java.util.List;
 
@@ -16,10 +17,14 @@ public record OrderCreateCommand(
         requireNonNull(items, "주문 항목은 null일 수 없습니다.");
     }
 
-    public static OrderCreateCommand of(Long buyerId, List<ProductSnapshot> productSnapshots) {
-        return new OrderCreateCommand(buyerId, productSnapshots.stream().map(OrderItem::new).toList());
+    public static OrderCreateCommand of(User buyer, StockRecord stockRecord) {
+        List<OrderItem> orderItems = stockRecord.snapshots().stream().map(s -> new OrderItem(s.productId(), s.unitPrice(), s.quantity())).toList();
+        return new OrderCreateCommand(buyer.getId(), orderItems);
     }
 
+    public static OrderCreateCommand of(Long buyerId, List<OrderItem> orderItems) {
+        return new OrderCreateCommand(buyerId, orderItems);
+    }
 
     public record OrderItem(Long productId, Money price, Quantity quantity) {
         public OrderItem {
@@ -34,10 +39,6 @@ public record OrderCreateCommand(
                     Money.of(requireNonNull(price, "가격은 null일 수 없습니다.")),
                     Quantity.of(requireNonNull(quantity, "수량은 null일 수 없습니다."))
             );
-        }
-
-        public OrderItem(ProductSnapshot snapshot) {
-            this(snapshot.productId(), snapshot.price(), snapshot.quantity());
         }
 
         public static OrderItem of(Long productId, Long price, Long quantity) {

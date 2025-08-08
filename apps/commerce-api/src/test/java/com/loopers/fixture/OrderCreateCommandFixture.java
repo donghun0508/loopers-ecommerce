@@ -1,7 +1,6 @@
 package com.loopers.fixture;
 
 import com.loopers.domain.order.OrderCreateCommand;
-
 import com.loopers.domain.order.OrderCreateCommand.OrderItem;
 import com.loopers.domain.order.Quantity;
 import com.loopers.domain.shared.Money;

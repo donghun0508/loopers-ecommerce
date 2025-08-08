@@ -5,8 +5,6 @@ import com.loopers.application.user.CriteriaQuery.GetUserPointCriteria;
 import com.loopers.application.user.Results.UserPointResult;
 import com.loopers.application.user.UserFacade;
 import com.loopers.interfaces.api.ApiResponse;
-import com.loopers.interfaces.api.point.PointV1ApiSpec;
-import com.loopers.interfaces.api.point.PointV1Dto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

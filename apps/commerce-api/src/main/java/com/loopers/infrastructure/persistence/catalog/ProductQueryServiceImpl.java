@@ -2,7 +2,7 @@ package com.loopers.infrastructure.persistence.catalog;
 
 import com.loopers.application.catalog.CriteriaQuery.GetProductDetailCriteria;
 import com.loopers.application.catalog.CriteriaQuery.GetProductListCriteria;
-import com.loopers.application.catalog.ProductQueryFacade;
+import com.loopers.application.catalog.ProductQueryService;
 import com.loopers.application.catalog.Results.GetProductDetailResult;
 import com.loopers.application.catalog.Results.GetProductListResult;
 import com.loopers.support.error.CoreException;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-class ProductQueryFacadeImpl implements ProductQueryFacade {
+class ProductQueryServiceImpl implements ProductQueryService {
 
     private final ProductQueryRepository productQueryRepository;
 

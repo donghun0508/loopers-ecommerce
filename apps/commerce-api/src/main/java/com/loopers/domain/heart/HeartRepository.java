@@ -10,4 +10,6 @@ public interface HeartRepository extends Repository<Heart, Long> {
     void deleteByUserIdAndTarget(Long userId, Target target);
 
     Optional<Heart> findByUserIdAndTarget(Long userId, Target target);
+
+    long count();
 }

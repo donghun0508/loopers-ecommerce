@@ -17,7 +17,7 @@ VALUES ('Luminous', NOW(), NOW()),
        ('EchoCraft', NOW(), NOW()),
        ('VividEra', NOW(), NOW());
 
-INSERT INTO product (brand_id, name, price, stock, created_at, updated_at)
+INSERT INTO product (brand_id, name, unit_price, stock, created_at, updated_at)
 VALUES (1, 'Alpha Bag', 15000, 100, '2024-12-15 14:32:10', now()),
        (1, 'Beta Shoes', 25000, 50, '2024-11-28 09:15:33', now()),
        (1, 'Gamma Watch', 8500, 0, '2025-01-03 16:47:22', now()),

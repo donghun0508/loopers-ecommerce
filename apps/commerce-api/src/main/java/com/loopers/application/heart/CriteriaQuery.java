@@ -14,5 +14,4 @@ public class CriteriaQuery {
             return new GetHeartListCriteria(accountId, pageable);
         }
     }
-
 }

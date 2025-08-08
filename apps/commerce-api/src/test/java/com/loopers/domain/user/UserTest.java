@@ -39,7 +39,7 @@ class UserTest {
             assertThat(member.getAccountId()).isEqualTo(command.accountId());
             assertThat(member.getEmail()).isEqualTo(command.email());
             assertThat(member.getBirth()).isEqualTo(command.birth());
-            assertThat(member.point()).isEqualTo(Money.ZERO);
+            assertThat(member.getTotalPoint()).isEqualTo(Money.ZERO);
             assertThat(member.getGender()).isEqualTo(command.gender());
         }
     }
@@ -80,7 +80,7 @@ class UserTest {
 
             member.chargePoint(chargeAmount);
 
-            assertThat(member.point()).isEqualTo(chargeAmount);
+            assertThat(member.getTotalPoint()).isEqualTo(chargeAmount);
         }
 
         @DisplayName("포인트 충전 시 비용이 가장 큰 경우 보다 큰 경우 예외가 발생한다.")
@@ -104,7 +104,7 @@ class UserTest {
 
             member.chargePoint(chargeAmount);
 
-            assertThat(member.point()).isEqualTo(chargeAmount);
+            assertThat(member.getTotalPoint()).isEqualTo(chargeAmount);
         }
     }
 }

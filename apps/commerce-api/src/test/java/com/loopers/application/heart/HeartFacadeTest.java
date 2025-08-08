@@ -1,0 +1,106 @@
+package com.loopers.application.heart;
+
+import com.loopers.application.heart.CriteriaCommand.LikeCriteria;
+import com.loopers.config.annotations.IntegrationTest;
+import com.loopers.domain.catalog.Product;
+import com.loopers.domain.catalog.ProductRepository;
+import com.loopers.domain.heart.HeartRepository;
+import com.loopers.domain.heart.Target;
+import com.loopers.domain.heart.TargetType;
+import com.loopers.domain.user.User;
+import com.loopers.domain.user.UserCreateCommand;
+import com.loopers.domain.user.UserRepository;
+import com.loopers.fixture.ProductFixture;
+import com.loopers.fixture.UserCreateCommandFixture;
+import com.loopers.utils.DatabaseCleanUp;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@Slf4j
+@IntegrationTest
+class HeartFacadeTest {
+
+    @Autowired
+    private HeartFacade heartFacade;
+
+    @Autowired
+    private HeartRepository heartRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private DatabaseCleanUp databaseCleanUp;
+
+    @AfterEach
+    void tearDown() {
+        databaseCleanUp.truncateAllTables();
+    }
+
+    @DisplayName("동일한 상품에 여러명이 따닥(중복) 좋아요 요청을 보내면, 최종 좋아요 수는 사용자 수와 동일하다")
+    @Test
+    void concurrentDuplicateLikeTest() throws InterruptedException {
+        int userCount = 100;
+        int requestsPerUser = 20;
+        int totalRequests = userCount * requestsPerUser;
+
+        List<User> users = new ArrayList<>();
+        for (int i = 0; i < userCount; i++) {
+            UserCreateCommand command = UserCreateCommandFixture.builder().build();
+            User user = userRepository.save(User.from(command));
+            users.add(user);
+        }
+
+        Product product = productRepository.save(ProductFixture.persistence().build());
+        Target target = Target.of(product.getId(), TargetType.PRODUCT);
+
+        CountDownLatch latch = new CountDownLatch(totalRequests);
+        AtomicInteger successCount = new AtomicInteger(0);
+        AtomicInteger failCount = new AtomicInteger(0);
+
+        try (ExecutorService executor = Executors.newFixedThreadPool(userCount)) {
+            for (int userIndex = 0; userIndex < userCount; userIndex++) {
+                final User currentUser = users.get(userIndex);
+
+                for (int requestIndex = 0; requestIndex < requestsPerUser; requestIndex++) {
+                    executor.submit(() -> {
+                        try {
+                            LikeCriteria likeCriteria = LikeCriteria.of(currentUser.getAccountId().value(), target.targetId(), target.targetType());
+                            heartFacade.like(likeCriteria);
+                            successCount.incrementAndGet();
+                        } catch (Exception e) {
+                            failCount.incrementAndGet();
+                            log.error("Error processing like request for user {}: {}", currentUser.getAccountId(), e.getMessage(), e);
+                        } finally {
+                            latch.countDown();
+                        }
+                    });
+                }
+            }
+        }
+
+        boolean completed = latch.await(30, TimeUnit.SECONDS);
+        assertThat(completed).isTrue();
+
+        log.info("총 요청 수: {}, 성공: {}, 실패: {}", totalRequests, successCount.get(), failCount.get());
+
+        long actualLikeCount = heartRepository.count();
+        assertThat(actualLikeCount).isEqualTo(userCount);
+    }
+}

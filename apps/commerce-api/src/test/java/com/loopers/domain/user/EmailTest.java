@@ -13,7 +13,8 @@ import java.util.stream.Stream;
 
 import static com.loopers.util.TestArguments.args;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @UnitTest
 class EmailTest {

@@ -4,5 +4,6 @@ import com.loopers.domain.heart.TargetType;
 
 public interface TargetValidate {
     boolean supports(TargetType targetType);
+
     void validTargetId(Long targetId);
 }

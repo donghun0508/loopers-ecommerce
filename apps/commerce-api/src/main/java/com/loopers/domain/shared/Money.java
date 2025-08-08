@@ -30,7 +30,7 @@ public record Money(Long value) {
     public Money subtract(Money other) {
         requireNonNull(other, "뺄 금액은 null일 수 없습니다");
         if (this.value < other.value) {
-            throw new IllegalArgumentException("계산 결과가 음수가 될 수 없습니다");
+            throw new IllegalArgumentException("Money.subtract().other: 계산 결과가 음수가 될 수 없습니다");
         }
         return new Money(this.value - other.value);
     }
@@ -44,9 +44,22 @@ public record Money(Long value) {
         }
     }
 
+    public Money multiply(Double multiplier) {
+        requireNonNull(multiplier, "곱셈에 사용되는 수는 null일 수 없습니다");
+        if (multiplier < 0) {
+            throw new IllegalArgumentException("곱셈은 0 이상의 수만 가능합니다");
+        }
+        return new Money(Math.round(this.value * multiplier));
+    }
+
     public Money divide(Long divisor) {
         requirePositive(divisor, "나누는 수는 0 이상의 수여야 합니다");
         return new Money(this.value / divisor);
+    }
+
+    public Money min(Money other) {
+        requireNonNull(other, "비교할 금액은 null일 수 없습니다");
+        return this.value <= other.value ? this : other;
     }
 
     public boolean isNegativeOrZero() {
