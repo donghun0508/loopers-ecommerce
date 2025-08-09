@@ -2,8 +2,16 @@ package com.loopers.application.catalog;
 
 import com.loopers.application.catalog.CriteriaQuery.GetBrandDetailCriteria;
 import com.loopers.application.catalog.Results.GetBrandDetailResult;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
-public interface BrandQueryFacade {
+@RequiredArgsConstructor
+@Component
+public class BrandQueryFacade {
 
-    GetBrandDetailResult getBrandDetail(GetBrandDetailCriteria criteria);
+    private final BrandQueryService brandQueryService;
+
+    public GetBrandDetailResult getBrandDetail(GetBrandDetailCriteria criteria) {
+        return brandQueryService.getBrandDetail(criteria);
+    }
 }

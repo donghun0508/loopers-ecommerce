@@ -1,6 +1,6 @@
 package com.loopers.infrastructure.persistence.catalog;
 
-import com.loopers.application.catalog.BrandQueryFacade;
+import com.loopers.application.catalog.BrandQueryService;
 import com.loopers.application.catalog.CriteriaQuery;
 import com.loopers.application.catalog.Results;
 import com.loopers.support.error.CoreException;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-class BrandQueryFacadeImpl implements BrandQueryFacade {
+class BrandQueryServiceImpl implements BrandQueryService {
 
     private final BrandQueryRepository brandQueryRepository;
 

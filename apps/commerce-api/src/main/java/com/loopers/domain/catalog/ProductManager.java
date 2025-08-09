@@ -1,18 +1,18 @@
 package com.loopers.domain.catalog;
 
-import com.loopers.domain.shared.Money;
+import com.loopers.domain.catalog.StockRecord.ProductSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.loopers.domain.shared.Preconditions.requireNonEmpty;
+import static java.util.Objects.isNull;
 
 public class ProductManager {
 
     private final List<Product> products;
     private final Map<Long, Stock> purchaseProducts;
-    private final List<ProductSnapshot> snapshots = new ArrayList<>();
-    private Long totalPrice = 0L;
 
     private ProductManager(List<Product> products, Map<Long, Stock> purchaseProducts) {
         this.products = products;
@@ -20,34 +20,23 @@ public class ProductManager {
     }
 
     public static ProductManager assign(List<Product> products, Map<Long, Stock> purchaseProducts) {
+        requireNonEmpty(products, "ProductManager.assign().products: 상품 목록은 비어있을 수 없습니다.");
+        requireNonEmpty(purchaseProducts, "ProductManager.assign().purchaseProducts: 구매할 상품 목록은 비어있을 수 없습니다.");
         return new ProductManager(products, purchaseProducts);
     }
 
-    public void decreaseStock() {
+    public StockRecord decreaseStock() {
+        List<ProductSnapshot> snapshots = new ArrayList<>();
+
         for (Product product : products) {
-            if (purchaseProducts.containsKey(product.getId())) {
-                Stock quantity = purchaseProducts.get(product.getId());
-                if (quantity != null && quantity.count() > 0) {
-                    Stock stock = Stock.of(quantity.count());
-                    product.decreaseStock(stock);
-
-                    Money price = product.calculatePrice(stock);
-                    totalPrice += price.value();
-
-                    snapshots.add(new ProductSnapshot(product.getId(), price.value(), stock.count()));
-                }
+            Stock purchaseQuantity = purchaseProducts.get(product.getId());
+            if (isNull(purchaseQuantity)) {
+                throw new IllegalStateException("ProductManager.decreaseStock(): 구매할 상품이 존재하지 않습니다.");
             }
+            product.decreaseStock(purchaseQuantity);
+            snapshots.add(ProductSnapshot.of(product, purchaseQuantity));
         }
-    }
 
-    public List<ProductSnapshot> snapshots() {
-        return snapshots;
-    }
-
-    public Money totalPrice() {
-        return Money.of(totalPrice);
-    }
-
-    public record ProductSnapshot(Long productId, Long price, Long quantity) {
+        return StockRecord.of(snapshots);
     }
 }

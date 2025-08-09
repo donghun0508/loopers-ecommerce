@@ -2,13 +2,13 @@ package com.loopers.domain.catalog;
 
 import jakarta.persistence.Embeddable;
 
+import static com.loopers.domain.shared.Preconditions.requireNonNull;
+
 @Embeddable
 public record Stock(Long count) {
 
     public Stock {
-        if (count == null || count < 0) {
-            throw new IllegalArgumentException("재고 수량은 0 이상이어야 합니다");
-        }
+        requireNonNull(count, "재고 수량은 null일 수 없습니다.");
     }
 
     public Stock add(Stock other) {
@@ -21,7 +21,7 @@ public record Stock(Long count) {
 
     public Stock subtract(Stock other) {
         if (this.count < other.count) {
-            throw new IllegalArgumentException("계산 결과가 음수가 될 수 없습니다");
+            throw new IllegalArgumentException("Stock.subtract().other: 계산 결과가 음수가 될 수 없습니다.");
         }
         return new Stock(this.count - other.count);
     }

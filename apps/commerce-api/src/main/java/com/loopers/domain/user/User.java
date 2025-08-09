@@ -71,8 +71,8 @@ public class User extends BaseEntity {
         user.accountId = command.accountId();
         user.email = command.email();
         user.birth = command.birth();
-        user.point = Point.initialize(user);
         user.gender = command.gender();
+        user.point = Point.initialize(user);
 
         return user;
     }
@@ -82,12 +82,13 @@ public class User extends BaseEntity {
         this.point.increaseBalance(amount);
     }
 
-    public void usePoint(Money amount) {
+    public void payWithPoints(Money amount) {
         requireNonNull(amount, "사용할 포인트는 null일 수 없습니다.");
         this.point.decreaseBalance(amount);
     }
 
-    public Money point() {
+    public Money getTotalPoint() {
         return this.point.getBalance();
     }
+
 }
