@@ -2,7 +2,6 @@ package com.loopers.interfaces.api.heart;
 
 import com.loopers.application.heart.CriteriaCommand;
 import com.loopers.application.heart.CriteriaCommand.LikeCriteria;
-import com.loopers.application.heart.CriteriaQuery.GetHeartListCriteria;
 import com.loopers.application.heart.HeartFacade;
 import com.loopers.application.heart.HeartQueryFacade;
 import com.loopers.application.heart.Results.HeartResult;
@@ -50,8 +49,7 @@ public class HeartV1Controller implements HeartV1ApiSpec {
             @ModelAttribute PaginationRequest paginationRequest,
             @RequestHeader(value = ApiHeaders.USER_ID, required = true) String userId
     ) {
-        GetHeartListCriteria criteria = GetHeartListCriteria.of(userId, paginationRequest.toPageable());
-        Page<HeartResult> heartResults = heartQueryFacade.getHeartList(criteria);
+        Page<HeartResult> heartResults = heartQueryFacade.getHeartList(userId, paginationRequest.toPageable());
         return ApiResponse.success(heartResults.map(HeartV1Dto.Response::from));
     }
 }

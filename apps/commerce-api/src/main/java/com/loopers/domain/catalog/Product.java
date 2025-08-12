@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.boot.autoconfigure.graphql.ConditionalOnGraphQlSchema;
 
 import static com.loopers.domain.shared.Preconditions.requireNonNull;
 import static com.loopers.domain.shared.Preconditions.requirePositive;
@@ -28,10 +29,19 @@ public class Product extends BaseEntity {
     @JoinColumn(name = "brand_id", nullable = false)
     private Brand brand;
 
+    @Column(name = "heart_count", nullable = false)
+    private Long heartCount;
+
+    @Version
+    private Long version;
+
     public void decreaseStock(Stock stock) {
         requireNonNull(stock, "Product.decreaseStock().stock: 수량은 null일 수 없습니다.");
         requirePositive(stock.count(), "Product.decreaseStock().stock.count: 수량은 0보다 커야 합니다.");
         this.stock = this.stock.subtract(stock);
     }
 
+    public void updateHeartCount() {
+        this.heartCount++;
+    }
 }

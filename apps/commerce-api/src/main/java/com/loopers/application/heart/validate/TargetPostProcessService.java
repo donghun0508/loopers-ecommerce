@@ -8,14 +8,14 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Component
-public class TargetValidateService {
+public class TargetPostProcessService {
 
-    private final List<TargetValidate> targetValidates;
+    private final List<TargetPostProcess> targetPostProcesses;
 
-    public void validate(Target target) {
-        for (TargetValidate targetValidate : targetValidates) {
-            if (targetValidate.supports(target.targetType())) {
-                targetValidate.validTargetId(target.targetId());
+    public void process(Target target) {
+        for (TargetPostProcess targetPostProcess : targetPostProcesses) {
+            if (targetPostProcess.supports(target.targetType())) {
+                targetPostProcess.process(target.targetId());
                 return;
             }
         }

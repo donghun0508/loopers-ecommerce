@@ -1,11 +1,14 @@
 package com.loopers.interfaces.api.catalog;
 
-import com.loopers.application.catalog.Results;
-import com.loopers.application.catalog.Results.GetProductDetailResult;
+
+import com.loopers.application.catalog.Result.ProductDetailResult;
+import com.loopers.application.catalog.Result.ProductListResult;
+import com.loopers.domain.catalog.ProductCriteria.ProductListCriteria.SortType;
+import jakarta.validation.constraints.NotNull;
 
 public class ProductV1Dto {
 
-    public record GetListRequest(Long brandId, String sort) {
+    public record GetListRequest(Long brandId, @NotNull SortType sort) {
     }
 
 
@@ -14,7 +17,7 @@ public class ProductV1Dto {
             ProductInfo productInfo
     ) {
 
-        public static GetListResponse from(Results.GetProductListResult result) {
+        public static GetListResponse from(ProductListResult result) {
             return new GetListResponse(
                     result.productId(),
                     new ProductInfo(
@@ -63,7 +66,7 @@ public class ProductV1Dto {
 
         }
 
-        public static GetDetailResponse from(GetProductDetailResult result) {
+        public static GetDetailResponse from(ProductDetailResult result) {
             return new GetDetailResponse(
                     result.productId(),
                     new ProductDetailInfo(

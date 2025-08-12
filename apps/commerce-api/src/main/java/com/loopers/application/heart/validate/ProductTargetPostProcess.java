@@ -1,17 +1,18 @@
 package com.loopers.application.heart.validate;
 
+import com.loopers.domain.catalog.Product;
 import com.loopers.domain.catalog.ProductService;
 import com.loopers.domain.heart.TargetType;
-import com.loopers.support.error.CoreException;
-import com.loopers.support.error.ErrorType;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import static com.loopers.domain.heart.TargetType.PRODUCT;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
-class ProductTargetValidate implements TargetValidate {
+class ProductTargetPostProcess implements TargetPostProcess {
 
     private final ProductService productService;
 
@@ -21,9 +22,8 @@ class ProductTargetValidate implements TargetValidate {
     }
 
     @Override
-    public void validTargetId(Long targetId) {
-        if (!productService.existsById(targetId)) {
-            throw new CoreException(ErrorType.NOT_FOUND);
-        }
+    public void process(Long targetId) {
+        Product product = productService.findById(targetId);
+        product.updateHeartCount();
     }
 }

@@ -22,4 +22,12 @@ public interface ProductRepository extends Repository<Product, Long> {
     List<Product> findAllByIdInWithLock(@Param("productIds") List<Long> productIds);
 
     Optional<Product> findById(Long productId);
+
+    @Lock(LockModeType.OPTIMISTIC)
+    @Query("SELECT p FROM Product p WHERE p.id = :productId")
+    Optional<Product> findByIdWithOptimisticLock(@Param("productId") Long productId);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT p FROM Product p WHERE p.id = :productId")
+    Optional<Product> findByIdWithLock(@Param("productId") Long productId);
 }

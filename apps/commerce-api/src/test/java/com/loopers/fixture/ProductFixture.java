@@ -1,5 +1,6 @@
 package com.loopers.fixture;
 
+import com.loopers.domain.catalog.Brand;
 import com.loopers.domain.catalog.Product;
 import com.loopers.domain.catalog.Stock;
 import com.loopers.domain.shared.Money;
@@ -10,35 +11,53 @@ import static org.instancio.Select.field;
 
 public class ProductFixture {
 
-    public static ProductBuilder builder() {
-        return new ProductBuilder();
+    public static Builder builder() {
+        return new Builder();
     }
 
-    public static ProductBuilder persistence() {
-        return new ProductBuilder()
+    public static Builder persistence() {
+        return new Builder()
                 .id(null);
     }
 
-    public static class ProductBuilder {
+    public static class Builder {
 
         private final InstancioApi<Product> api;
 
-        public ProductBuilder() {
-            this.api = Instancio.of(Product.class);
+        public Builder() {
+            this.api = Instancio.of(Product.class)
+                    .generate(field(Product::getUnitPrice), gen -> gen.longs()
+                            .min(1000L)
+                            .max(100000L)
+                            .as(Money::of))
+                    .generate(field(Product::getStock), gen -> gen.longs()
+                            .min(1L)
+                            .max(1000L)
+                            .as(Stock::of));
         }
 
-        public ProductBuilder id(Long id) {
+        public Builder id(Long id) {
             this.api.set(field(Product::getId), id);
             return this;
         }
 
-        public ProductBuilder stock(Stock stock) {
+        public Builder stock(Stock stock) {
             this.api.set(field(Product::getStock), stock);
             return this;
         }
 
-        public ProductBuilder price(Money price) {
+        public Builder price(Money price) {
             this.api.set(field(Product::getUnitPrice), price);
+            return this;
+        }
+
+        public Builder brand(Brand brand) {
+            this.api.set(field(Product::getBrand), brand);
+            return this;
+        }
+
+        public Builder heartCount(long heartCount) {
+            this.api.set(field(Product::getHeartCount), heartCount);
             return this;
         }
 

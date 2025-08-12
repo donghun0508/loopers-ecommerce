@@ -1,7 +1,9 @@
 package com.loopers.application.catalog;
 
-import com.loopers.application.catalog.CriteriaQuery.GetBrandDetailCriteria;
-import com.loopers.application.catalog.Results.GetBrandDetailResult;
+import com.loopers.application.catalog.Result.BrandDetailResult;
+import com.loopers.domain.catalog.Brand;
+import com.loopers.domain.catalog.BrandQueryService;
+import com.loopers.domain.catalog.ProductQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -10,8 +12,11 @@ import org.springframework.stereotype.Component;
 public class BrandQueryFacade {
 
     private final BrandQueryService brandQueryService;
+    private final ProductQueryService productQueryService;
 
-    public GetBrandDetailResult getBrandDetail(GetBrandDetailCriteria criteria) {
-        return brandQueryService.getBrandDetail(criteria);
+    public BrandDetailResult getBrandDetail(Long brandId) {
+        Brand brand = brandQueryService.getBrandDetail(brandId);
+        Long productCount = productQueryService.getCountByBrandId(brandId);
+        return new BrandDetailResult(brand.getId(), brand.getName(), productCount);
     }
 }

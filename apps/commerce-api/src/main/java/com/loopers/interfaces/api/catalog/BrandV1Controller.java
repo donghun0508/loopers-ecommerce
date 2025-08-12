@@ -1,8 +1,7 @@
 package com.loopers.interfaces.api.catalog;
 
 import com.loopers.application.catalog.BrandQueryFacade;
-import com.loopers.application.catalog.CriteriaQuery.GetBrandDetailCriteria;
-import com.loopers.application.catalog.Results.GetBrandDetailResult;
+import com.loopers.application.catalog.Result.BrandDetailResult;
 import com.loopers.interfaces.api.ApiResponse;
 import com.loopers.interfaces.api.catalog.BrandV1Dto.GetDetail;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +20,7 @@ public class BrandV1Controller implements BrandV1ApiSpec {
     @Override
     @GetMapping("/{brandId}")
     public ApiResponse<GetDetail> getBrandDetail(@PathVariable Long brandId) {
-        GetBrandDetailCriteria criteria = GetBrandDetailCriteria.of(brandId);
-        GetBrandDetailResult result = brandQueryFacade.getBrandDetail(criteria);
+        BrandDetailResult result = brandQueryFacade.getBrandDetail(brandId);
         return ApiResponse.success(GetDetail.from(result));
     }
 }

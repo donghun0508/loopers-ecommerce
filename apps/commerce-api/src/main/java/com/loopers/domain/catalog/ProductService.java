@@ -57,4 +57,16 @@ public class ProductService {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND, "ProductService.findById(): 상품을 찾을 수 없습니다. 상품 ID: " + productId));
     }
+
+    @Transactional
+    public Product findByIdWithLock(Long productId) {
+        return productRepository.findByIdWithLock(productId)
+                .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND, "ProductService.findByIdWithOptimisticLock(): 상품을 찾을 수 없습니다. 상품 ID: " + productId));
+    }
+
+    @Transactional
+    public Product findByIdWithOptimisticLock(Long productId) {
+        return productRepository.findByIdWithOptimisticLock(productId)
+                .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND, "ProductService.findByIdWithOptimisticLock(): 상품을 찾을 수 없습니다. 상품 ID: " + productId));
+    }
 }

@@ -2,8 +2,8 @@ package com.loopers.application.heart.validate;
 
 import com.loopers.domain.heart.TargetType;
 
-public interface TargetValidate {
+public interface TargetPostProcess {
     boolean supports(TargetType targetType);
 
-    void validTargetId(Long targetId);
+    void process(Long targetId);
 }

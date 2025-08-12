@@ -7,7 +7,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter(AccessLevel.PACKAGE)
+@Getter
 @Entity
 @Table(name = "brand")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

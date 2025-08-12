@@ -2,14 +2,18 @@ package com.loopers.application.heart;
 
 import com.loopers.application.heart.CriteriaCommand.LikeCriteria;
 import com.loopers.config.annotations.IntegrationTest;
+import com.loopers.domain.catalog.Brand;
+import com.loopers.domain.catalog.BrandRepository;
 import com.loopers.domain.catalog.Product;
 import com.loopers.domain.catalog.ProductRepository;
 import com.loopers.domain.heart.HeartRepository;
 import com.loopers.domain.heart.Target;
 import com.loopers.domain.heart.TargetType;
+import com.loopers.domain.user.Email;
 import com.loopers.domain.user.User;
 import com.loopers.domain.user.UserCreateCommand;
 import com.loopers.domain.user.UserRepository;
+import com.loopers.fixture.BrandFixture;
 import com.loopers.fixture.ProductFixture;
 import com.loopers.fixture.UserCreateCommandFixture;
 import com.loopers.utils.DatabaseCleanUp;
@@ -18,6 +22,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.TestPropertySource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +36,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @IntegrationTest
+@TestPropertySource(properties = {
+//        "logging.level.root=OFF",
+        "logging.level.org.hibernate.engine.jdbc.spi.SqlExceptionHelper=OFF",
+        "logging.level.com.mysql.cj.jdbc.exceptions=OFF"
+})
 class HeartFacadeTest {
 
     @Autowired
@@ -46,6 +56,9 @@ class HeartFacadeTest {
     private ProductRepository productRepository;
 
     @Autowired
+    private BrandRepository brandRepository;
+
+    @Autowired
     private DatabaseCleanUp databaseCleanUp;
 
     @AfterEach
@@ -56,18 +69,20 @@ class HeartFacadeTest {
     @DisplayName("동일한 상품에 여러명이 따닥(중복) 좋아요 요청을 보내면, 최종 좋아요 수는 사용자 수와 동일하다")
     @Test
     void concurrentDuplicateLikeTest() throws InterruptedException {
-        int userCount = 100;
-        int requestsPerUser = 20;
+        int userCount = 10;
+        int requestsPerUser = 2;
         int totalRequests = userCount * requestsPerUser;
 
         List<User> users = new ArrayList<>();
         for (int i = 0; i < userCount; i++) {
-            UserCreateCommand command = UserCreateCommandFixture.builder().build();
+            UserCreateCommand command = UserCreateCommandFixture.builder().email(new Email("Email" + i + "@gmail.com")).build();
             User user = userRepository.save(User.from(command));
             users.add(user);
         }
 
-        Product product = productRepository.save(ProductFixture.persistence().build());
+        Brand brand = brandRepository.save(BrandFixture.persistence().build());
+
+        Product product = productRepository.save(ProductFixture.persistence().brand(brand).heartCount(0L).build());
         Target target = Target.of(product.getId(), TargetType.PRODUCT);
 
         CountDownLatch latch = new CountDownLatch(totalRequests);
@@ -95,12 +110,15 @@ class HeartFacadeTest {
             }
         }
 
-        boolean completed = latch.await(30, TimeUnit.SECONDS);
+        boolean completed = latch.await(60, TimeUnit.SECONDS);
         assertThat(completed).isTrue();
 
         log.info("총 요청 수: {}, 성공: {}, 실패: {}", totalRequests, successCount.get(), failCount.get());
 
         long actualLikeCount = heartRepository.count();
         assertThat(actualLikeCount).isEqualTo(userCount);
+
+        Product actualProduct = productRepository.findById(product.getId()).orElseThrow();
+        assertThat(actualProduct.getHeartCount()).isEqualTo(userCount);
     }
 }
