@@ -32,7 +32,7 @@ class ProductTest {
 
         assertThatThrownBy(() -> product.decreaseStock(invalidStock))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Product.decreaseStock().stock.count");
+                .hasMessageContaining("Product.decreaseStock().stock.value");
     }
 
 }

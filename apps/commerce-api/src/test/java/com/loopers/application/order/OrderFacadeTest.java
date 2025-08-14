@@ -247,7 +247,7 @@ class OrderFacadeTest {
         assertThat(completed).isTrue();
 
         assertThat(successCount.get()).isEqualTo(5);
-        assertThat(failCount.get()).isEqualTo(0);
+        assertThat(failCount.get()).isZero();
 
         List<Product> finalProducts = productService.findAll(List.of(1L, 2L, 3L, 4L, 5L, 6L, 7L));
         Map<Long, Long> finalStocks = finalProducts.stream()

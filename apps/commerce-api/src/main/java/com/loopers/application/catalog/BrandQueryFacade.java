@@ -1,6 +1,6 @@
 package com.loopers.application.catalog;
 
-import com.loopers.application.catalog.Result.BrandDetailResult;
+import com.loopers.application.catalog.CatalogResults.BrandDetailResult;
 import com.loopers.domain.catalog.Brand;
 import com.loopers.domain.catalog.BrandQueryService;
 import com.loopers.domain.catalog.ProductQueryService;

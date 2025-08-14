@@ -2,7 +2,7 @@ package com.loopers.interfaces.api.point;
 
 import com.loopers.application.user.CriteriaCommand.UserPointChargeCriteria;
 import com.loopers.application.user.CriteriaQuery.GetUserPointCriteria;
-import com.loopers.application.user.Results.UserPointResult;
+import com.loopers.application.user.UserResults.UserPointResult;
 import com.loopers.application.user.UserFacade;
 import com.loopers.interfaces.api.ApiResponse;
 import lombok.RequiredArgsConstructor;

@@ -35,12 +35,24 @@ spring.config.activate.on-profile: local
 
 spring:
   jpa:
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
+#    defer-datasource-initialization: true
+#  sql:
+#    init:
+#      mode: always
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+      multiline: true
+      logging: slf4j
+      log-file:
 
 logging:
   level:
@@ -61,7 +73,7 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: create
-#    defer-datasource-initialization: true
+    defer-datasource-initialization: true
 #  sql:
 #    init:
 #      mode: always

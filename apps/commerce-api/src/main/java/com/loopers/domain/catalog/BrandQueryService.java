@@ -1,5 +1,6 @@
 package com.loopers.domain.catalog;
 
+import com.loopers.aop.execution.ExecutionTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,11 +12,15 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class BrandQueryService {
 
+    private final BrandQueryRepository brandQueryRepository;
+
     public Brand getBrandDetail(Long brandId) {
-        return null;
+        return brandQueryRepository.findById(brandId)
+                .orElseThrow(() -> new IllegalArgumentException("브랜드를 찾을 수 없습니다. ID: " + brandId));
     }
 
-    public List<Brand> findAllByProductId(List<Long> list) {
-        return null;
+    @ExecutionTime
+    public List<Brand> findAllById(List<Long> brandIds) {
+        return brandQueryRepository.findAllById(brandIds);
     }
 }
