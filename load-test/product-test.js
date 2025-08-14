@@ -19,13 +19,8 @@ export const options = {
   scenarios: scenarios[SCENARIO],
 };
 
-// export default function () {
-//   const sort = 'LIKES_DESC';
-//   const url = `${BASE}/api/v1/products?sort=${sort}`;
-//   http.get(url);
-// }
-
 export default function () {
-  const url = `${BASE}/api/v1/test`;
+  const sort = 'LIKES_DESC';
+  const url = `${BASE}/api/v1/products?sort=${sort}`;
   http.get(url);
 }
