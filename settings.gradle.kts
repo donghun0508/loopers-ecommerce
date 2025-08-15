@@ -3,6 +3,8 @@ rootProject.name = "29cart"
 include(
     ":apps:commerce-api",
     ":modules:jpa",
+    ":modules:redis",
+    ":modules:aop",
     ":supports:jackson",
     ":supports:logging",
     ":supports:monitoring",
@@ -28,3 +30,8 @@ pluginManagement {
         }
     }
 }
+
+include("modules:redis")
+include("modules:redis")
+
+include("modules:aop")

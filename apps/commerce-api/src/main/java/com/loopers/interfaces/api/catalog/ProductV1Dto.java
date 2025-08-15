@@ -1,14 +1,12 @@
 package com.loopers.interfaces.api.catalog;
 
 
-import com.loopers.application.catalog.Result.ProductDetailResult;
-import com.loopers.application.catalog.Result.ProductListResult;
-import com.loopers.domain.catalog.ProductCriteria.ProductListCriteria.SortType;
-import jakarta.validation.constraints.NotNull;
+import com.loopers.application.catalog.CatalogResults.ProductDetailResult;
+import com.loopers.application.catalog.CatalogResults.ProductListResult;
 
 public class ProductV1Dto {
 
-    public record GetListRequest(Long brandId, @NotNull SortType sort) {
+    public record GetListRequest(Long brandId, String sort) {
     }
 
 

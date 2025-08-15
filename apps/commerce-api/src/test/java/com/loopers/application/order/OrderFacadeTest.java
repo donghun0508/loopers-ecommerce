@@ -2,8 +2,8 @@ package com.loopers.application.order;
 
 import com.loopers.application.order.CriteriaCommand.PointOrderCriteria;
 import com.loopers.config.annotations.IntegrationTest;
-import com.loopers.domain.catalog.Product;
-import com.loopers.domain.catalog.ProductService;
+import com.loopers.domain.catalog.entity.Product;
+import com.loopers.domain.catalog.service.ProductService;
 import com.loopers.domain.coupon.IssuedCoupon;
 import com.loopers.domain.coupon.IssuedCouponService;
 import com.loopers.domain.order.Order;
@@ -247,7 +247,7 @@ class OrderFacadeTest {
         assertThat(completed).isTrue();
 
         assertThat(successCount.get()).isEqualTo(5);
-        assertThat(failCount.get()).isEqualTo(0);
+        assertThat(failCount.get()).isZero();
 
         List<Product> finalProducts = productService.findAll(List.of(1L, 2L, 3L, 4L, 5L, 6L, 7L));
         Map<Long, Long> finalStocks = finalProducts.stream()

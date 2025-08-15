@@ -1,7 +1,7 @@
 package com.loopers.interfaces.api.catalog;
 
 
-import com.loopers.application.catalog.Result.BrandDetailResult;
+import com.loopers.application.catalog.CatalogResults.BrandDetailResult;
 
 public class BrandV1Dto {
 

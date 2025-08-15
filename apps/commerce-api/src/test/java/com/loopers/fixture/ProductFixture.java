@@ -1,8 +1,9 @@
 package com.loopers.fixture;
 
-import com.loopers.domain.catalog.Brand;
-import com.loopers.domain.catalog.Product;
-import com.loopers.domain.catalog.Stock;
+import com.loopers.domain.catalog.entity.Brand;
+import com.loopers.domain.catalog.vo.HeartCount;
+import com.loopers.domain.catalog.entity.Product;
+import com.loopers.domain.catalog.vo.Stock;
 import com.loopers.domain.shared.Money;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
@@ -56,7 +57,7 @@ public class ProductFixture {
             return this;
         }
 
-        public Builder heartCount(long heartCount) {
+        public Builder like(HeartCount heartCount) {
             this.api.set(field(Product::getHeartCount), heartCount);
             return this;
         }

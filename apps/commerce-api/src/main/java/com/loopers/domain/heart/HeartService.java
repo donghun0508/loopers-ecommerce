@@ -31,7 +31,13 @@ public class HeartService {
     }
 
     @Transactional
-    public void delete(Long userId, Target target) {
-        heartRepository.deleteByUserIdAndTarget(userId, target);
+    public void delete(Heart heart) {
+        heartRepository.delete(heart);
+    }
+
+    @Transactional(readOnly = true)
+    public Heart findByUserIdAndTarget(Long userId, Target target) {
+        return heartRepository.findByUserIdAndTarget(userId, target)
+                .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND, "좋아요를 찾을 수 없습니다. 사용자 ID: " + userId + ", 대상: " + target));
     }
 }

@@ -1,7 +1,7 @@
 package com.loopers.interfaces.api.user;
 
 import com.loopers.application.user.CriteriaCommand.UserRegisterCriteria;
-import com.loopers.application.user.Results.UserResult;
+import com.loopers.application.user.UserResults.UserResult;
 import com.loopers.domain.user.Gender;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;

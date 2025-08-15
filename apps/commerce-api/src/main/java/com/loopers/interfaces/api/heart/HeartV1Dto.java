@@ -1,7 +1,7 @@
 package com.loopers.interfaces.api.heart;
 
 
-import com.loopers.application.heart.Results.HeartResult;
+import com.loopers.application.heart.HeartResults.HeartResult;
 
 public class HeartV1Dto {
     public record Response(ProductInfo product) {

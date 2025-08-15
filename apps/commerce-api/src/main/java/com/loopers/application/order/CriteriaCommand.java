@@ -1,6 +1,6 @@
 package com.loopers.application.order;
 
-import com.loopers.domain.catalog.Stock;
+import com.loopers.domain.catalog.vo.Stock;
 import com.loopers.domain.user.AccountId;
 
 import java.util.List;
