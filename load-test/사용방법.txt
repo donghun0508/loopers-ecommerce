@@ -1,0 +1,10 @@
+# 기본 (baseline)
+k6 run product-test.js
+
+# 특정 시나리오 실행
+k6 run -e TEST_TYPE=rampup product-test.js
+k6 run -e TEST_TYPE=spike product-test.js
+k6 run -e TEST_TYPE=stress product-test.js
+
+#
+k6 run -e SCENARIO=rampup load-test/product-test.js

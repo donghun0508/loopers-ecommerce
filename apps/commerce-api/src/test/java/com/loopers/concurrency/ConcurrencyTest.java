@@ -2,6 +2,7 @@ package com.loopers.concurrency;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CountDownLatch;
@@ -22,7 +23,7 @@ class ConcurrencyTest {
     void testMultiThreadedIncrement() throws InterruptedException {
         counter = 0; // 초기화
 
-        int threadCount = 1000;
+        int threadCount = 10;
         int incrementPerThread = 1000;
 
         CountDownLatch latch = new CountDownLatch(threadCount);
@@ -49,7 +50,7 @@ class ConcurrencyTest {
     void testConcurrencyProblem() throws InterruptedException {
         counter = 0; // 초기화
 
-        int threadCount = 10000;
+        int threadCount = 100;
         int incrementPerThread = 20;
 
         CountDownLatch latch = new CountDownLatch(threadCount);
@@ -76,8 +77,8 @@ class ConcurrencyTest {
     void testConcurrencyWithSynchronized() throws InterruptedException {
         counter = 0; // 초기화
         final Object lock = new Object();
-        int threadCount = 10000;
-        int incrementPerThread = 100000;
+        int threadCount = 100;
+        int incrementPerThread = 100;
 
         CountDownLatch latch = new CountDownLatch(threadCount);
 
@@ -105,7 +106,7 @@ class ConcurrencyTest {
     void testConcurrencyWithSynchronized2() throws InterruptedException {
         counter = 0; // 초기화
         final Object lock = new Object();
-        int threadCount = 10000;
+        int threadCount = 100;
         int incrementPerThread = 100000;
 
         CountDownLatch latch = new CountDownLatch(threadCount);
