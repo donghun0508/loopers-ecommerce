@@ -16,6 +16,10 @@ public class ProductCondition {
             PRICE_ASC,
             LIKES_DESC
         }
+
+        public int getPageNumber() {
+            return pageable.getPageNumber();
+        }
     }
 
     public record DetailCondition(Long productId, AccountId accountId) {

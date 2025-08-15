@@ -1,6 +1,8 @@
-package com.loopers.domain.catalog;
+package com.loopers.domain.catalog.service;
 
 import com.loopers.aop.execution.ExecutionTime;
+import com.loopers.domain.catalog.entity.Brand;
+import com.loopers.domain.catalog.repository.BrandQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

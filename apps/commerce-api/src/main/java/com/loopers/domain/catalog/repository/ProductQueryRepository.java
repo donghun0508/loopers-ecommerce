@@ -1,6 +1,7 @@
-package com.loopers.domain.catalog;
+package com.loopers.domain.catalog.repository;
 
 import com.loopers.domain.catalog.ProductCondition.ListCondition;
+import com.loopers.domain.catalog.entity.Product;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;

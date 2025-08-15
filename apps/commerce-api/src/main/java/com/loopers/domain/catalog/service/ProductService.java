@@ -1,5 +1,7 @@
-package com.loopers.domain.catalog;
+package com.loopers.domain.catalog.service;
 
+import com.loopers.domain.catalog.entity.Product;
+import com.loopers.domain.catalog.repository.ProductRepository;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+// CUD
 @RequiredArgsConstructor
 @Service
 public class ProductService {

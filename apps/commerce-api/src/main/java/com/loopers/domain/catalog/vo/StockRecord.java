@@ -1,5 +1,6 @@
-package com.loopers.domain.catalog;
+package com.loopers.domain.catalog.vo;
 
+import com.loopers.domain.catalog.entity.Product;
 import com.loopers.domain.shared.Money;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public record StockRecord(List<ProductSnapshot> snapshots) {
             return Money.of(unitPrice).multiply(quantity);
         }
 
-        static ProductSnapshot of(Product product, Stock quantity) {
+        public static ProductSnapshot of(Product product, Stock quantity) {
             return new ProductSnapshot(
                     product.getId(),
                     product.getUnitPrice().value(),

@@ -1,9 +1,10 @@
 package com.loopers.infrastructure.persistence.catalog;
 
-import static com.loopers.domain.catalog.QBrand.brand;
 
-import com.loopers.domain.catalog.Brand;
-import com.loopers.domain.catalog.BrandQueryRepository;
+import static com.loopers.domain.catalog.entity.QBrand.brand;
+
+import com.loopers.domain.catalog.entity.Brand;
+import com.loopers.domain.catalog.repository.BrandQueryRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;

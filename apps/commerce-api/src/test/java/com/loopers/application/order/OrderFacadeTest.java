@@ -2,8 +2,8 @@ package com.loopers.application.order;
 
 import com.loopers.application.order.CriteriaCommand.PointOrderCriteria;
 import com.loopers.config.annotations.IntegrationTest;
-import com.loopers.domain.catalog.Product;
-import com.loopers.domain.catalog.ProductService;
+import com.loopers.domain.catalog.entity.Product;
+import com.loopers.domain.catalog.service.ProductService;
 import com.loopers.domain.coupon.IssuedCoupon;
 import com.loopers.domain.coupon.IssuedCouponService;
 import com.loopers.domain.order.Order;

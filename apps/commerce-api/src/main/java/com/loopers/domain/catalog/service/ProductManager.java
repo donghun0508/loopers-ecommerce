@@ -1,6 +1,9 @@
-package com.loopers.domain.catalog;
+package com.loopers.domain.catalog.service;
 
-import com.loopers.domain.catalog.StockRecord.ProductSnapshot;
+import com.loopers.domain.catalog.entity.Product;
+import com.loopers.domain.catalog.vo.Stock;
+import com.loopers.domain.catalog.vo.StockRecord;
+import com.loopers.domain.catalog.vo.StockRecord.ProductSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;

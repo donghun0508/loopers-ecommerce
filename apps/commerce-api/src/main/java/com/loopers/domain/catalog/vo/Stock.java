@@ -1,4 +1,4 @@
-package com.loopers.domain.catalog;
+package com.loopers.domain.catalog.vo;
 
 import jakarta.persistence.Embeddable;
 

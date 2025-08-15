@@ -1,4 +1,4 @@
-package com.loopers.domain.catalog;
+package com.loopers.domain.catalog.entity;
 
 import com.loopers.domain.BaseEntity;
 import jakarta.persistence.Entity;
@@ -16,3 +16,12 @@ public class Brand extends BaseEntity {
     private String name;
 
 }
+
+// command
+// 외부 노출
+// 애그리게이트, 도메인 서비스, ProductService
+
+// query
+
+// 내부용
+// Repository, Entity,

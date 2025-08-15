@@ -2,14 +2,14 @@ package com.loopers.infrastructure.persistence.catalog;
 
 import static com.loopers.domain.catalog.ProductCondition.ListCondition.SortType.LIKES_DESC;
 import static com.loopers.domain.catalog.ProductCondition.ListCondition.SortType.PRICE_ASC;
-import static com.loopers.domain.catalog.QBrand.brand;
-import static com.loopers.domain.catalog.QProduct.product;
+import static com.loopers.domain.catalog.entity.QBrand.brand;
+import static com.loopers.domain.catalog.entity.QProduct.product;
 import static java.util.Objects.nonNull;
 
-import com.loopers.domain.catalog.Product;
 import com.loopers.domain.catalog.ProductCondition.ListCondition;
 import com.loopers.domain.catalog.ProductCondition.ListCondition.SortType;
-import com.loopers.domain.catalog.ProductQueryRepository;
+import com.loopers.domain.catalog.entity.Product;
+import com.loopers.domain.catalog.repository.ProductQueryRepository;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -33,6 +33,7 @@ class ProductQueryDslRepository implements ProductQueryRepository {
 
     @Override
     public Page<Product> findPageByProductListCriteria(ListCondition criteria) {
+        // 20ms
         long start1 = System.currentTimeMillis();
         List<Product> content = queryFactory
             .select(product)
@@ -47,6 +48,7 @@ class ProductQueryDslRepository implements ProductQueryRepository {
         long end1 = System.currentTimeMillis();
         log.info("Product content 조회 소요시간: {}ms", (end1 - start1));
 
+        // 10_000_000 // 1초 select count(*) from product;
         JPAQuery<Long> countQuery = queryFactory
             .select(product.count())
             .from(product);
@@ -71,6 +73,10 @@ class ProductQueryDslRepository implements ProductQueryRepository {
             .limit(criteria.pageable().getPageSize() + 1L)
             .offset(criteria.pageable().getOffset())
             .fetch();
+
+        content.forEach(product -> {
+            product.getBrand().getName();
+        });
 
         boolean hasNext = content.size() > criteria.pageable().getPageSize();
 
@@ -97,14 +103,14 @@ class ProductQueryDslRepository implements ProductQueryRepository {
     @Override
     public Optional<Product> findById(Long id) {
         return Optional.ofNullable(
-                queryFactory
-                        .select(product)
-                        .from(product)
-                        .where(
-                            product.id.eq(id)
-                            , isActive()
-                        )
-                        .fetchOne()
+            queryFactory
+                .select(product)
+                .from(product)
+                .join(product.brand, brand).fetchJoin()
+                .where(
+                    product.id.eq(id)
+                )
+                .fetchOne()
         );
     }
 

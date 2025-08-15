@@ -1,9 +1,9 @@
 package com.loopers.application.catalog;
 
 import com.loopers.application.catalog.CatalogResults.BrandDetailResult;
-import com.loopers.domain.catalog.Brand;
-import com.loopers.domain.catalog.BrandQueryService;
-import com.loopers.domain.catalog.ProductQueryService;
+import com.loopers.domain.catalog.entity.Brand;
+import com.loopers.domain.catalog.service.BrandQueryService;
+import com.loopers.domain.catalog.service.ProductQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

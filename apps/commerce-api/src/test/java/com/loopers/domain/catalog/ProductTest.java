@@ -1,6 +1,8 @@
 package com.loopers.domain.catalog;
 
 import com.loopers.config.annotations.UnitTest;
+import com.loopers.domain.catalog.entity.Product;
+import com.loopers.domain.catalog.vo.Stock;
 import com.loopers.fixture.ProductFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;

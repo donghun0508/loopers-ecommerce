@@ -1,7 +1,8 @@
 package com.loopers.application.catalog;
 
-import com.loopers.domain.catalog.Brand;
-import com.loopers.domain.catalog.Product;
+import com.loopers.domain.catalog.ProductRead;
+import com.loopers.domain.catalog.entity.Brand;
+import com.loopers.domain.catalog.entity.Product;
 import lombok.Builder;
 
 public class CatalogResults {
@@ -22,11 +23,11 @@ public class CatalogResults {
             boolean isLiked
         ) {
 
-            public static ProductDetailInfo from(Product product, boolean isLiked) {
+            public static ProductDetailInfo from(ProductRead product, boolean isLiked) {
                 return new ProductDetailInfo(
                     product.getName(),
                     product.isSoldOut(),
-                    product.getUnitPrice().value(),
+                    product.getUnitPrice(),
                     product.getHeartCount(),
                     isLiked
                 );
@@ -36,10 +37,10 @@ public class CatalogResults {
         @Builder
         public record BrandDetailInfo(Long brandId, String brandName) {
 
-            public static BrandDetailInfo from(Brand brand) {
+            public static BrandDetailInfo from(ProductRead productRead) {
                 return new BrandDetailInfo(
-                    brand.getId(),
-                    brand.getName()
+                    productRead.getBrandId(),
+                    productRead.getBrandName()
                 );
             }
         }
@@ -56,15 +57,15 @@ public class CatalogResults {
             Long likeCount
         ) {
 
-            public static ProductListResult of(Product product, Brand brand) {
+            public static ProductListResult of(ProductRead product) {
                 return new ProductListResult(
                     product.getId()
                     , new ProductInfo(
                     product.getName(),
                     product.isSoldOut(),
-                    product.getUnitPrice().value(),
-                    brand.getId(),
-                    brand.getName(),
+                    product.getUnitPrice(),
+                    product.getBrandId(),
+                    product.getBrandName(),
                     product.getHeartCount())
                 );
             }

@@ -1,5 +1,6 @@
-package com.loopers.domain.catalog;
+package com.loopers.domain.catalog.repository;
 
+import com.loopers.domain.catalog.entity.Product;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;

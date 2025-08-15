@@ -1,5 +1,8 @@
-package com.loopers.config.redis;
+package com.loopers.redis.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.lettuce.core.ReadFrom;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -10,6 +13,7 @@ import org.springframework.data.redis.connection.RedisStaticMasterReplicaConfigu
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.util.List;
@@ -53,20 +57,19 @@ public class RedisConfig{
 
     @Primary
     @Bean
-    public RedisTemplate<String, String> defaultRedisTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
-        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
+    public RedisTemplate<String, Object> defaultRedisTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         return defaultRedisTemplate(redisTemplate, lettuceConnectionFactory);
     }
 
     @Qualifier(REDIS_TEMPLATE_MASTER)
     @Bean
-    public RedisTemplate<String, String> masterRedisTemplate(
+    public RedisTemplate<String, Object> masterRedisTemplate(
         @Qualifier(CONNECTION_MASTER) LettuceConnectionFactory lettuceConnectionFactory
     ) {
-        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         return defaultRedisTemplate(redisTemplate, lettuceConnectionFactory);
     }
-
 
     private LettuceConnectionFactory lettuceConnectionFactory(
         int database,
@@ -89,12 +92,27 @@ public class RedisConfig{
         RedisTemplate<K,V> template,
         LettuceConnectionFactory connectionFactory
     ){
-        StringRedisSerializer s = new StringRedisSerializer();
-        template.setKeySerializer(s);
-        template.setValueSerializer(s);
-        template.setHashKeySerializer(s);
-        template.setHashValueSerializer(s);
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setHashKeySerializer(new StringRedisSerializer());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        objectMapper.activateDefaultTyping(
+            objectMapper.getPolymorphicTypeValidator(),
+            ObjectMapper.DefaultTyping.NON_FINAL
+        );
+
+        GenericJackson2JsonRedisSerializer jsonSerializer =
+            new GenericJackson2JsonRedisSerializer(objectMapper);
+
+        template.setValueSerializer(jsonSerializer);
+        template.setHashValueSerializer(jsonSerializer);
         template.setConnectionFactory(connectionFactory);
+
+        template.afterPropertiesSet();
+
         return template;
     }
 }

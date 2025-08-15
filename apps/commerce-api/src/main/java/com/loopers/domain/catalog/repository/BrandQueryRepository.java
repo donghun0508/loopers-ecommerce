@@ -1,5 +1,6 @@
-package com.loopers.domain.catalog;
+package com.loopers.domain.catalog.repository;
 
+import com.loopers.domain.catalog.entity.Brand;
 import java.util.List;
 import java.util.Optional;
 

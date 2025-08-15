@@ -1,7 +1,7 @@
 package com.loopers.application.heart;
 
-import com.loopers.domain.catalog.Product;
-import com.loopers.domain.catalog.ProductService;
+import com.loopers.domain.catalog.entity.Product;
+import com.loopers.domain.catalog.service.ProductService;
 import com.loopers.domain.heart.TargetType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

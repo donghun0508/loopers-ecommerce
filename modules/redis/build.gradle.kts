@@ -5,6 +5,6 @@ plugins {
 
 dependencies {
     api("org.springframework.boot:spring-boot-starter-data-redis")
-
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     testFixturesImplementation("com.redis:testcontainers-redis")
 }

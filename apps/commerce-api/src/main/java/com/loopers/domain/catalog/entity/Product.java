@@ -1,6 +1,8 @@
-package com.loopers.domain.catalog;
+package com.loopers.domain.catalog.entity;
 
 import com.loopers.domain.BaseEntity;
+import com.loopers.domain.catalog.vo.HeartCount;
+import com.loopers.domain.catalog.vo.Stock;
 import com.loopers.domain.shared.Money;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
