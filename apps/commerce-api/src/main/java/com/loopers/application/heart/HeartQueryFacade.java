@@ -20,7 +20,7 @@ public class HeartQueryFacade {
     private final UserQueryService userQueryService;
     private final HeartQueryService heartQueryService;
 
-    public Page<Results.HeartResult> getHeartList(String userId, Pageable pageable) {
+    public Page<HeartResults.HeartResult> getHeartList(String userId, Pageable pageable) {
         User user = userQueryService.getUser(AccountId.of(userId));
 
         List<Heart> hearts = heartQueryService.getHeartList(user.getId(), pageable);

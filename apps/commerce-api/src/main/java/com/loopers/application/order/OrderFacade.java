@@ -1,10 +1,10 @@
 package com.loopers.application.order;
 
 import com.loopers.application.order.CriteriaCommand.PointOrderCriteria;
-import com.loopers.domain.catalog.Product;
-import com.loopers.domain.catalog.ProductManager;
-import com.loopers.domain.catalog.ProductService;
-import com.loopers.domain.catalog.StockRecord;
+import com.loopers.domain.catalog.entity.Product;
+import com.loopers.domain.catalog.service.ProductManager;
+import com.loopers.domain.catalog.service.ProductService;
+import com.loopers.domain.catalog.vo.StockRecord;
 import com.loopers.domain.coupon.IssuedCoupon;
 import com.loopers.domain.coupon.IssuedCouponService;
 import com.loopers.domain.order.ApplyCouponCommand;
@@ -30,7 +30,7 @@ public class OrderFacade {
     private final ProductService productService;
     private final OrderService orderService;
     private final IssuedCouponService issuedCouponService;
-
+    
     @Transactional
     public void orderByPoint(PointOrderCriteria criteria) {
         User buyer = userService.findByAccountIdWithLock(criteria.accountId());

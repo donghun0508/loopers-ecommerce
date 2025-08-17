@@ -1,7 +1,7 @@
 package com.loopers.interfaces.api.catalog;
 
 import com.loopers.application.catalog.BrandQueryFacade;
-import com.loopers.application.catalog.Result.BrandDetailResult;
+import com.loopers.application.catalog.CatalogResults.BrandDetailResult;
 import com.loopers.interfaces.api.ApiResponse;
 import com.loopers.interfaces.api.catalog.BrandV1Dto.GetDetail;
 import lombok.RequiredArgsConstructor;

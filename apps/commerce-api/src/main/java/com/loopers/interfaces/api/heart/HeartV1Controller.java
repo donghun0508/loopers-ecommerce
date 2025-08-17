@@ -4,7 +4,7 @@ import com.loopers.application.heart.CriteriaCommand;
 import com.loopers.application.heart.CriteriaCommand.LikeCriteria;
 import com.loopers.application.heart.HeartFacade;
 import com.loopers.application.heart.HeartQueryFacade;
-import com.loopers.application.heart.Results.HeartResult;
+import com.loopers.application.heart.HeartResults.HeartResult;
 import com.loopers.domain.heart.TargetType;
 import com.loopers.interfaces.api.ApiHeaders;
 import com.loopers.interfaces.api.ApiResponse;
@@ -28,7 +28,7 @@ public class HeartV1Controller implements HeartV1ApiSpec {
             @RequestHeader(value = ApiHeaders.USER_ID, required = true) String userId
     ) {
         LikeCriteria criteria = LikeCriteria.of(userId, productId, TargetType.PRODUCT);
-        heartFacade.like(criteria);
+        heartFacade.heart(criteria);
         return ApiResponse.success();
     }
 
@@ -39,7 +39,7 @@ public class HeartV1Controller implements HeartV1ApiSpec {
             @RequestHeader(value = ApiHeaders.USER_ID, required = true) String userId
     ) {
         CriteriaCommand.UnlikeCriteria criteria = CriteriaCommand.UnlikeCriteria.of(userId, productId, TargetType.PRODUCT);
-        heartFacade.unlike(criteria);
+        heartFacade.unHeart(criteria);
         return ApiResponse.success();
     }
 

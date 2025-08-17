@@ -35,7 +35,7 @@ class OrderLine extends BaseEntity {
     @AttributeOverride(name = "value", column = @Column(name = "unit_price"))
     private Money price;
 
-    @AttributeOverride(name = "count", column = @Column(name = "quantity"))
+    @AttributeOverride(name = "value", column = @Column(name = "quantity"))
     private Quantity quantity;
 
     static OrderLine from(Order order, OrderItem orderItem) {
