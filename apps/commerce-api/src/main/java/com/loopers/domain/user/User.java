@@ -63,15 +63,13 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    public static User from(UserCreateCommand command) {
-        requireNonNull(command, "회원 생성 명령은 null입니다.");
-
+    public static User of(String accountId, String email, String birth, Gender gender) {
         User user = new User();
 
-        user.accountId = command.accountId();
-        user.email = command.email();
-        user.birth = command.birth();
-        user.gender = command.gender();
+        user.accountId = AccountId.of(accountId);
+        user.email = Email.of(email);
+        user.birth = Birth.of(birth);
+        user.gender = gender;
         user.point = Point.initialize(user);
 
         return user;

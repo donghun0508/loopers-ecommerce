@@ -1,9 +1,9 @@
 package com.loopers.application.order;
 
-import com.loopers.application.order.CriteriaCommand.PointOrderCriteria;
+import com.loopers.application.order.OrderCommand.PointPaymentOrderCommand;
 import com.loopers.config.annotations.IntegrationTest;
-import com.loopers.domain.catalog.entity.Product;
-import com.loopers.domain.catalog.service.ProductService;
+import com.loopers.domain.catalog.Product;
+import com.loopers.domain.catalog.ProductService;
 import com.loopers.domain.coupon.IssuedCoupon;
 import com.loopers.domain.coupon.IssuedCouponService;
 import com.loopers.domain.order.Order;
@@ -67,7 +67,7 @@ class OrderFacadeTest {
     @Test
     void throwsExceptionWhenStockIsEmpty() {
         Map<Long, Long> purchaseProducts = Map.of(Long.MAX_VALUE, 1L);
-        PointOrderCriteria criteria = PointOrderCriteria.of("test", null, purchaseProducts);
+        PointPaymentOrderCommand criteria = PointPaymentOrderCommand.of("test", null, purchaseProducts);
 
         assertThatExceptionOfType(CoreException.class)
                 .isThrownBy(() -> orderFacade.orderByPoint(criteria))
@@ -81,7 +81,7 @@ class OrderFacadeTest {
     @Test
     void throwsExceptionWhenStockIsInsufficient() {
         Map<Long, Long> purchaseProducts = Map.of(1L, Long.MAX_VALUE);
-        PointOrderCriteria criteria = PointOrderCriteria.of("test", null, purchaseProducts);
+        PointPaymentOrderCommand criteria = PointPaymentOrderCommand.of("test", null, purchaseProducts);
 
         assertThatThrownBy(() -> orderFacade.orderByPoint(criteria))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -92,7 +92,7 @@ class OrderFacadeTest {
     @Test
     void throwsExceptionWhenCouponDoesNotExist() {
         Map<Long, Long> purchaseProducts = Map.of(1L, 1L);
-        PointOrderCriteria criteria = PointOrderCriteria.of("test", Long.MAX_VALUE, purchaseProducts);
+        PointPaymentOrderCommand criteria = PointPaymentOrderCommand.of("test", Long.MAX_VALUE, purchaseProducts);
 
         assertThatExceptionOfType(CoreException.class)
                 .isThrownBy(() -> orderFacade.orderByPoint(criteria))
@@ -106,7 +106,7 @@ class OrderFacadeTest {
     @Test
     void throwsExceptionWhenCouponOwnerDoesNotMatch() {
         Map<Long, Long> purchaseProducts = Map.of(1L, 1L);
-        PointOrderCriteria criteria = PointOrderCriteria.of("test2", 1L, purchaseProducts);
+        PointPaymentOrderCommand criteria = PointPaymentOrderCommand.of("test2", 1L, purchaseProducts);
 
         assertThatThrownBy(() -> orderFacade.orderByPoint(criteria))
                 .isInstanceOf(IllegalStateException.class)
@@ -117,7 +117,7 @@ class OrderFacadeTest {
     @Test
     void throwsExceptionWhenUserPointIsInsufficient() {
         Map<Long, Long> purchaseProducts = Map.of(1L, 1L);
-        PointOrderCriteria criteria = PointOrderCriteria.of("noPoint", null, purchaseProducts);
+        PointPaymentOrderCommand criteria = PointPaymentOrderCommand.of("noPoint", null, purchaseProducts);
 
         assertThatThrownBy(() -> orderFacade.orderByPoint(criteria))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -131,7 +131,7 @@ class OrderFacadeTest {
         final Long couponId = 1L;
         final String accountId = "test";
         Map<Long, Long> purchaseProducts = Map.of(1L, 1L);
-        PointOrderCriteria criteria = PointOrderCriteria.of(accountId, couponId, purchaseProducts);
+        PointPaymentOrderCommand criteria = PointPaymentOrderCommand.of(accountId, couponId, purchaseProducts);
 
         User user = userService.findByAccountId(AccountId.of(accountId));
         Money totalAmount = user.getTotalPoint();
@@ -229,7 +229,7 @@ class OrderFacadeTest {
                 executorService.submit(() -> {
                     try {
                         Map<Long, Long> products = threadOrders.get(threadIndex);
-                        PointOrderCriteria criteria = PointOrderCriteria.of(accountId, null, products);
+                        PointPaymentOrderCommand criteria = PointPaymentOrderCommand.of(accountId, null, products);
                         orderFacade.orderByPoint(criteria);
                         successCount.incrementAndGet();
                         log.info("주문 성공 - 스레드 {}: {}", threadIndex, criteria);
@@ -307,7 +307,7 @@ class OrderFacadeTest {
                 executorService.submit(() -> {
                     try {
                         Map<Long, Long> products = threadOrders.get(threadIndex);
-                        PointOrderCriteria criteria = PointOrderCriteria.of(users.get(threadIndex).getAccountId().value(), null, products);
+                        PointPaymentOrderCommand criteria = PointPaymentOrderCommand.of(users.get(threadIndex).getAccountId().value(), null, products);
                         orderFacade.orderByPoint(criteria);
                         successCount.incrementAndGet();
                         log.info("주문 성공 - 스레드 {}: {}", threadIndex, criteria);

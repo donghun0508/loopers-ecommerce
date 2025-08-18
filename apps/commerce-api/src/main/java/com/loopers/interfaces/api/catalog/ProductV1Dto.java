@@ -1,12 +1,13 @@
 package com.loopers.interfaces.api.catalog;
 
 
-import com.loopers.application.catalog.CatalogResults.ProductDetailResult;
-import com.loopers.application.catalog.CatalogResults.ProductListResult;
+import com.loopers.application.catalog.ProductResult.ProductDetailResult;
+import com.loopers.application.catalog.ProductResult.ProductSliceResult;
+import com.loopers.domain.catalog.SortType;
 
 public class ProductV1Dto {
 
-    public record GetListRequest(Long brandId, String sort) {
+    public record GetListRequest(Long brandId, SortType sort) {
     }
 
 
@@ -15,7 +16,7 @@ public class ProductV1Dto {
             ProductInfo productInfo
     ) {
 
-        public static GetListResponse from(ProductListResult result) {
+        public static GetListResponse from(ProductSliceResult result) {
             return new GetListResponse(
                     result.productId(),
                     new ProductInfo(

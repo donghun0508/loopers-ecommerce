@@ -1,6 +1,6 @@
 package com.loopers.interfaces.api.point;
 
-import com.loopers.application.user.UserResults.UserPointResult;
+import com.loopers.application.user.UserResult.UserPointResult;
 import lombok.AccessLevel;
 import lombok.Builder;
 
