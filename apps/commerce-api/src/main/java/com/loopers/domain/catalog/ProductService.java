@@ -1,6 +1,6 @@
 package com.loopers.domain.catalog;
 
-import static java.util.Objects.nonNull;
+import static com.loopers.domain.shared.Preconditions.isHit;
 
 import com.loopers.aop.execution.ExecutionTime;
 import com.loopers.domain.catalog.ProductCondition.ListCondition;
@@ -73,7 +73,7 @@ public class ProductService {
     @Transactional(readOnly = true)
     public ProductSliceRead getProductSliceRead(ListCondition condition) {
         ProductSliceRead cache = productCacheRepository.findSliceByCondition(condition);
-        if(nonNull(cache)) {
+        if (isHit(cache)) {
             return cache;
         }
 
@@ -90,7 +90,7 @@ public class ProductService {
     @Transactional(readOnly = true)
     public ProductRead getProductRead(Long productId) {
         ProductRead cache = productCacheRepository.findById(productId);
-        if(nonNull(cache)) {
+        if (isHit(cache)) {
             return cache;
         }
 
