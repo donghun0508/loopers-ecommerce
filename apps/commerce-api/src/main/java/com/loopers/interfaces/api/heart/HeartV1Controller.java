@@ -1,10 +1,9 @@
 package com.loopers.interfaces.api.heart;
 
-import com.loopers.application.heart.CriteriaCommand;
-import com.loopers.application.heart.CriteriaCommand.LikeCriteria;
+import com.loopers.application.heart.HeartCommand.LikeCommand;
+import com.loopers.application.heart.HeartCommand.UnlikeCommand;
 import com.loopers.application.heart.HeartFacade;
-import com.loopers.application.heart.HeartQueryFacade;
-import com.loopers.application.heart.HeartResults.HeartResult;
+import com.loopers.application.heart.HeartResult;
 import com.loopers.domain.heart.TargetType;
 import com.loopers.interfaces.api.ApiHeaders;
 import com.loopers.interfaces.api.ApiResponse;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 public class HeartV1Controller implements HeartV1ApiSpec {
 
     private final HeartFacade heartFacade;
-    private final HeartQueryFacade heartQueryFacade;
 
     @Override
     @PostMapping("/products/{productId}")
@@ -27,7 +25,7 @@ public class HeartV1Controller implements HeartV1ApiSpec {
             @PathVariable Long productId,
             @RequestHeader(value = ApiHeaders.USER_ID, required = true) String userId
     ) {
-        LikeCriteria criteria = LikeCriteria.of(userId, productId, TargetType.PRODUCT);
+        LikeCommand criteria = LikeCommand.of(userId, productId, TargetType.PRODUCT);
         heartFacade.heart(criteria);
         return ApiResponse.success();
     }
@@ -38,7 +36,7 @@ public class HeartV1Controller implements HeartV1ApiSpec {
             @PathVariable Long productId,
             @RequestHeader(value = ApiHeaders.USER_ID, required = true) String userId
     ) {
-        CriteriaCommand.UnlikeCriteria criteria = CriteriaCommand.UnlikeCriteria.of(userId, productId, TargetType.PRODUCT);
+        UnlikeCommand criteria = UnlikeCommand.of(userId, productId, TargetType.PRODUCT);
         heartFacade.unHeart(criteria);
         return ApiResponse.success();
     }
@@ -49,7 +47,7 @@ public class HeartV1Controller implements HeartV1ApiSpec {
             @ModelAttribute PaginationRequest paginationRequest,
             @RequestHeader(value = ApiHeaders.USER_ID, required = true) String userId
     ) {
-        Page<HeartResult> heartResults = heartQueryFacade.getHeartList(userId, paginationRequest.toPageable());
+        Page<HeartResult> heartResults = heartFacade.getHeartList(userId, paginationRequest.toPageable());
         return ApiResponse.success(heartResults.map(HeartV1Dto.Response::from));
     }
 }

@@ -1,6 +1,7 @@
 package com.loopers.domain.heart;
 
 import com.loopers.domain.BaseEntity;
+import com.loopers.domain.user.AccountId;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -35,12 +36,11 @@ public class Heart extends BaseEntity {
     })
     private Target target;
 
-    public static Heart from(HeartCreateCommand command) {
-        requireNonNull(command, "좋아요 생성 명령은 null일 수 없습니다");
+    public static Heart from(Long userId, Target target) {
 
         Heart heart = new Heart();
-        heart.userId = command.userId();
-        heart.target = command.target();
+        heart.userId = userId;
+        heart.target = target;
 
         return heart;
     }

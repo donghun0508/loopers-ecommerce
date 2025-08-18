@@ -2,6 +2,7 @@ package com.loopers.domain.user;
 
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -20,14 +21,13 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public User create(UserCreateCommand command) {
+    public User create(User user) {
         try {
-            if (userRepository.existsByAccountIdAndEmail(command.accountId(), command.email())) {
-                log.warn("동일한 회원의 존재합니다. : {}", command);
+            if (userRepository.existsByAccountIdAndEmail(user.getAccountId(), user.getEmail())) {
+                log.warn("동일한 회원의 존재합니다. : {}", user.getAccountId());
                 throw new CoreException(ErrorType.CONFLICT);
             }
 
-            User user = User.from(command);
             return userRepository.save(user);
         } catch (DataIntegrityViolationException e) {
             log.warn("회원 가입 중 데이터 무결성 위반 발생: {}", e.getMessage(), e);
@@ -38,6 +38,11 @@ public class UserService {
     @Transactional(readOnly = true)
     public User findByAccountId(AccountId accountId) {
         return userRepository.findByAccountId(accountId).orElseThrow(() -> new CoreException(NOT_FOUND));
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<User> lookupByAccountId(AccountId accountId) {
+        return userRepository.findByAccountId(accountId);
     }
 
     @Transactional

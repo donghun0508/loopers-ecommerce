@@ -1,10 +1,10 @@
 package com.loopers.application.order;
 
-import com.loopers.application.order.CriteriaCommand.PointOrderCriteria;
-import com.loopers.domain.catalog.entity.Product;
-import com.loopers.domain.catalog.service.ProductManager;
-import com.loopers.domain.catalog.service.ProductService;
-import com.loopers.domain.catalog.vo.StockRecord;
+import com.loopers.application.order.OrderCommand.PointPaymentOrderCommand;
+import com.loopers.domain.catalog.Product;
+import com.loopers.domain.catalog.ProductManager;
+import com.loopers.domain.catalog.ProductService;
+import com.loopers.domain.catalog.StockRecord;
 import com.loopers.domain.coupon.IssuedCoupon;
 import com.loopers.domain.coupon.IssuedCouponService;
 import com.loopers.domain.order.ApplyCouponCommand;
@@ -32,28 +32,28 @@ public class OrderFacade {
     private final IssuedCouponService issuedCouponService;
     
     @Transactional
-    public void orderByPoint(PointOrderCriteria criteria) {
-        User buyer = userService.findByAccountIdWithLock(criteria.accountId());
-        List<Product> actualProducts = productService.findAllWithLock(criteria.purchaseProductIds());
+    public void orderByPoint(PointPaymentOrderCommand command) {
+        User buyer = userService.findByAccountIdWithLock(command.accountId());
+        List<Product> actualProducts = productService.findAllWithLock(command.purchaseProductIds());
 
         // 재고 차감
-        ProductManager productManager = ProductManager.assign(actualProducts, criteria.purchaseProducts());
+        ProductManager productManager = ProductManager.assign(actualProducts, command.purchaseProducts());
         StockRecord stockRecord = productManager.decreaseStock();
 
         // 주문 생성
         Order order = orderService.create(OrderCreateCommand.of(buyer, stockRecord));
 
         // 쿠폰 사용
-        if (criteria.hasCoupon()) {
-            IssuedCoupon coupon = issuedCouponService.findByIdWithLock(criteria.couponId());
+        if (command.hasCoupon()) {
+            IssuedCoupon coupon = issuedCouponService.findByIdWithLock(command.couponId());
             Money paidAmount = coupon.use(buyer.getId(), order.paidAmount());
             order.applyCoupon(ApplyCouponCommand.of(coupon, paidAmount));
         }
 
         // 결제
-        log.debug("결제 전 사용자 포인트 : {}, 주문 금액 : {}, 예상 포인트 : {}, 요청 : {}", buyer.getTotalPoint(), order.paidAmount(), buyer.getTotalPoint().subtract(order.paidAmount()), criteria);
+        log.debug("결제 전 사용자 포인트 : {}, 주문 금액 : {}, 예상 포인트 : {}, 요청 : {}", buyer.getTotalPoint(), order.paidAmount(), buyer.getTotalPoint().subtract(order.paidAmount()), command);
         buyer.payWithPoints(order.paidAmount());
-        log.debug("결제 후 사용자 포인트 : {}, 주문 금액 : {}, 요청 : {}", buyer.getTotalPoint(), order.paidAmount(), criteria);
+        log.debug("결제 후 사용자 포인트 : {}, 주문 금액 : {}, 요청 : {}", buyer.getTotalPoint(), order.paidAmount(), command);
         order.complete();
     }
 }

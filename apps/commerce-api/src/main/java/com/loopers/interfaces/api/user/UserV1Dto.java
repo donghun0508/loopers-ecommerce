@@ -1,7 +1,7 @@
 package com.loopers.interfaces.api.user;
 
-import com.loopers.application.user.CriteriaCommand.UserRegisterCriteria;
-import com.loopers.application.user.UserResults.UserResult;
+import com.loopers.application.user.UserCommand.UserRegisterCommand;
+import com.loopers.application.user.UserResult.UserDetailResult;
 import com.loopers.domain.user.Gender;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -17,8 +17,8 @@ public class UserV1Dto {
             String birth,
             @NotNull GenderRequest gender
     ) {
-        public UserRegisterCriteria criteria() {
-            return UserRegisterCriteria.builder()
+        public UserRegisterCommand criteria() {
+            return UserRegisterCommand.builder()
                     .accountId(userId)
                     .email(email)
                     .birth(birth)
@@ -41,14 +41,14 @@ public class UserV1Dto {
             String birth,
             GenderResponse gender
     ) {
-        public static UserResponse from(UserResult userResult) {
-            requireNonNull(userResult, "MemberResponse 객체가 null입니다.");
+        public static UserResponse from(UserDetailResult userDetailResult) {
+            requireNonNull(userDetailResult, "MemberResponse 객체가 null입니다.");
 
             return UserResponse.builder()
-                    .userId(userResult.accountId())
-                    .email(userResult.email())
-                    .birth(userResult.birth())
-                    .gender(GenderResponse.toResponse(userResult.gender()))
+                    .userId(userDetailResult.accountId())
+                    .email(userDetailResult.email())
+                    .birth(userDetailResult.birth())
+                    .gender(GenderResponse.toResponse(userDetailResult.gender()))
                     .build();
         }
 

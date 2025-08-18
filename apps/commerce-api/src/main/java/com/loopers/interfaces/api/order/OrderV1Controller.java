@@ -1,6 +1,6 @@
 package com.loopers.interfaces.api.order;
 
-import com.loopers.application.order.CriteriaCommand.PointOrderCriteria;
+import com.loopers.application.order.OrderCommand.PointPaymentOrderCommand;
 import com.loopers.application.order.OrderFacade;
 import com.loopers.interfaces.api.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class OrderV1Controller implements OrderV1ApiSpec {
         @RequestBody OrderV1Dto.OrderRequest request,
         @RequestHeader(value = USER_ID, required = true) String userId
     ) {
-        PointOrderCriteria criteria = PointOrderCriteria.of(userId, request.couponId(), request.toPurchaseMap());
+        PointPaymentOrderCommand criteria = PointPaymentOrderCommand.of(userId, request.couponId(), request.toPurchaseMap());
         orderFacade.orderByPoint(criteria);
         return ApiResponse.success();
     }

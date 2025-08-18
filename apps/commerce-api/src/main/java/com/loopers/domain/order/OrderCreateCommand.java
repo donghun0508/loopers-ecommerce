@@ -1,6 +1,6 @@
 package com.loopers.domain.order;
 
-import com.loopers.domain.catalog.vo.StockRecord;
+import com.loopers.domain.catalog.StockRecord;
 import com.loopers.domain.shared.Money;
 import com.loopers.domain.user.User;
 
