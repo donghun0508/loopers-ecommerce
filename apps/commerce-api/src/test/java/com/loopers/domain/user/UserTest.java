@@ -38,7 +38,7 @@ class UserTest {
 
     @DisplayName("회원 포인트 충전 시, ")
     @Nested
-    class Point {
+    class PointSourceTEmp {
 
         @DisplayName("포인트 충전 시 비용이 null인 경우 예외를 발생한다.")
         @ParameterizedTest

@@ -1,6 +1,5 @@
 package com.loopers.domain.order;
 
-import com.loopers.domain.order.OrderCreateCommand.OrderItem;
 import com.loopers.domain.shared.Money;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embeddable;

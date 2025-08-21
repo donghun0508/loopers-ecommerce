@@ -28,6 +28,13 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 @Slf4j
 public class ApiControllerAdvice {
+
+    @ExceptionHandler
+    public ResponseEntity<ApiResponse<?>> handle(IllegalArgumentException e) {
+        log.warn("IllegalArgumentException : {}", e.getMessage(), e);
+        return failureResponse(ErrorType.BAD_REQUEST, e.getMessage());
+    }
+
     @ExceptionHandler
     public ResponseEntity<ApiResponse<?>> handle(CoreException e) {
         log.warn("CoreException : {}", e.getCustomMessage() != null ? e.getCustomMessage() : e.getMessage(), e);

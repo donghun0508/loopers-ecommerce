@@ -51,7 +51,19 @@ public class UserService {
     }
 
     @Transactional
+    public User findByIdWithLock(Long userId) {
+        return userRepository.findByIdWithLock(userId)
+                .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND, "UserService.findByIdWithLock(): 사용자를 찾을 수 없습니다. 사용자 ID: " + userId));
+    }
+
+    @Transactional
     public List<User> findAllByIdIn(List<Long> userIds) {
         return userRepository.findAllByIdIn(userIds);
+    }
+
+    @Transactional(readOnly = true)
+    public User findById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND, "UserService.findById(): 사용자를 찾을 수 없습니다. 사용자 ID: " + userId));
     }
 }

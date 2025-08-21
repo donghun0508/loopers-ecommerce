@@ -2,7 +2,7 @@ package com.loopers.domain.catalog;
 
 import static com.loopers.domain.shared.Preconditions.isHit;
 
-import com.loopers.aop.execution.ExecutionTime;
+import com.loopers.logging.execution.ExecutionTime;
 import com.loopers.domain.catalog.ProductCondition.ListCondition;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;

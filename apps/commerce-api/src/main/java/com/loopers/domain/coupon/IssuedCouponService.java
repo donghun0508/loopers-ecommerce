@@ -21,6 +21,7 @@ public class IssuedCouponService {
     @Transactional
     public IssuedCoupon findByIdWithLock(Long couponId) {
         return issuedCouponRepository.findByIdWithLock(couponId)
-                .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND, "IssuedCouponService.findByIdWithLock(): 쿠폰을 찾을 수 없습니다. 쿠폰 ID: " + couponId));
+            .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND, "IssuedCouponService.findByIdWithLock(): 쿠폰을 찾을 수 없습니다. 쿠폰 ID: " + couponId));
     }
+
 }

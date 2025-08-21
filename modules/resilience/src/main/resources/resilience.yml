@@ -1,0 +1,47 @@
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        failure-rate-threshold: 60
+        slow-call-rate-threshold: 60
+        slow-call-duration-threshold: 5000
+        wait-duration-in-open-state: 30000
+        minimum-number-of-calls: 5
+        sliding-window-size: 10
+        sliding-window-type: COUNT_BASED
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+        record-exceptions:
+          - java.lang.Exception
+
+  retry:
+    configs:
+      default:
+        max-attempts: 2
+        wait-duration: 500
+        exponential-backoff-multiplier: 2
+        retry-exceptions:
+          - java.net.SocketTimeoutException
+          - java.net.ConnectException
+          - org.springframework.web.client.ResourceAccessException
+          - feign.RetryableException
+
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 10000
+        cancel-running-future: true
+
+  bulkhead:
+    configs:
+      default:
+        max-concurrent-calls: 25
+        max-wait-duration: 0
+
+management:
+  metrics:
+    distribution:
+      percentiles:
+        resilience4j.circuitbreaker.calls: 0.5, 0.95, 0.99
+        resilience4j.retry.calls: 0.5, 0.95, 0.99
+        resilience4j.timelimiter.calls: 0.5, 0.95, 0.99
