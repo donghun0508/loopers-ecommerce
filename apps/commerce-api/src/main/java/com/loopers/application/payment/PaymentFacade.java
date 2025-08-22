@@ -4,6 +4,8 @@ import com.loopers.application.payment.PaymentCommand.PaymentRequestCommand;
 import com.loopers.application.payment.PaymentCommand.PaymentSyncCommand;
 import com.loopers.application.payment.handler.PaymentHandler;
 import com.loopers.application.payment.handler.PaymentHandlers;
+import com.loopers.domain.coupon.IssuedCoupon;
+import com.loopers.domain.coupon.IssuedCouponService;
 import com.loopers.domain.order.Order;
 import com.loopers.domain.order.OrderService;
 import com.loopers.domain.payment.CardPayment;
@@ -22,6 +24,7 @@ public class PaymentFacade {
 
     private final PaymentService paymentService;
     private final PaymentHandlers paymentHandlers;
+    private final IssuedCouponService issuedCouponService;
     private final OrderService orderService;
 
     @Transactional
@@ -42,6 +45,10 @@ public class PaymentFacade {
         } else {
             payment.fail(command.reason());
             order.fail();
+            if(order.isCouponUsed()) {
+                IssuedCoupon issuedCoupon = issuedCouponService.findById(order.getCouponId());
+                issuedCoupon.cancel();
+            }
         }
     }
 

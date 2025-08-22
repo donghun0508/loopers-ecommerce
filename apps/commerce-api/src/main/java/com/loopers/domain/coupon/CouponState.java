@@ -17,8 +17,8 @@ public record CouponState(@Enumerated(EnumType.STRING) CouponStatus status, Loca
     }
 
     public CouponState canceled() {
-        if (this.status != CouponStatus.AVAILABLE) {
-            throw new IllegalStateException("CouponState.canceled().status: 쿠폰은 사용 가능한 상태여야 합니다.");
+        if (this.status != CouponStatus.USED) {
+            throw new IllegalStateException("CouponState.canceled(): 사용된 쿠폰만 취소할 수 있습니다.");
         }
         return new CouponState(CouponStatus.AVAILABLE, null);
     }
