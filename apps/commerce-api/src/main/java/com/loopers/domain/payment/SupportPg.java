@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 public class SupportPg {
+
     @Target({ElementType.TYPE, ElementType.PARAMETER, ElementType.FIELD})
     @Retention(RetentionPolicy.RUNTIME)
     @Component
     @Qualifier
     public @interface PgSimulator {
+
     }
 
 }

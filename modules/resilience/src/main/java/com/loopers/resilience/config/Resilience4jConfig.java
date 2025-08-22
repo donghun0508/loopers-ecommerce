@@ -30,6 +30,7 @@ public class Resilience4jConfig {
         private Integer maxAttempts;
         private Long waitDuration;
         private Double exponentialBackoffMultiplier;
+        private Boolean enableExponentialBackoff;
         private Boolean manual;
         private List<String> retryExceptions;
         private List<String> ignoreExceptions;

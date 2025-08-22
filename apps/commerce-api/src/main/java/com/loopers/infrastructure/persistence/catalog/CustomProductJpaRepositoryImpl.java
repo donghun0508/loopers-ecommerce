@@ -6,9 +6,9 @@ import static com.loopers.domain.catalog.SortType.LIKES_DESC;
 import static com.loopers.domain.catalog.SortType.PRICE_ASC;
 import static java.util.Objects.nonNull;
 
+import com.loopers.domain.catalog.Product;
 import com.loopers.domain.catalog.ProductCondition.ListCondition;
 import com.loopers.domain.catalog.SortType;
-import com.loopers.domain.catalog.Product;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;

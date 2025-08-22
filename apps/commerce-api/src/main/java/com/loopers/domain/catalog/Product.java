@@ -1,14 +1,22 @@
 package com.loopers.domain.catalog;
 
+import static com.loopers.domain.shared.Preconditions.requireNonNull;
+import static com.loopers.domain.shared.Preconditions.requirePositive;
+
 import com.loopers.domain.BaseEntity;
 import com.loopers.domain.shared.Money;
-import jakarta.persistence.*;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import static com.loopers.domain.shared.Preconditions.requireNonNull;
-import static com.loopers.domain.shared.Preconditions.requirePositive;
 
 @Getter
 @Entity

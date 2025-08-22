@@ -38,12 +38,8 @@ class PointPaymentHandler implements PaymentHandler {
         User user = userService.findByIdWithLock(order.getBuyerId());
 
         // 결제 생성
-        PointPayment pointPayment = PointPayment.initiate(
-            order.getOrderNumber().number(),
-            order.paidAmount(),
-            user.getId(),
-            user.getTotalPoint()
-        );
+        PointPayment pointPayment = PointPayment.initiate(order.getOrderNumber().number(), order.paidAmount(), user.getId(),
+            user.getTotalPoint());
 
         try {
             // 포인트 차감
@@ -55,7 +51,7 @@ class PointPaymentHandler implements PaymentHandler {
             // 주문 성공
             order.complete();
         } catch (Exception e) {
-            if(exceptionMatcher.isNotEnoughPoint(e)) {
+            if (exceptionMatcher.isNotEnoughPoint(e)) {
                 pointPayment.fail("포인트가 부족합니다.");
             } else {
                 log.error("포인트 결제 실패 :{} ", e.getMessage(), e);
@@ -64,7 +60,10 @@ class PointPaymentHandler implements PaymentHandler {
             order.fail();
 
             // 쿠폰 취소
-            IssuedCoupon issuedCoupon = issuedCouponService.findById(order.getCouponId());
+            if (order.isCouponUsed()) {
+                IssuedCoupon issuedCoupon = issuedCouponService.findById(order.getCouponId());
+                issuedCoupon.cancel();
+            }
         }
 
         return pointPayment;

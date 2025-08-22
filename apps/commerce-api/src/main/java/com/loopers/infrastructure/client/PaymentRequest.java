@@ -1,17 +1,14 @@
 package com.loopers.infrastructure.client;
 
 
+import com.loopers.domain.payment.CardType;
+
 public record PaymentRequest(
     String orderId,
-    CardTypeRequest cardType,
+    CardType cardType,
     String cardNo,
     Long amount,
     String callbackUrl
 ) {
-    enum CardTypeRequest {
-        SAMSUNG,
-        KB,
-        HYUNDAI,
-        ;
-    }
+
 }

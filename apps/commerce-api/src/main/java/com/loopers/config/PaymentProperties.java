@@ -20,6 +20,8 @@ public class PaymentProperties {
     @Data
     public static class ProviderConfig {
 
+        private Long syncInterval;
+        private Long initialDelay;
         private String baseUrl;
         private String callbackUrl;
         private String secretKey;

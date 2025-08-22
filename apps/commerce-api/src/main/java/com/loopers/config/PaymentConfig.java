@@ -4,17 +4,13 @@ import static com.loopers.config.PaymentConfig.SimulatorProviderConfig.Operation
 import static com.loopers.config.PaymentConfig.SimulatorProviderConfig.OperationConfig.OperationPaymentRequestConfig.Constants.OPERATION_PAYMENT_REQUEST;
 import static com.loopers.config.PaymentConfig.SimulatorProviderConfig.OperationConfig.OperationPaymentRequestConfig.Constants.RETRY_PAYMENT;
 
-import com.loopers.infrastructure.client.PgClientErrorDecoder;
+import com.loopers.infrastructure.client.PaymentRequestRetryPolicy;
 import com.loopers.resilience.Resilience4jConfigFactory;
-import com.loopers.support.error.CoreException;
 import feign.RequestInterceptor;
-import feign.codec.ErrorDecoder;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.retry.Retry;
-import java.net.SocketTimeoutException;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Predicate;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,12 +23,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.web.client.ResourceAccessException;
 
-@Configuration
-@NoArgsConstructor
+@Slf4j
 @EnableConfigurationProperties(PaymentProperties.class)
 public class PaymentConfig {
+
+    private PaymentConfig() {
+
+    }
 
     @Configuration
     public static class SimulatorProviderConfig {
@@ -69,11 +67,6 @@ public class PaymentConfig {
             return template -> template.header("X-USER-ID", properties.getCompany());
         }
 
-        @Bean
-        public ErrorDecoder paymentErrorDecoder() {
-            return new PgClientErrorDecoder();
-        }
-
         @Bean("paymentRequestTaskExecutor")
         public ThreadPoolTaskExecutor paymentRequestTaskExecutor(PaymentProperties paymentProperties) {
             var providerConfig = paymentProperties.getProvider(SIMULATOR_PROVIDER_NAME);
@@ -104,6 +97,7 @@ public class PaymentConfig {
                 private final Resilience4jConfigFactory configFactory;
 
                 public static class Constants {
+
                     public static final String CIRCUIT_PAYMENT = "CB_PAYMENT_REQUEST";
                     public static final String RETRY_PAYMENT = "RETRY_PAYMENT_REQUEST";
                     public static final String OPERATION_PAYMENT_REQUEST = "payment-request";
@@ -128,19 +122,8 @@ public class PaymentConfig {
                         .getOperationConfig(OPERATION_PAYMENT_REQUEST);
                     var retryConfig = operationConfig.getResilience4j().getRetry();
 
-                    return configFactory.createRetry(RETRY_PAYMENT, retryConfig, new PaymentRetryPredicate());
-                }
-
-                @Slf4j
-                static class PaymentRetryPredicate implements Predicate<Throwable> {
-
-                    @Override
-                    public boolean test(Throwable throwable) {
-                        log.error("Payment retry triggered due to: {}", throwable.getMessage(), throwable);
-                        return throwable instanceof CoreException ||
-                            throwable instanceof SocketTimeoutException ||
-                            throwable instanceof ResourceAccessException;
-                    }
+                    return configFactory.createRetry(RETRY_PAYMENT, retryConfig,
+                        Boolean.TRUE.equals(retryConfig.getManual()) ? new PaymentRequestRetryPolicy() : null);
                 }
             }
         }

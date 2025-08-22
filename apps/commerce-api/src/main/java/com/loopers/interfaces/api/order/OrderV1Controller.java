@@ -7,7 +7,6 @@ import com.loopers.application.order.OrderPaymentFacade;
 import com.loopers.domain.order.IdempotencyKey;
 import com.loopers.interfaces.api.ApiResponse;
 import com.loopers.interfaces.api.order.OrderV1Dto.OrderRequest;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +28,8 @@ public class OrderV1Controller implements OrderV1ApiSpec {
         @RequestBody OrderRequest request,
         @RequestHeader(value = USER_ID, required = true) String userId
     ) {
-        OrderRequestCommand command = OrderRequestCommand.of(userId, request.idempotencyKey(), request.couponId(), request.toPurchaseMap(), request.paymentSpec());
+        OrderRequestCommand command = OrderRequestCommand.of(userId, request.idempotencyKey(), request.couponId(),
+            request.toPurchaseMap(), request.paymentSpec());
         orderPaymentFacade.order(command);
         return ApiResponse.success();
     }

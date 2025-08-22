@@ -1,7 +1,7 @@
 package com.loopers.infrastructure.persistence.catalog;
 
-import com.loopers.domain.catalog.ProductCondition.ListCondition;
 import com.loopers.domain.catalog.Product;
+import com.loopers.domain.catalog.ProductCondition.ListCondition;
 import com.loopers.domain.catalog.ProductRepository;
 import java.util.List;
 import java.util.Optional;

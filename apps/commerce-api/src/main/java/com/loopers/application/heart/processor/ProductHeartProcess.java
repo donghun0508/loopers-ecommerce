@@ -1,13 +1,13 @@
 package com.loopers.application.heart.processor;
 
+import static com.loopers.domain.heart.TargetType.PRODUCT;
+
 import com.loopers.domain.catalog.Product;
 import com.loopers.domain.catalog.ProductService;
 import com.loopers.domain.heart.TargetType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import static com.loopers.domain.heart.TargetType.PRODUCT;
 
 @Slf4j
 @RequiredArgsConstructor

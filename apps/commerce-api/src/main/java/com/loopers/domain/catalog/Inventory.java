@@ -33,7 +33,9 @@ public class Inventory {
                 throw new IllegalStateException("ProductManager.decreaseStock(): 구매할 상품이 존재하지 않습니다.");
             }
             if (product.getStock().isLessThan(purchaseQuantity)) {
-                throw new IllegalStateException("ProductManager.decreaseStock(): 재고가 부족합니다. 상품: " + product.getName() + ", 재고: " + product.getStock() + ", 구매 수량: " + purchaseQuantity);
+                throw new IllegalStateException(
+                    "ProductManager.decreaseStock(): 재고가 부족합니다. 상품: " + product.getName() + ", 재고: " + product.getStock()
+                        + ", 구매 수량: " + purchaseQuantity);
             }
             items.add(ProductItem.of(product, purchaseQuantity));
         }

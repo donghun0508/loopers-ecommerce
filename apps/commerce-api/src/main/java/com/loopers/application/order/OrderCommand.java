@@ -22,7 +22,8 @@ public class OrderCommand {
         PaymentMethod paymentMethod
     ) {
 
-        public OrderRequestCommand(String accountId, String idempotencyKey, Long couponId, Map<Long, Long> productQuantities, PaymentMethod paymentMethod) {
+        public OrderRequestCommand(String accountId, String idempotencyKey, Long couponId, Map<Long, Long> productQuantities,
+            PaymentMethod paymentMethod) {
             this(
                 AccountId.of(requireNonBlank(accountId, "회원 ID는 비어있을 수 없습니다."))
                 , IdempotencyKey.of(idempotencyKey)

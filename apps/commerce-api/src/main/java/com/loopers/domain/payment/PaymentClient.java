@@ -1,34 +1,13 @@
 package com.loopers.domain.payment;
 
+import com.loopers.domain.payment.PaymentClientData.PaymentClientRequest;
+import com.loopers.domain.payment.PaymentClientData.PaymentClientResponse;
+import com.loopers.domain.payment.PaymentClientData.PaymentClientTransactionDetailResponse;
+
 public interface PaymentClient {
 
     PaymentClientResponse requestPayment(PaymentClientRequest request);
 
-    record PaymentClientRequest(
-        String orderId,
-        CardType cardType,
-        String cardNo,
-        Long amount,
-        String callbackUrl
-    ) {
+    PaymentClientTransactionDetailResponse getTransaction(String transactionKey);
 
-    }
-
-    record PaymentClientResponse(
-        String transactionKey,
-        TransactionStatusResponse status,
-        String reason
-
-    ) {
-
-        public boolean isPending() {
-            return this.status == TransactionStatusResponse.PENDING;
-        }
-
-        public enum TransactionStatusResponse {
-            PENDING,
-            SUCCESS,
-            FAILED,
-        }
-    }
 }

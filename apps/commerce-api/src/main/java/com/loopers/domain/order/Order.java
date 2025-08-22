@@ -49,7 +49,7 @@ public class Order extends AggregateRoot {
     @AttributeOverride(name = "key", column = @Column(name = "idempotency_key", nullable = false, updatable = false, unique = true))
     private IdempotencyKey idempotencyKey;
 
-    public static Order from(Long buyerId,IdempotencyKey idempotencyKey, List<OrderItem> items) {
+    public static Order from(Long buyerId, IdempotencyKey idempotencyKey, List<OrderItem> items) {
         Order order = new Order();
         order.buyerId = buyerId;
         order.orderLines = OrderLines.of(order, items);
@@ -82,7 +82,7 @@ public class Order extends AggregateRoot {
     }
 
     public void fail() {
-        if(this.status == OrderStatus.FAILED) {
+        if (this.status == OrderStatus.FAILED) {
             throw new IllegalStateException("이미 주문이 실패 상태입니다.");
         }
         this.status = OrderStatus.FAILED;
@@ -102,5 +102,9 @@ public class Order extends AggregateRoot {
 
     public Long getCouponId() {
         return this.orderPayment.issuedCouponId();
+    }
+
+    public boolean isCouponUsed() {
+        return false;
     }
 }

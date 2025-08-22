@@ -46,7 +46,7 @@ public abstract class Payment extends AggregateRoot {
     private String failureReason;
 
     public void complete() {
-        if (this.status != PaymentStatus.PENDING) {
+        if (this.status != PaymentStatus.PENDING && this.status != PaymentStatus.REQUESTED) {
             throw new IllegalStateException("결제 진행 중인 상태가 아닙니다.");
         }
         this.status = PaymentStatus.COMPLETED;

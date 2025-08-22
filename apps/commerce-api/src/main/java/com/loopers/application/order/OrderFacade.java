@@ -11,7 +11,6 @@ import com.loopers.domain.order.OrderService;
 import com.loopers.domain.user.User;
 import com.loopers.domain.user.UserService;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

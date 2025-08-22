@@ -3,6 +3,7 @@ package com.loopers.application.heart;
 public record HeartResult(
     ProductInfo product
 ) {
+
     public record ProductInfo(
         String productName,
         boolean isSoldOut,

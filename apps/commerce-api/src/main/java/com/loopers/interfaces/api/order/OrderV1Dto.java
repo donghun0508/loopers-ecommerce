@@ -19,17 +19,10 @@ public class OrderV1Dto {
 
         }
 
-        public record CardPaymentRequest(String number, CardTypeRequest type) {
+        public record CardPaymentRequest(String number, CardType type) {
 
-            public static CardPaymentRequest of(String number, CardTypeRequest type) {
+            public static CardPaymentRequest of(String number, CardType type) {
                 return new CardPaymentRequest(number, type);
-            }
-
-            public enum CardTypeRequest {
-                SAMSUNG,
-                KB,
-                HYUNDAI,
-                ;
             }
         }
 

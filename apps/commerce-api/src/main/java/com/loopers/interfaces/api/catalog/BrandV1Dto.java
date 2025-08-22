@@ -9,9 +9,9 @@ public class BrandV1Dto {
 
         public static GetDetail from(BrandDetailResult result) {
             return new GetDetail(
-                    result.brandId(),
-                    result.brandName(),
-                    result.totalProductCount()
+                result.brandId(),
+                result.brandName(),
+                result.totalProductCount()
             );
         }
     }

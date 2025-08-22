@@ -1,5 +1,6 @@
 package com.loopers.domain.payment;
 
+import com.loopers.domain.payment.PaymentClientData.PaymentClientResponse;
 import com.loopers.domain.payment.PaymentEvent.CardPaymentCreatedEvent;
 import com.loopers.domain.shared.Money;
 import jakarta.persistence.Column;
@@ -9,10 +10,12 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+@Getter
 @Entity
 @Table(name = "card_payment")
 @DiscriminatorValue("CARD")
@@ -33,17 +36,19 @@ public class CardPayment extends Payment {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "provider_response", columnDefinition = "JSON")
-    private Object providerResponse;
+    private PaymentClientResponse providerResponse;
 
     @Column(name = "transaction_id")
     private String transactionId;
 
-    public static CardPayment initiate(String orderNumber, Money paidAmount, CardType cardType, PaymentProvider paymentProvider, Object providerResponse, String transactionId) {
+    public static CardPayment initiate(String orderNumber, Money paidAmount, CardType cardType, PaymentProvider paymentProvider,
+        PaymentClientResponse providerResponse, String transactionId) {
         CardPayment cardPayment = new CardPayment();
 
         cardPayment.orderNumber = orderNumber;
         cardPayment.paidAmount = paidAmount;
         cardPayment.status = PaymentStatus.REQUESTED;
+
         cardPayment.cardType = cardType;
         cardPayment.paymentProvider = paymentProvider;
         cardPayment.providerResponse = providerResponse;
@@ -54,7 +59,8 @@ public class CardPayment extends Payment {
         return cardPayment;
     }
 
-    public static CardPayment failCard(String orderNumber, Money paidAmount, CardType cardType, PaymentProvider paymentProvider, Object providerResponse) {
+    public static CardPayment failCard(String orderNumber, Money paidAmount, CardType cardType, PaymentProvider paymentProvider,
+        PaymentClientResponse providerResponse) {
         CardPayment cardPayment = new CardPayment();
 
         cardPayment.orderNumber = orderNumber;

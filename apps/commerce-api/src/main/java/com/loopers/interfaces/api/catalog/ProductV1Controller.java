@@ -34,7 +34,8 @@ public class ProductV1Controller implements ProductV1ApiSpec {
         @ModelAttribute ProductV1Dto.GetListRequest request,
         @ModelAttribute PaginationRequest paginationRequest
     ) {
-        Slice<ProductSliceResult> products = productFacade.getProductList(new ListCondition(request.brandId(), request.sort(), paginationRequest.toPageable()));
+        Slice<ProductSliceResult> products = productFacade.getProductList(
+            new ListCondition(request.brandId(), request.sort(), paginationRequest.toPageable()));
         return ApiResponse.success(NoCountPageResponse.of(products.map(ProductV1Dto.GetListResponse::from)));
     }
 

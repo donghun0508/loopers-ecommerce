@@ -3,8 +3,10 @@ external:
     company: "29cart"
     providers:
       simulator:
+        sync-interval: ${PG_SYNC_INTERVAL:60000}
+        initial-delay: ${PG_SYNC_INTERVAL:5000}
         base-url: ${PG_BASE_URL:http://localhost:8082}
-        callback-url: ${PG_CALLBACK_URL:http://host.docker.internal:8080/api/v1/payments/callback}
+        callback-url: ${PG_CALLBACK_URL:http://localhost:8080/api/v1/payments/callback}
         connection:
           timeout:
             connect: ${PG_CONNECT_TIMEOUT:3000}
@@ -25,7 +27,8 @@ external:
           payment-request:
             resilience4j:
               circuitbreaker:
-                failure-rate-threshold: 50
+                failure-rate-threshold: 80
               retry:
-                max-attempts: 10
+                wait-duration: 300
+                exponential-backoff-multiplier: 2.0
                 manual: true

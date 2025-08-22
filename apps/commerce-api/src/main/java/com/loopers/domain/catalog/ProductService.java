@@ -2,8 +2,8 @@ package com.loopers.domain.catalog;
 
 import static com.loopers.domain.shared.Preconditions.isHit;
 
-import com.loopers.logging.execution.ExecutionTime;
 import com.loopers.domain.catalog.ProductCondition.ListCondition;
+import com.loopers.logging.execution.ExecutionTime;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
 import java.util.List;
@@ -96,7 +96,8 @@ public class ProductService {
 
         ProductRead productRead = productRepository.findById(productId)
             .map(ProductRead::from)
-            .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND, "ProductService.findById(): 상품을 찾을 수 없습니다. 상품 ID: " + productId));
+            .orElseThrow(
+                () -> new CoreException(ErrorType.NOT_FOUND, "ProductService.findById(): 상품을 찾을 수 없습니다. 상품 ID: " + productId));
 
         if (productQueryCachePolicy.shouldCache(productId)) {
             productCacheRepository.save(productId, productRead);

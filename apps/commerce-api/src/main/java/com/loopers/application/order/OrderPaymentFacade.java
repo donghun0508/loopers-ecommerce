@@ -23,5 +23,3 @@ public class OrderPaymentFacade {
         return new OrderPaymentResult(orderCreatedEvent.orderNumber());
     }
 }
-
-// TODO: 콜백이 안올경우, 대비해야함 위 요청은 무조건 반환함

@@ -1,18 +1,14 @@
 package com.loopers.infrastructure.client;
 
+import com.loopers.domain.payment.TransactionStatus;
+
 public record PaymentResponse(
     String transactionKey,
-    TransactionStatusResponse status,
+    TransactionStatus status,
     String reason
 ) {
-    enum TransactionStatusResponse {
-        PENDING,
-        SUCCESS,
-        FAILED,
-        ;
-    }
 
     public boolean isSuccess() {
-        return status == TransactionStatusResponse.SUCCESS;
+        return status == TransactionStatus.SUCCESS;
     }
 }
