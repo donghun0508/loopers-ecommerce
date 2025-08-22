@@ -33,12 +33,15 @@ public class PaymentFacade {
 
     @Transactional
     public void syncPayment(PaymentSyncCommand command) {
-        if (command.isSuccess()) {
-            Payment payment = paymentService.findByOrderNumber(command.orderNumber());
-            Order order = orderService.findByOrderNumber(command.orderNumber());
+        Payment payment = paymentService.findByOrderNumber(command.orderNumber());
+        Order order = orderService.findByOrderNumber(command.orderNumber());
 
+        if (command.isSuccess()) {
             payment.complete();
             order.complete();
+        } else {
+            payment.fail(command.reason());
+            order.fail();
         }
     }
 
