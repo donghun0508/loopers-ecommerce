@@ -5,7 +5,9 @@ include(
     ":apps:pg-simulator",
     ":modules:jpa",
     ":modules:redis",
-    ":modules:aop",
+    ":modules:feign",
+    ":modules:resilience",
+    ":modules:scheduler",
     ":supports:jackson",
     ":supports:logging",
     ":supports:monitoring",
@@ -31,8 +33,3 @@ pluginManagement {
         }
     }
 }
-
-include("modules:redis")
-include("modules:redis")
-
-include("modules:aop")

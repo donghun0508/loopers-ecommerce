@@ -1,10 +1,9 @@
 package com.loopers.application.heart.processor;
 
 import com.loopers.domain.heart.Target;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @Component

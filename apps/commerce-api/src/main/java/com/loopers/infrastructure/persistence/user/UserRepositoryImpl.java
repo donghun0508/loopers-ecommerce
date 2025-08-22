@@ -45,4 +45,9 @@ class UserRepositoryImpl implements UserRepository {
     public List<User> findAllByIdIn(Collection<Long> ids) {
         return userJpaRepository.findAllByIdIn(ids);
     }
+
+    @Override
+    public Optional<User> findByIdWithLock(Long userId) {
+        return userJpaRepository.findByIdWithLock(userId);
+    }
 }

@@ -21,5 +21,6 @@ public class UserCommand {
         AccountId accountId,
         Money amount
     ) {
+
     }
 }

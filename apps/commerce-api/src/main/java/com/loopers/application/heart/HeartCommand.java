@@ -5,6 +5,7 @@ import com.loopers.domain.heart.TargetType;
 import com.loopers.domain.user.AccountId;
 
 public class HeartCommand {
+
     public record LikeCommand(AccountId accountId, Target target) {
 
         public LikeCommand(String accountId, Long targetId, TargetType targetType) {

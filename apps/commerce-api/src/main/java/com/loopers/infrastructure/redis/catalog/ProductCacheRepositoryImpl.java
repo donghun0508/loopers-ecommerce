@@ -1,9 +1,9 @@
 package com.loopers.infrastructure.redis.catalog;
 
+import com.loopers.domain.catalog.ProductCacheRepository;
 import com.loopers.domain.catalog.ProductCondition.ListCondition;
 import com.loopers.domain.catalog.ProductRead;
 import com.loopers.domain.catalog.ProductSliceRead;
-import com.loopers.domain.catalog.ProductCacheRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

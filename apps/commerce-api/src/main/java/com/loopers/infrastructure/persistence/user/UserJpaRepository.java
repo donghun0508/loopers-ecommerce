@@ -14,13 +14,18 @@ import org.springframework.data.repository.query.Param;
 
 public interface UserJpaRepository extends JpaRepository<User, Long> {
 
-    Optional<User> findByAccountId(AccountId accountId);
+    @Query("SELECT u FROM User u JOIN FETCH u.point WHERE u.accountId = :accountId")
+    Optional<User> findByAccountId(@Param("accountId") AccountId accountId);
 
     boolean existsByAccountIdAndEmail(AccountId accountId, Email email);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT u FROM User u WHERE u.accountId = :accountId")
     Optional<User> findByAccountIdWithLock(@Param("accountId") AccountId accountId);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT u FROM User u WHERE u.id = :userId")
+    Optional<User> findByIdWithLock(@Param("userId") Long userId);
 
     List<User> findAllByIdIn(Collection<Long> ids);
 }

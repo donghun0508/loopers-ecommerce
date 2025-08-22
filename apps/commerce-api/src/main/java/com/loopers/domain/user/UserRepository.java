@@ -17,4 +17,6 @@ public interface UserRepository {
     Optional<User> findByAccountIdWithLock(AccountId accountId);
 
     List<User> findAllByIdIn(Collection<Long> ids);
+
+    Optional<User> findByIdWithLock(Long userId);
 }
