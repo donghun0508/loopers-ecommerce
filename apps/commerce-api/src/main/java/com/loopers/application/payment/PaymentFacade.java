@@ -51,6 +51,6 @@ public class PaymentFacade {
             .filter(CardPayment.class::isInstance)
             .map(CardPayment.class::cast)
             .map(CardPayment::getTransactionId)
-            .collect(Collectors.toList());
+            .toList();
     }
 }
